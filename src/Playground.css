@@ -1,0 +1,85 @@
+.playground-container {
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.logout-button-container {
+    display: flex;
+    justify-content: right;
+}
+
+.logout-button {
+    width: 5%;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s; /* 添加过渡效果 */
+}
+
+.logout-button:hover {
+    background-color: #f0f0f0; /* 设置鼠标悬停时的背景颜色 */
+    color: #000; /* 设置鼠标悬停时的文字颜色 */
+}
+
+.fish-card-container {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.fish-card {
+    width: calc(30% - 20px);
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.fish-card-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.fish-card-buttons button {
+    margin-right: 10px; /* 添加按钮之间的右边距 */
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.green {
+    background-color: green;
+}
+
+.lightblue {
+    background-color: lightblue;
+}
+
+.grey {
+    background-color: grey;
+}
+
+.yellow {
+    background-color: yellow;
+}
+
+@media (max-width: 992px) {
+    .fish-card {
+        width: calc(33.33% - 20px);
+    }
+}
+
+@media (max-width: 768px) {
+    .fish-card {
+        width: calc(50% - 20px);
+    }
+}
+
+@media (max-width: 576px) {
+    .fish-card {
+        width: calc(100% - 20px);
+    }
+}
