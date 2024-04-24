@@ -8,28 +8,67 @@
     justify-content: right;
 }
 
-.logout-button {
-    width: 5%;
-    font-size: 14px;
-    border-radius: 5px;
+.menu-toggle-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    top: 50px;
+    right: 10px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.menu {
+    position: absolute;
+    top: 98px;
+    right: 0px;
+    padding: 10px;
+    display: none;
+}
+
+.menu.show {
+    display: block;
+}
+
+.menu-item {
+    display: block;
+    margin-bottom: 10px;
+    text-align: center;
+    /* 其他菜单项样式 */
+}
+
+.menu-item.circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
+}
+
+.logout-button {
+    background-color: #f44336;
     transition: background-color 0.3s, color 0.3s; /* 添加过渡效果 */
 }
 
 .logout-button:hover {
-    background-color: #f0f0f0; /* 设置鼠标悬停时的背景颜色 */
+    background-color: #f9f9f9; /* 设置鼠标悬停时的背景颜色 */
     color: #000; /* 设置鼠标悬停时的文字颜色 */
 }
 
 .fish-card-container {
     margin-top: 10px;
     display: flex;
+    width: 95%;
     flex-wrap: wrap;
     justify-content: space-between;
 }
 
 .fish-card {
-    width: calc(30% - 20px);
+    /*width: calc(30% - 20px);*/
     margin-bottom: 20px;
     padding: 20px;
     border: 1px solid #ccc;

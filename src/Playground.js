@@ -1,34 +1,78 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import React, {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import './Playground.css'
-import { v4 as uuidv4 } from 'uuid'; // 引入 uuid 库
-import { FISH_LIST_API_ENDPOINT, FISH_PULL_API_ENDPOINT, FISH_SLEEP_API_ENDPOINT, FISH_ALIVE_API_ENDPOINT, BASE_WS_ENDPOINT } from './config'; // 导入配置文件
+import './Market.css'
+import {api} from './BaseApi'
+import {v4 as uuidv4} from 'uuid'; // 引入 uuid 库
+import {
+    FISH_LIST_API_ENDPOINT,
+    FISH_PULL_API_ENDPOINT,
+    FISH_SLEEP_API_ENDPOINT,
+    FISH_ALIVE_API_ENDPOINT,
+    BASE_WS_ENDPOINT,
+    USER_ASSET_API_ENDPOINT,
+    FISH_REFINE_API_ENDPOINT,
+    FISH_PARKING_LIST_API_ENDPOINT
+} from './config';
+import Market from "./Market"; // 导入配置文件
+import {NotificationContainer, NotificationManager} from "react-notifications";
+import {
+    Badge,
+    Stack,
+    Button,
+    Grid,
+    GridItem,
+    Card,
+    CardBody,
+    Heading,
+    Text,
+    CardHeader,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    useDisclosure,
+} from '@chakra-ui/react'
 
 let socket = null;
-let loadFinished = false;
 
 function Playground() {
     const navigate = useNavigate();
     const [fishList, setFishList] = useState([]);
-    const [message, setMessage] = useState('');
+    const [asset, setAsset] = useState({exp: 0, level: 0, glod: 0});
+    const [showMenu, setShowMenu] = useState(false);
+    const {isOpen, onOpen, onClose} = useDisclosure()
+    const [marketOpen, setMarketOpen] = useState(false);
+    const [refineFishId, setRefineFishId] = useState(0);
+
     const handleLogout = () => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('uid');
+        localStorage.removeItem('ts_ms');
         navigate('/');
     };
+    const fetchFishParkingList = async () => {
+        try {
+            const response = await api.post(FISH_PARKING_LIST_API_ENDPOINT, {});
+            const {code, data} = response.data;
+            if (code === 0) {
+                // const correctedFishList = data.list.map(fish => ({
+                //     ...fish,
+                //     id: String(fish.id)
+                // }));
+                // console.log(data.list)
+                // setFishList(correctedFishList);
+            } else {
+                console.error('获取用户鱼信息失败：', response.data.message);
+            }
+        } catch (error) {
+            console.error('获取用户鱼信息失败：', error);
+        }
+    };
+
     const fetchFishList = async () => {
         try {
-            const uid = localStorage.getItem('uid');
-            const accessToken = localStorage.getItem('access_token');
-            const response = await axios.post(FISH_LIST_API_ENDPOINT, {}, {
-                headers: {
-                    'uid': uid,
-                    'world-access-token': accessToken,
-                    'Content-Type': 'application/json'
-                }
-            });
-            const { code, data } = response.data;
+            const response = await api.post(FISH_LIST_API_ENDPOINT, {});
+            const {code, data} = response.data;
             if (code === 0) {
                 const correctedFishList = data.list.map(fish => ({
                     ...fish,
@@ -43,25 +87,64 @@ function Playground() {
             console.error('获取用户鱼信息失败：', error);
         }
     };
-    const handleSleepClick = (fishId) => {
-        console.log(fishId)
-        const uid = localStorage.getItem('uid');
-        const accessToken = localStorage.getItem('access_token');
-        // 发送休息请求
-        axios.post(FISH_SLEEP_API_ENDPOINT, {
-            fish_id: fishId
-        }, {
-            headers: {
-                'uid': uid,
-                'world-access-token': accessToken,
-                'Content-Type': 'application/json'
+    const fetchUserAsset = async () => {
+        try {
+            const response = await api.post(USER_ASSET_API_ENDPOINT, {});
+            const {code, data} = response.data;
+            if (code === 0) {
+                setAsset(data);
+            } else {
+                console.error('获取用户资产失败：', response.data.message);
             }
-        })
+        } catch (error) {
+            console.error('获取用户资产失败：', error);
+        }
+    };
+    const handleOpenMarket = () => {
+        setMarketOpen(true);
+        onOpen();
+    }
+    const closeTopModal = () => {
+        setMarketOpen(false);
+        setRefineFishId(0)
+        onClose()
+    }
+
+    const handleSleepClick = (fishId) => {
+        // 发送休息请求
+        api.post(FISH_SLEEP_API_ENDPOINT, {fish_id: fishId})
             .then(response => {
                 if (response.data.code === 0) {
                     fetchFishList();
                 } else {
-                    setMessage(response.data.message)
+                    NotificationManager.error('', response.data.message, 3000, () => {
+                        alert('callback');
+                    });
+                }
+                // 重新加载鱼列表数据
+            })
+            .catch(error => {
+                console.error('Error resting fish:', error);
+            });
+    };
+
+    const handleRefineClick = (fishId) => {
+        // 发送炼化请求
+        setRefineFishId(fishId)
+        onOpen();
+    };
+
+    const refine = (fishId) => {
+        // 发送炼化请求
+        api.post(FISH_REFINE_API_ENDPOINT, {fish_id: fishId})
+            .then(response => {
+                if (response.data.code === 0) {
+                    fetchFishList();
+                    closeTopModal()
+                } else {
+                    NotificationManager.error('', response.data.message, 3000, () => {
+                        alert('callback');
+                    });
                 }
                 // 重新加载鱼列表数据
             })
@@ -71,24 +154,15 @@ function Playground() {
     };
 
     const handleAliveClick = (fishId) => {
-        console.log(fishId)
-        const uid = localStorage.getItem('uid');
-        const accessToken = localStorage.getItem('access_token');
         // 发送休息请求
-        axios.post(FISH_ALIVE_API_ENDPOINT, {
-            fish_id: fishId
-        }, {
-            headers: {
-                'uid': uid,
-                'world-access-token': accessToken,
-                'Content-Type': 'application/json'
-            }
-        })
+        api.post(FISH_ALIVE_API_ENDPOINT, {fish_id: fishId})
             .then(response => {
                 if (response.data.code === 0) {
                     fetchFishList();
                 } else {
-                    setMessage(response.data.message)
+                    NotificationManager.error('', response.data.message, 3000, () => {
+                        alert('callback');
+                    })
                 }
                 // 重新加载鱼列表数据
             })
@@ -100,62 +174,37 @@ function Playground() {
     const renderActionButtons = (status, fishId) => {
         switch (status) {
             case 0:
-                return (<div className="fish-card-buttons">
-                    <button onClick={() => handleSleepClick(fishId)}>休息</button>
-                </div>);
+                return (<Stack mt={3} direction='row' spacing={4} align='center'>
+                    <Button bg='blue.300' onClick={() => handleSleepClick(fishId)}>休息</Button>
+                </Stack>);
             case 1:
                 return (
-                    <div className="fish-card-buttons">
-                        <button onClick={() => handleAliveClick(fishId)}>激活</button>
-                        <button>上架</button>
-                        <button>炼化</button>
-                    </div>
+                    <Stack mt={3} direction='row' spacing={4} align='center'>
+                        <Button bg='green.300'
+                                onClick={() => handleAliveClick(fishId)}>激活</Button>
+                        <Button bg='yellow.300'>上架</Button>
+                        <Button bg='orange.300' onClick={() => handleRefineClick(fishId)}>炼化</Button>
+                    </Stack>
                 );
             case 2:
-                return (<div className="fish-card-buttons">
-                    <button>下架</button>
-                </div>);
+                return (<Stack mt={3} direction='row' spacing={4} align='center'>
+                    <Button bg='blue.300'>下架</Button>
+                </Stack>);
             case 3:
                 return (
-                    <div className="fish-card-buttons">
-                        <button>炼化</button>
-                    </div>
+                    <Stack mt={3} direction='row' spacing={4} align='center'>
+                        <Button bg='orange.300' onClick={() => handleRefineClick(fishId)}>炼化</Button>
+                    </Stack>
                 );
             default:
                 return null;
         }
     }
     useEffect(() => {
-        let timer;
-        if (message) {
-            // 显示错误消息后，3秒后清除错误消息
-            timer = setTimeout(() => {
-                setMessage('');
-            }, 3000);
-        }
-        return () => clearTimeout(timer); // 在组件卸载时清除定时器
-    }, [message]);
-    useEffect(() => {
-        const handleAccessTokenChange = () => {
-            const accessToken = localStorage.getItem('access_token');
-            if (!accessToken) {
-                // 如果 access_token 被清空，则立即跳转回登录页面
-                navigate('/');
-            }
-        };
-
-
         const pullFish = async () => {
             try {
-                const uid = localStorage.getItem('uid');
-                const accessToken = localStorage.getItem('access_token');
-                const response = await axios.post(FISH_PULL_API_ENDPOINT, {}, {
-                    headers: {
-                        'uid': uid,
-                        'world-access-token': accessToken,
-                        'Content-Type': 'application/json'
-                    }})
-                const { code, data } = response.data;
+                const response = await api.post(FISH_PULL_API_ENDPOINT, {})
+                const {code, data} = response.data;
                 if (code === 0) {
                     const newList = [...fishList];
                     data.list.forEach(newFish => {
@@ -181,7 +230,7 @@ function Playground() {
                 } else {
                     console.error('获取用户鱼信息失败：', response.data.message);
                 }
-            }catch (error) {
+            } catch (error) {
                 console.error('获取用户鱼信息失败：', error);
             }
         };
@@ -208,7 +257,7 @@ function Playground() {
                 if (message.type === 'pong') {
                     return
                 }
-                if (message.type === 'ask' && (message.err_no === 0 || message.err_no == null) ) {
+                if (message.type === 'ask' && (message.err_no === 0 || message.err_no == null)) {
                     const decodedBody = atob(message.body);
                     const receivedTsMs = JSON.parse(decodedBody).ts_ms;
                     console.log("receive ts ms:" + receivedTsMs)
@@ -230,16 +279,10 @@ function Playground() {
                 }
             };
         }
-        if (!loadFinished) {
-            fetchFishList()
-            loadFinished = true
-        }
-        // 监听本地缓存中 access_token 的变化
-        window.addEventListener('storage', handleAccessTokenChange);
         // 每隔 1 秒发送 ping 消息
         const pingInterval = setInterval(() => {
             if (socket != null && socket.readyState === WebSocket.OPEN) {
-                socket.send(JSON.stringify({ type: 'ping' }));
+                socket.send(JSON.stringify({type: 'ping'}));
             }
         }, 1000);
 
@@ -254,52 +297,128 @@ function Playground() {
         return () => {
             clearInterval(pingInterval);
             clearInterval(askInterval);
-            window.removeEventListener('storage', handleAccessTokenChange);
             socket.close();
             socket = null
         };
     }, [navigate, fishList]);
 
+    useEffect(() => {
+        fetchFishList()
+        fetchUserAsset()
+        const handleAccessTokenChange = (event) => {
+            console.log(event)
+            if (event.key === 'access_token' && !event.newValue) {
+                // 如果 access_token 被清空，则立即跳转回登录页面
+                window.location.href = '/'
+            }
+        };
+        // 监听本地缓存中 access_token 的变化
+        window.addEventListener('storage', handleAccessTokenChange);
+        return () => {
+            window.removeEventListener('storage', handleAccessTokenChange);
+        }
+    }, [])
+
     return (
-        <div className="playground-container">
-            <div className="logout-button-container">
-                <button className="logout-button" onClick={handleLogout}>退出登录</button>
-            </div>
-            <div className="fish-card-container">
-                {Array.isArray(fishList) && fishList.map(fish => (
-                    <div className={`fish-card ${getStatusColor(fish.status)}`} key={String(fish.id)}>
-                        <h2>{fish.name}</h2>
-                        <p>修为：{fish.weight}</p>
-                        <p>生命：{fish.heal}/{fish.max_heal}</p>
-                        <p>自愈：{fish.recover_speed}</p>
-                        <p>攻击：{fish.atk}</p>
-                        <p>防御：{fish.def}</p>
-                        <p>修炼：{fish.earn_speed}</p>
-                        <p>闪避：{fish.dodge}</p>
-                        <p>灵气：{fish.money}</p>
-                        {renderActionButtons(fish.status, String(fish.id))}
-                    </div>
-                ))}
-            </div>
-            {message && (
-                <div className={`message ${message === '登录成功' ? 'success' : 'error'}`}>
-                    {message}
-                </div>
-            )}
-        </div>
+        <Grid templateColumns='repeat(24, 1fr)'>
+            <GridItem colSpan={23}>
+                <Stack direction='row' mt={5} ml={10}>
+                    <Badge variant='solid' colorScheme='whatsapp'>
+                        等级: {asset.level}
+                    </Badge>
+                    <Badge variant='solid' colorScheme='whatsapp'>
+                        经验: {asset.exp}
+                    </Badge>
+                    <Badge variant='solid' colorScheme='whatsapp'>
+                        晶石: {asset.gold}
+                    </Badge>
+                </Stack>
+                <Grid templateRows='repeat(2, 1fr)'
+                      templateColumns='repeat(3, 1fr)'
+                      gap={10}
+                      padding={10}
+                >
+                    {Array.isArray(fishList) && fishList.map(fish => (
+                        <GridItem colSpan={1} key={String(fish.id)}>
+                            <Card bg={getStatusColor(fish.status)} padding={5}>
+                                <CardHeader>
+                                    <Heading>
+                                        {fish.name}
+                                    </Heading>
+                                </CardHeader>
+                                <CardBody>
+                                    <Text>修为：{fish.weight}</Text>
+                                    <Text>生命：{fish.heal}/{fish.max_heal}</Text>
+                                    <Text>自愈：{fish.recover_speed}</Text>
+                                    <Text>攻击：{fish.atk}</Text>
+                                    <Text>防御：{fish.def}</Text>
+                                    <Text>修炼：{fish.earn_speed}</Text>
+                                    <Text>闪避：{fish.dodge}</Text>
+                                    <Text>灵气：{fish.money}</Text>
+                                </CardBody>
+                                {renderActionButtons(fish.status, String(fish.id))}
+                            </Card>
+                        </GridItem>
+                    ))}
+                </Grid>
+                <Modal
+                    isOpen={isOpen}
+                    onClose={closeTopModal}
+                    isCentered
+                    motionPreset='slideInBottom'
+                    size='6xl'
+                >
+                    <ModalOverlay/>
+                    {marketOpen && (
+                        <ModalContent>
+                            <Market/>
+                        </ModalContent>
+                    )}
+                    {refineFishId !== 0 && (
+                        <ModalContent border={1}>
+                            <Card padding={2}>
+                                <CardHeader>
+                                    <Heading fontSize={30}>确认炼化?</Heading>
+                                </CardHeader>
+                                <CardBody>
+                                    <Stack direction='row'>
+                                        <Button size='sm' colorScheme='orange'
+                                                onClick={() => refine(refineFishId)}>确认</Button>
+                                        <Button size='sm' colorScheme='blue' onClick={closeTopModal}>取消</Button>
+                                    </Stack>
+                                </CardBody>
+                            </Card>
+                        </ModalContent>
+                    )}
+                </Modal>
+                <NotificationContainer/>
+            </GridItem>
+            <GridItem colSpan={1} padding={3}>
+                <Button onClick={() => setShowMenu(!showMenu)}>菜单</Button>
+                {showMenu && (<Stack mt={2}>
+                    <Button className="circle" onClick={handleOpenMarket}>交易</Button>
+                    <Button className="circle">排行</Button>
+                    <Button className="circle">背包</Button>
+                    <Button className="circle">技能</Button>
+                    <Button className="circle">建筑</Button>
+                    <Button className="circle" onClick={handleLogout}>退出</Button>
+                </Stack>)}
+            </GridItem>
+
+        </Grid>
     );
 }
 
 function getStatusColor(status) {
     switch (status) {
         case 0:
-            return 'green';
+            return 'green.300';
         case 1:
-            return 'lightblue';
+            return 'blue.300';
         case 3:
-            return 'grey';
+            return 'gray.300';
         case 2:
-            return 'yellow';
+            return 'yellow.300';
         default:
             return '';
     }
