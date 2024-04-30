@@ -1,21 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
 import './Playground.css'
 import './Market.css'
-import {api} from './BaseApi'
 import {v4 as uuidv4} from 'uuid'; // 引入 uuid 库
 import {
-    FISH_LIST_API_ENDPOINT,
-    FISH_PULL_API_ENDPOINT,
-    FISH_SLEEP_API_ENDPOINT,
-    FISH_ALIVE_API_ENDPOINT,
     BASE_WS_ENDPOINT,
-    USER_ASSET_API_ENDPOINT,
-    FISH_REFINE_API_ENDPOINT,
-    FISH_PARKING_LIST_API_ENDPOINT
 } from './config';
 import Market from "./Market"; // 导入配置文件
-import {NotificationContainer, NotificationManager} from "react-notifications";
+import {NotificationContainer} from "react-notifications";
 import {
     Badge,
     Stack,
@@ -31,216 +22,260 @@ import {
     ModalOverlay,
     ModalContent,
     useDisclosure,
+    FormControl,
+    FormLabel,
+    RadioGroup,
+    HStack,
+    Radio,
+    FormHelperText,
+    NumberDecrementStepper,
+    NumberInput,
+    NumberInputField,
+    NumberInputStepper,
+    NumberIncrementStepper,
+    Tooltip,
+    UnorderedList,
+    ListItem,
+    Progress,
 } from '@chakra-ui/react'
+import PropList from "./Props";
+import PoolRank from "./PoolRank";
+import {AddIcon, LockIcon} from "@chakra-ui/icons";
+import {DecodeBase64} from "./Base64.js";
+import {SellStart, SellStop} from "./request/Market";
+import {
+    AliveFish,
+    CreateFish,
+    FetchFishList,
+    FetchFishParkingList,
+    PullFish,
+    RefineFish,
+    SleepFish
+} from "./request/Fish";
+import {ExpandFishParking, FetchUserAsset} from "./request/User";
+import {GetFishSkillColor, GetFishStatusColor, GetHpProgressColor, GetParkingStatusColor} from "./style/ColorUtil";
 
 let socket = null;
 
 function Playground() {
-    const navigate = useNavigate();
     const [fishList, setFishList] = useState([]);
-    const [asset, setAsset] = useState({exp: 0, level: 0, glod: 0});
-    const [showMenu, setShowMenu] = useState(false);
+    const [fishMap, setFishMap] = useState({});
+    const [fishParkingList, setFishParkingList] = useState([]);
+    const [asset, setAsset] = useState({exp: 0, level: 0, gold: 0});
     const {isOpen, onOpen, onClose} = useDisclosure()
     const [marketOpen, setMarketOpen] = useState(false);
+    const [propOpen, setPropOpen] = useState(false);
+    const [sellFish, setSellFish] = useState(null);
+    const [downSellFish, setDownSellFish] = useState(null);
+    const [poolRankOpen, setPoolRankOpen] = useState(false);
     const [refineFishId, setRefineFishId] = useState(0);
+    const [price, setPrice] = useState(0);
+    const [sellDuration, setSellDuration] = useState('half_day');
+    const [needPull, setNeedPull] = useState(false);
+    const [needDestroyFish, setNeedDestroyFish] = useState(null)
 
+    const refreshFishList = (fishes) => {
+        if (fishes != null && fishes.length > 0) {
+            setFishList(fishes);
+        }
+    }
     const handleLogout = () => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('uid');
         localStorage.removeItem('ts_ms');
-        navigate('/');
-    };
-    const fetchFishParkingList = async () => {
-        try {
-            const response = await api.post(FISH_PARKING_LIST_API_ENDPOINT, {});
-            const {code, data} = response.data;
-            if (code === 0) {
-                // const correctedFishList = data.list.map(fish => ({
-                //     ...fish,
-                //     id: String(fish.id)
-                // }));
-                // console.log(data.list)
-                // setFishList(correctedFishList);
-            } else {
-                console.error('获取用户鱼信息失败：', response.data.message);
-            }
-        } catch (error) {
-            console.error('获取用户鱼信息失败：', error);
-        }
+        window.location.href = '/';
     };
 
-    const fetchFishList = async () => {
-        try {
-            const response = await api.post(FISH_LIST_API_ENDPOINT, {});
-            const {code, data} = response.data;
-            if (code === 0) {
-                const correctedFishList = data.list.map(fish => ({
-                    ...fish,
-                    id: String(fish.id)
-                }));
-                console.log(data.list)
-                setFishList(correctedFishList);
-            } else {
-                console.error('获取用户鱼信息失败：', response.data.message);
-            }
-        } catch (error) {
-            console.error('获取用户鱼信息失败：', error);
-        }
-    };
-    const fetchUserAsset = async () => {
-        try {
-            const response = await api.post(USER_ASSET_API_ENDPOINT, {});
-            const {code, data} = response.data;
-            if (code === 0) {
-                setAsset(data);
-            } else {
-                console.error('获取用户资产失败：', response.data.message);
-            }
-        } catch (error) {
-            console.error('获取用户资产失败：', error);
-        }
-    };
+    const handleSellClickOpen = async (fish) => {
+        setSellFish(fish);
+        onOpen();
+    }
+
+    const handleDownSellClickOpen = async (fish) => {
+        setDownSellFish(fish);
+        onOpen();
+    }
+
     const handleOpenMarket = () => {
         setMarketOpen(true);
         onOpen();
     }
+
+    const handleOpenProps = () => {
+        setPropOpen(true);
+        onOpen();
+    }
+    const handleOpenPoolRank = () => {
+        setPoolRankOpen(true);
+        onOpen();
+    }
     const closeTopModal = () => {
         setMarketOpen(false);
+        setPropOpen(false);
+        setPoolRankOpen(false);
         setRefineFishId(0)
+        setSellFish(null);
+        setDownSellFish(null);
+        setPrice(0);
+        setSellDuration('0');
         onClose()
     }
 
     const handleSleepClick = (fishId) => {
         // 发送休息请求
-        api.post(FISH_SLEEP_API_ENDPOINT, {fish_id: fishId})
-            .then(response => {
-                if (response.data.code === 0) {
-                    fetchFishList();
-                } else {
-                    NotificationManager.error('', response.data.message, 3000, () => {
-                        alert('callback');
-                    });
+        SleepFish(fishId, () => {
+            const newFishList = [...fishList]
+            for (let i = 0; i < newFishList.length; i++) {
+                if (newFishList[i].id === fishId) {
+                    newFishList[i] = {
+                        ...newFishList[i],
+                        status: 1,
+                    }
+                    break;
                 }
-                // 重新加载鱼列表数据
-            })
-            .catch(error => {
-                console.error('Error resting fish:', error);
-            });
+            }
+            refreshFishList(newFishList)
+        }).then();
+    };
+    const handleCreateClick = () => {
+        // 发送休息请求
+        CreateFish((newFish) => {
+            const newList = [
+                ...fishList,
+            ];
+            newList.push(newFish);
+            refreshFishList(newList);
+            FetchUserAsset(setAsset).then();
+        }).then();
     };
 
     const handleRefineClick = (fishId) => {
         // 发送炼化请求
-        setRefineFishId(fishId)
+        setRefineFishId(fishId);
         onOpen();
     };
 
     const refine = (fishId) => {
         // 发送炼化请求
-        api.post(FISH_REFINE_API_ENDPOINT, {fish_id: fishId})
-            .then(response => {
-                if (response.data.code === 0) {
-                    fetchFishList();
-                    closeTopModal()
-                } else {
-                    NotificationManager.error('', response.data.message, 3000, () => {
-                        alert('callback');
-                    });
+        RefineFish(fishId, () => {
+            const newFishList = fishList.filter(fish => fish.id !== fishId);
+            fishList.forEach(fish => {
+                if (fish.id === fishId) {
+                    const newParkingList = [...fishParkingList];
+                    for (let i = 0; i < newParkingList.length; i++) {
+                        if (newParkingList[i].parking === fish.parking) {
+                            newParkingList[i].status = 1;
+                        }
+                    }
+                    setFishParkingList(newParkingList);
                 }
-                // 重新加载鱼列表数据
             })
-            .catch(error => {
-                console.error('Error resting fish:', error);
-            });
+            refreshFishList(newFishList);
+            closeTopModal();
+        }).then();
     };
 
     const handleAliveClick = (fishId) => {
         // 发送休息请求
-        api.post(FISH_ALIVE_API_ENDPOINT, {fish_id: fishId})
-            .then(response => {
-                if (response.data.code === 0) {
-                    fetchFishList();
-                } else {
-                    NotificationManager.error('', response.data.message, 3000, () => {
-                        alert('callback');
-                    })
+        AliveFish(fishId, () => {
+            const newFishList = [...fishList]
+            for (let i = 0; i < newFishList.length; i++) {
+                if (newFishList[i].id === fishId) {
+                    newFishList[i] = {
+                        ...newFishList[i],
+                        status: 0,
+                    }
+                    break;
                 }
-                // 重新加载鱼列表数据
-            })
-            .catch(error => {
-                console.error('Error resting fish:', error);
-            });
+            }
+            refreshFishList(newFishList)
+        }).then();
     };
 
-    const renderActionButtons = (status, fishId) => {
-        switch (status) {
+    const renderActionButtons = (fish) => {
+        switch (fish.status) {
             case 0:
                 return (<Stack mt={3} direction='row' spacing={4} align='center'>
-                    <Button bg='blue.300' onClick={() => handleSleepClick(fishId)}>休息</Button>
+                    <Button bg='blue.300' onClick={() => handleSleepClick(fish.id)}>休息</Button>
                 </Stack>);
             case 1:
                 return (
                     <Stack mt={3} direction='row' spacing={4} align='center'>
                         <Button bg='green.300'
-                                onClick={() => handleAliveClick(fishId)}>激活</Button>
-                        <Button bg='yellow.300'>上架</Button>
-                        <Button bg='orange.300' onClick={() => handleRefineClick(fishId)}>炼化</Button>
+                                onClick={() => handleAliveClick(fish.id)}>激活</Button>
+                        <Button bg='yellow.300' onClick={() => handleSellClickOpen(fish)}>上架</Button>
+                        <Button bg='orange.300' onClick={() => handleRefineClick(fish.id)}>炼化</Button>
                     </Stack>
                 );
             case 2:
                 return (<Stack mt={3} direction='row' spacing={4} align='center'>
-                    <Button bg='blue.300'>下架</Button>
+                    <Button bg='blue.300' onClick={() => handleDownSellClickOpen(fish)}>下架</Button>
                 </Stack>);
             case 3:
                 return (
                     <Stack mt={3} direction='row' spacing={4} align='center'>
-                        <Button bg='orange.300' onClick={() => handleRefineClick(fishId)}>炼化</Button>
+                        <Button bg='orange.300' onClick={() => handleRefineClick(fish.id)}>炼化</Button>
                     </Stack>
                 );
             default:
                 return null;
         }
     }
-    useEffect(() => {
-        const pullFish = async () => {
-            try {
-                const response = await api.post(FISH_PULL_API_ENDPOINT, {})
-                const {code, data} = response.data;
-                if (code === 0) {
-                    const newList = [...fishList];
-                    data.list.forEach(newFish => {
-                        const index = newList.findIndex(oldFish => oldFish.id === newFish.id);
-                        if (index !== -1) {
-                            console.log(data)
-                            newList[index] = {
-                                ...fishList[index],
-                                weight: newFish.weight,
-                                max_heal: newFish.max_heal,
-                                heal: newFish.heal,
-                                recover_speed: newFish.recover_speed,
-                                atk: newFish.atk,
-                                def: newFish.def,
-                                earn_speed: newFish.earn_speed,
-                                dodge: newFish.dodge,
-                                money: newFish.money
-                            }
-                        }
-                    });
-                    setFishList(newList);
-                    localStorage.setItem("ts_ms", data.ts_ms)
-                } else {
-                    console.error('获取用户鱼信息失败：', response.data.message);
-                }
-            } catch (error) {
-                console.error('获取用户鱼信息失败：', error);
+    const afterPull = (pullList) => {
+        const newList = [...fishList];
+        pullList.forEach(newFish => {
+            const index = newList.findIndex(oldFish => oldFish.id === newFish.id);
+            if (index !== -1) {
+                newList[index] = {
+                    ...fishList[index],
+                    weight: newFish.weight,
+                    max_heal: newFish.max_heal,
+                    heal: newFish.heal,
+                    recover_speed: newFish.recover_speed,
+                    atk: newFish.atk,
+                    def: newFish.def,
+                    earn_speed: newFish.earn_speed,
+                    dodge: newFish.dodge,
+                    money: newFish.money
+                };
             }
-        };
+        });
+        refreshFishList(newList);
+    }
+    useEffect(() => {
+        const newFishMap = {}
+        // console.log('refresh fish map: ' + fishList);
+        fishList.forEach(item => {
+            newFishMap[item.parking] = item;
+        })
+        // console.log(newFishMap)
+        setFishMap(newFishMap);
+    }, [fishList])
+
+    useEffect(() => {
+        if (needDestroyFish != null) {
+            console.log(needDestroyFish);
+            const destroyFish = (deadFish) => {
+                const newFishList = [...fishList];
+                const oldFish = fishList[deadFish.index_in_old_list];
+                newFishList[deadFish.index_in_old_list] = {
+                    ...deadFish,
+                    parking: oldFish.parking,
+                };
+                refreshFishList(newFishList);
+                setNeedDestroyFish(null);
+            }
+            destroyFish(needDestroyFish)
+        }
+    }, [needDestroyFish]);
+
+    useEffect(() => {
         // 获取本地缓存中的 access_token 和 uid
         const accessToken = localStorage.getItem('access_token');
         const uid = localStorage.getItem('uid');
-        let tsMs = localStorage.getItem('ts_ms') || 0;
 
         // 创建 WebSocket 连接
-        if (!socket) {
+        if (socket == null) {
             socket = new WebSocket(`${BASE_WS_ENDPOINT}?t=${accessToken}&u=${uid}`);
             // 监听 WebSocket 连接打开事件
             socket.onopen = () => {
@@ -249,25 +284,31 @@ function Playground() {
                 return () => {
                 };
             };
-
-            // 监听 WebSocket 接收消息事件
             socket.onmessage = (event) => {
                 const message = JSON.parse(event.data);
-                console.log(message)
                 if (message.type === 'pong') {
                     return
                 }
                 if (message.type === 'ask' && (message.err_no === 0 || message.err_no == null)) {
-                    const decodedBody = atob(message.body);
+                    const decodedBody = DecodeBase64(message.body);
                     const receivedTsMs = JSON.parse(decodedBody).ts_ms;
-                    console.log("receive ts ms:" + receivedTsMs)
+                    let tsMs = localStorage.getItem('ts_ms') || 0;
                     if (receivedTsMs !== null && receivedTsMs !== undefined && receivedTsMs !== 0 && receivedTsMs !== tsMs) {
                         // 更新本地缓存中的 ts_ms
-                        pullFish()
+                        setNeedPull(true)
+                    }
+                }
+                if (message.type === 'fish_dead' && (message.err_no === 0 || message.err_no == null)) {
+                    const deadFish = JSON.parse(DecodeBase64(message.body)).fish;
+                    const index = fishList.findIndex(fish => fish.id === deadFish.id);
+                    if (index !== -1) {
+                        setNeedDestroyFish({
+                            ...deadFish,
+                            index_in_old_list: index
+                        });
                     }
                 }
             };
-
             // 监听 WebSocket 连接错误事件
             socket.onerror = (error) => {
                 console.error('WebSocket error:', error);
@@ -279,13 +320,32 @@ function Playground() {
                 }
             };
         }
+        // 清除监听器
+        return () => {
+            socket.close();
+            socket = null;
+        };
+    }, []);
+
+    useEffect(() => {
+        if (needPull) {
+            PullFish(afterPull).then();
+            setNeedPull(false);
+        }
+    }, [needPull]);
+
+    useEffect(() => {
         // 每隔 1 秒发送 ping 消息
         const pingInterval = setInterval(() => {
             if (socket != null && socket.readyState === WebSocket.OPEN) {
                 socket.send(JSON.stringify({type: 'ping'}));
             }
         }, 1000);
-
+        return () => {
+            clearInterval(pingInterval);
+        }
+    })
+    useEffect(() => {
         // 每隔 3 秒发送 ask 消息
         const askInterval = setInterval(() => {
             if (socket != null && socket.readyState === WebSocket.OPEN) {
@@ -293,23 +353,20 @@ function Playground() {
                 socket.send(JSON.stringify({type: 'ask', msg_id: messageId}));
             }
         }, 3000);
-        // 清除监听器
         return () => {
-            clearInterval(pingInterval);
             clearInterval(askInterval);
-            socket.close();
-            socket = null
-        };
-    }, [navigate, fishList]);
+        }
+    })
 
     useEffect(() => {
-        fetchFishList()
-        fetchUserAsset()
+        FetchFishParkingList(setFishParkingList).then();
+        FetchFishList(refreshFishList).then();
+        FetchUserAsset(setAsset).then();
         const handleAccessTokenChange = (event) => {
-            console.log(event)
+            console.log(event);
             if (event.key === 'access_token' && !event.newValue) {
                 // 如果 access_token 被清空，则立即跳转回登录页面
-                window.location.href = '/'
+                window.location.href = '/';
             }
         };
         // 监听本地缓存中 access_token 的变化
@@ -338,28 +395,123 @@ function Playground() {
                       gap={10}
                       padding={10}
                 >
-                    {Array.isArray(fishList) && fishList.map(fish => (
-                        <GridItem colSpan={1} key={String(fish.id)}>
-                            <Card bg={getStatusColor(fish.status)} padding={5}>
-                                <CardHeader>
-                                    <Heading>
-                                        {fish.name}
-                                    </Heading>
-                                </CardHeader>
-                                <CardBody>
-                                    <Text>修为：{fish.weight}</Text>
-                                    <Text>生命：{fish.heal}/{fish.max_heal}</Text>
-                                    <Text>自愈：{fish.recover_speed}</Text>
-                                    <Text>攻击：{fish.atk}</Text>
-                                    <Text>防御：{fish.def}</Text>
-                                    <Text>修炼：{fish.earn_speed}</Text>
-                                    <Text>闪避：{fish.dodge}</Text>
-                                    <Text>灵气：{fish.money}</Text>
-                                </CardBody>
-                                {renderActionButtons(fish.status, String(fish.id))}
-                            </Card>
+                    {Array.isArray(fishParkingList) && fishParkingList.filter(fp => fp.status !== 0).map(fishParking => (
+                        <GridItem colSpan={1} rowSpan={1} key={fishParking.parking}>
+                            {fishMap[fishParking.parking] != null && (
+                                <Card
+                                    bg={GetFishStatusColor(fishMap[fishParking.parking].status)}
+                                    height='100%'
+                                    padding={5}>
+                                    <CardHeader>
+                                        <Stack direction='row'>
+                                            <Heading>
+                                                {fishParking.parking + ': ' + fishMap[fishParking.parking].name}
+                                            </Heading>
+                                            {fishMap[fishParking.parking].protect_count > 0 &&
+                                                <Tooltip
+                                                    label={'保护中~(成长' + fishMap[fishParking.parking].protect_count + '次后结束保护)'}
+                                                    placement='bottom'>
+                                                    <LockIcon color='pink.500' boxSize='2em'/>
+                                                </Tooltip>
+                                            }
+                                        </Stack>
+                                    </CardHeader>
+                                    <CardBody>
+                                        <Progress
+                                            value={fishMap[fishParking.parking].heal < 0 ? 0 : fishMap[fishParking.parking].heal}
+                                            max={fishMap[fishParking.parking].max_heal}
+                                            colorScheme={GetHpProgressColor(fishMap[fishParking.parking].heal, fishMap[fishParking.parking].max_heal)}
+                                            isAnimated={true}/>
+                                        <Text>生命：{fishMap[fishParking.parking].heal < 0 ? 0 : fishMap[fishParking.parking].heal}/{fishMap[fishParking.parking].max_heal}</Text>
+                                        <Text>修为：{fishMap[fishParking.parking].weight}</Text>
+                                        <Text>性格：{fishMap[fishParking.parking].personality_name}</Text>
+                                        <Text>自愈：{fishMap[fishParking.parking].recover_speed}</Text>
+                                        <Text>攻击：{fishMap[fishParking.parking].atk}</Text>
+                                        <Text>防御：{fishMap[fishParking.parking].def}</Text>
+                                        <Text>修炼：{fishMap[fishParking.parking].earn_speed}</Text>
+                                        <Text>闪避：{fishMap[fishParking.parking].dodge}</Text>
+                                        <Text>灵气：{fishMap[fishParking.parking].money}</Text>
+                                        <Tooltip label={'剩余觉醒次数:' + fishMap[fishParking.parking].awaking_remain}
+                                                 placement='left'>
+                                            <Text width='15%'>技能：</Text>
+                                        </Tooltip>
+                                        <UnorderedList width='30%'>
+                                            {Array.isArray(fishMap[fishParking.parking].fish_skills) && fishMap[fishParking.parking].fish_skills.map(fishSkill => (
+                                                <ListItem key={fishSkill.skill_id}>
+                                                    <Tooltip label={fishSkill.skill_desc} placement='left'>
+                                                        <Text
+                                                            textColor={GetFishSkillColor(fishSkill.skill_level)}>{fishSkill.skill_name}(Lv.{fishSkill.skill_level})</Text>
+                                                    </Tooltip>
+                                                </ListItem>
+                                            ))}
+                                        </UnorderedList>
+                                        {!Array.isArray(fishMap[fishParking.parking].fish_skills) &&
+                                            <Text>暂未觉醒技能</Text>}
+
+                                    </CardBody>
+                                    {renderActionButtons(fishMap[fishParking.parking])}
+                                </Card>
+                            )}
+                            {(!Array.isArray(fishList) || fishList.findIndex(oldFish => oldFish.parking === fishParking.parking) === -1) && (
+                                <Card height='100%' padding={5} bg={GetParkingStatusColor(fishParking.status)}>
+                                    <CardHeader>
+                                        <Heading>
+                                            {fishParking.parking}
+                                        </Heading>
+                                    </CardHeader>
+                                    <CardBody height='100%'>
+                                        {fishParking.status === 0 && (
+                                            <Text fontSize={40} textAlign='center'>未拓展</Text>
+                                        )}
+                                        {fishParking.status === 1 && (
+                                            <Text fontSize={40} textAlign='center'>空闲</Text>
+                                        )}
+                                    </CardBody>
+                                </Card>
+                            )}
                         </GridItem>
                     ))}
+                    {Array.isArray(fishParkingList) && fishParkingList.findIndex(fishParking => fishParking.status === 0) !== -1 && (
+                        <GridItem colSpan={1} rowSpan={1}>
+                            <Card height='100%' padding={5} bg='gray.400'>
+                                <CardHeader>
+                                    <Heading>
+                                        未拓展鱼位
+                                    </Heading>
+                                </CardHeader>
+                                <CardBody height='100%'>
+                                    <Stack direction='row' align='center'>
+                                        <AddIcon ml='45%' boxSize='3em'/>
+                                    </Stack>
+                                </CardBody>
+                                <Stack>
+                                    <Button colorScheme='gray' onClick={() => {
+                                        ExpandFishParking((newParking) => {
+                                            const index = fishParkingList.findIndex(p => p.parking === newParking.parking)
+                                            if (index !== -1) {
+                                                const newParkingList = [
+                                                    ...fishParkingList
+                                                ]
+                                                const np = {
+                                                    ...fishParkingList[index]
+                                                }
+                                                np.status = newParking.status;
+                                                newParkingList[index] = np;
+                                                setFishParkingList(newParkingList);
+                                            }
+                                            if (newParking.cost !== 0) {
+                                                const newAsset = {
+                                                    ...asset
+                                                };
+                                                newAsset.gold = asset.gold - newParking.cost;
+                                                setAsset(newAsset);
+                                            }
+                                        }).then()
+                                    }}>拓展</Button>
+                                </Stack>
+                            </Card>
+                        </GridItem>
+                    )}
                 </Grid>
                 <Modal
                     isOpen={isOpen}
@@ -372,6 +524,88 @@ function Playground() {
                     {marketOpen && (
                         <ModalContent>
                             <Market/>
+                        </ModalContent>
+                    )}
+                    {propOpen && (
+                        <ModalContent>
+                            <PropList incrExp={(exp) => {
+                                const newAsset = {
+                                    ...asset
+                                };
+                                newAsset.exp = asset.exp + exp
+                                setAsset(newAsset);
+                            }}/>
+                        </ModalContent>
+                    )}
+                    {poolRankOpen && (
+                        <ModalContent>
+                            <PoolRank/>
+                        </ModalContent>
+                    )}
+                    {sellFish != null && (
+                        <ModalContent>
+                            <Card padding={5}>
+                                <CardHeader>
+                                    <Heading>
+                                        上架【{sellFish.name}】
+                                    </Heading>
+                                </CardHeader>
+                                <CardBody>
+                                    <FormControl>
+                                        <FormLabel>价格</FormLabel>
+                                        <NumberInput defaultValue={price} min={0} onChange={(e) => setPrice(e)}>
+                                            <NumberInputField/>
+                                            <NumberInputStepper>
+                                                <NumberIncrementStepper/>
+                                                <NumberDecrementStepper/>
+                                            </NumberInputStepper>
+                                        </NumberInput>
+                                        <FormHelperText>合理的价格可以让您的商品更受青睐</FormHelperText>
+                                    </FormControl>
+                                    <FormControl>
+                                        <FormLabel>上架时长</FormLabel>
+                                        <RadioGroup defaultValue={sellDuration} onChange={(e) => setSellDuration(e)}>
+                                            <HStack spacing='24px'>
+                                                <Radio value='half_day'>半天</Radio>
+                                                <Radio value='one_day'>一天</Radio>
+                                                <Radio value='three_day'>三天</Radio>
+                                                <Radio value='one_week'>一周</Radio>
+                                            </HStack>
+                                        </RadioGroup>
+                                        <FormHelperText>注. 手续费取决于售价与上架时长</FormHelperText>
+                                    </FormControl>
+                                </CardBody>
+                                <Stack direction='row'>
+                                    <Button colorScheme='yellow'
+                                            onClick={() => SellStart(sellFish, price, sellDuration, asset, setAsset, () => {
+                                                closeTopModal();
+                                                FetchFishParkingList(setFishParkingList).then();
+                                                FetchFishList(refreshFishList).then();
+                                            })}>上架</Button>
+                                    <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
+                                </Stack>
+                            </Card>
+                        </ModalContent>
+                    )}
+                    {downSellFish != null && (
+                        <ModalContent>
+                            <Card padding={5}>
+                                <CardHeader>
+                                    <Heading>
+                                        下架【{downSellFish.name}】? 手续费将不退还。
+                                    </Heading>
+                                </CardHeader>
+                                <CardBody>
+                                    <Stack direction='row'>
+                                        <Button bg='blue.300' onClick={() => SellStop(downSellFish.id, () => {
+                                            closeTopModal();
+                                            FetchFishParkingList(setFishParkingList).then();
+                                            FetchFishList(refreshFishList).then();
+                                        })}>下架</Button>
+                                        <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
+                                    </Stack>
+                                </CardBody>
+                            </Card>
                         </ModalContent>
                     )}
                     {refineFishId !== 0 && (
@@ -394,35 +628,19 @@ function Playground() {
                 <NotificationContainer/>
             </GridItem>
             <GridItem colSpan={1} padding={3}>
-                <Button onClick={() => setShowMenu(!showMenu)}>菜单</Button>
-                {showMenu && (<Stack mt={2}>
+                <Stack mt={2}>
+                    <Button className="circle" onClick={handleCreateClick}>创建</Button>
                     <Button className="circle" onClick={handleOpenMarket}>交易</Button>
-                    <Button className="circle">排行</Button>
-                    <Button className="circle">背包</Button>
+                    <Button className="circle" onClick={handleOpenPoolRank}>排行</Button>
+                    <Button className="circle" onClick={handleOpenProps}>背包</Button>
                     <Button className="circle">技能</Button>
                     <Button className="circle">建筑</Button>
                     <Button className="circle" onClick={handleLogout}>退出</Button>
-                </Stack>)}
+                </Stack>
             </GridItem>
 
         </Grid>
     );
 }
-
-function getStatusColor(status) {
-    switch (status) {
-        case 0:
-            return 'green.300';
-        case 1:
-            return 'blue.300';
-        case 3:
-            return 'gray.300';
-        case 2:
-            return 'yellow.300';
-        default:
-            return '';
-    }
-}
-
 
 export default Playground;

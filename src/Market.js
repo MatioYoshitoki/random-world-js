@@ -3,13 +3,11 @@ import {api} from './BaseApi'
 import './Login.css'
 import ReactPager from 'react-pager';
 import {MARKET_BUY_API_ENDPOINT, MARKET_DETAIL_API_ENDPOINT, MARKET_LIST_API_ENDPOINT} from './config'; // 导入配置文件
-import ReactModal from 'react-modal';
 import {NotificationManager} from 'react-notifications';
 import {
     Table,
     Thead,
     Tbody,
-    Tfoot,
     Tr,
     Th,
     Td,
@@ -25,7 +23,7 @@ import {
     CardBody,
     Text,
     Card,
-    useDisclosure, ModalHeader, ModalBody,
+    useDisclosure,
 } from '@chakra-ui/react'
 
 function MarketList() {
