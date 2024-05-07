@@ -1,7 +1,7 @@
 import {
     FISH_ALIVE_API_ENDPOINT,
     FISH_CREATE_API_ENDPOINT,
-    FISH_LIST_API_ENDPOINT, FISH_PARKING_LIST_API_ENDPOINT,
+    FISH_LIST_API_ENDPOINT, FISH_PARKING_LIST_API_ENDPOINT, FISH_POOL_RANK_API_ENDPOINT,
     FISH_PULL_API_ENDPOINT, FISH_REFINE_API_ENDPOINT,
     FISH_SLEEP_API_ENDPOINT
 } from "../config";
@@ -124,4 +124,20 @@ export const FetchFishParkingList = (callback) => {
         .catch(error => {
             console.error('获取鱼位置信息失败：', error);
         });
+};
+
+export const FetchPoolRanks = (page, callback) => {
+    return api.post(FISH_POOL_RANK_API_ENDPOINT, {
+        page: page,
+        page_size: 10
+    })
+        .then(response => {
+            const {list, total_page} = response.data.data;
+            if (list !== undefined) {
+                callback(list, total_page);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching props:', error);
+        })
 };

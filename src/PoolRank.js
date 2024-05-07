@@ -1,13 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import {api} from './BaseApi'
 import './Login.css'
 import ReactPager from 'react-pager';
-import {
-    FISH_POOL_RANK_API_ENDPOINT,
-    USER_EAT_API_ENDPOINT,
-    USER_PROPS_API_ENDPOINT
-} from './config'; // 导入配置文件
-import {NotificationManager} from 'react-notifications';
 import {
     Button,
     Stack,
@@ -18,8 +11,11 @@ import {
     Heading,
     CardBody,
     Text,
-    Card, Table, TableCaption, Tr, Th, Thead, Td, useDisclosure,
+    Card, Table, TableCaption, Tr, Th, Thead, Td, useDisclosure, Tooltip, UnorderedList, ListItem,
 } from '@chakra-ui/react'
+import {GetFishSkillColor} from "./style/ColorUtil";
+import {FetchPoolRanks} from "./request/Fish";
+import {FormatTime} from "./style/TimeDisplayUtil";
 
 function PoolRank() {
     const [poolRanks, setPoolRanks] = useState([]);
@@ -30,24 +26,13 @@ function PoolRank() {
 
 
     useEffect(() => {
-        fetchPoolRanks(currentPage);
-    }, [currentPage]);
-
-    const fetchPoolRanks = async (page) => {
-        try {
-            const response = await api.post(FISH_POOL_RANK_API_ENDPOINT, {
-                page: page,
-                page_size: 10
-            });
-            const {list, total_page} = response.data.data;
-            if (list !== undefined) {
-                setPoolRanks(list);
+        FetchPoolRanks(currentPage, (poolRank, totalPage) =>{
+            if (poolRank !== undefined) {
+                setPoolRanks(poolRank);
             }
-            setTotalPages(total_page);
-        } catch (error) {
-            console.error('Error fetching props:', error);
-        }
-    };
+            setTotalPages(totalPage);
+        }).then();
+    }, [currentPage]);
 
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
@@ -61,25 +46,6 @@ function PoolRank() {
     const closeDetail = () => {
         setSelectedFish(null);
         onClose()
-    };
-
-    const formatAliveTime = (seconds) => {
-        if (seconds < 60_000) {
-            return `${seconds}秒`;
-        } else if (seconds < 3600_000) {
-            const minutes = Math.floor(seconds / 60_000);
-            return `${minutes}分钟`;
-        } else if (seconds < 86400_000) {
-            const hours = Math.floor(seconds / 3600_000);
-            const minutes = Math.floor((seconds % 3600_000) / 60_000);
-            return `${hours}小时${minutes}分钟`;
-        } else {
-            const days = Math.floor(seconds / 86400_000);
-            const remainingSeconds = seconds % 86400_000;
-            const hours = Math.floor(remainingSeconds / 3600_000);
-            const minutes = Math.floor((remainingSeconds % 3600_000) / 60_000);
-            return `${days}天${hours}小时${minutes}分钟`;
-        }
     };
 
     return (
@@ -108,7 +74,7 @@ function PoolRank() {
                     <Td>{poolRank.fish.name}</Td>
                     <Td>{poolRank.weight}</Td>
                     <Td>{poolRank.master_name}</Td>
-                    <Td>{formatAliveTime(poolRank.alive_time_ms)}</Td>
+                    <Td>{FormatTime(poolRank.alive_time_ms)}</Td>
                     <Td>
                         <Button colorScheme='teal' size='xs' onClick={() => handleDetail(poolRank)}>详情</Button>
                     </Td>
@@ -132,6 +98,7 @@ function PoolRank() {
                             </CardHeader>
                             <CardBody>
                                 <Text>修为：{selectedFish.weight}</Text>
+                                <Text>性格：{selectedFish.personality_name}</Text>
                                 <Text>生命：{selectedFish.heal}/{selectedFish.max_heal}</Text>
                                 <Text>自愈：{selectedFish.recover_speed}</Text>
                                 <Text>攻击：{selectedFish.atk}</Text>
@@ -139,6 +106,19 @@ function PoolRank() {
                                 <Text>修炼：{selectedFish.earn_speed}</Text>
                                 <Text>闪避：{selectedFish.dodge}</Text>
                                 <Text>灵气：{selectedFish.money}</Text>
+                                <Text width='15%'>技能：</Text>
+                                <UnorderedList width='30%'>
+                                    {Array.isArray(selectedFish.fish_skills) && selectedFish.fish_skills.map(fishSkill => (
+                                        <ListItem key={fishSkill.skill_id}>
+                                            <Tooltip label={fishSkill.skill_desc} placement='left'>
+                                                <Text
+                                                    textColor={GetFishSkillColor(fishSkill.skill_level)}>{fishSkill.skill_name}(Lv.{fishSkill.skill_level})</Text>
+                                            </Tooltip>
+                                        </ListItem>
+                                    ))}
+                                </UnorderedList>
+                                {!Array.isArray(selectedFish.fish_skills) &&
+                                    <Text>暂未觉醒技能</Text>}
                             </CardBody>
                             <Stack direction='row'>
                                 <Button colorScheme='blue' onClick={closeDetail}>关闭</Button>

@@ -13,6 +13,20 @@ export function GetFishStatusColor(status) {
     }
 }
 
+export function GetFishColorByRating(rating) {
+    if (rating < 2000) {
+        return 'teal.300';
+    } else if (rating < 4000) {
+        return 'blue.300';
+    } else if (rating < 6000) {
+        return 'purple.300';
+    } else if (rating < 8000) {
+        return 'yellow.300';
+    } else if (rating <= 10000) {
+        return 'orange.300';
+    }
+}
+
 
 export function GetFishSkillColor(level) {
     switch (level) {

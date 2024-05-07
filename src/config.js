@@ -17,6 +17,7 @@ export const MARKET_BUY_API_ENDPOINT = `/api/v1/market/buy`;
 export const MARKET_SELL_START_API_ENDPOINT = `/api/v1/market/sell/start`;
 export const MARKET_SELL_STOP_API_ENDPOINT = `/api/v1/market/sell/stop`;
 export const USER_ASSET_API_ENDPOINT = `/api/v1/user/asset`;
+export const USER_BASE_INFO_API_ENDPOINT = `/api/v1/user/info`;
 export const USER_PROPS_API_ENDPOINT = `/api/v1/user/props`;
 export const USER_EAT_API_ENDPOINT = `/api/v1/user/eat`;
 export const USER_EXPAND_PARKING_API_ENDPOINT = `/api/v1/user/expand/parking`;

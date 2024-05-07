@@ -1,5 +1,5 @@
 import {
-    USER_ASSET_API_ENDPOINT,
+    USER_ASSET_API_ENDPOINT, USER_BASE_INFO_API_ENDPOINT,
     USER_EAT_API_ENDPOINT,
     USER_EXPAND_PARKING_API_ENDPOINT,
     USER_PROPS_API_ENDPOINT
@@ -21,6 +21,22 @@ export const ExpandFishParking = (callback) => {
         })
         .catch((error) => {
             console.error('拓展失败：', error);
+        })
+};
+
+
+export const FetchUserBaseInfo = (callback) => {
+    return api.post(USER_BASE_INFO_API_ENDPOINT, {}).then((response) => {
+        const {code, data} = response.data;
+        if (code === 0) {
+            callback(data);
+        } else {
+            console.error('获取用户基础信息失败：', response.data.message);
+        }
+    })
+        .catch(error => {
+            console.error('获取用户基础信息失败：', error);
+
         })
 };
 
@@ -63,8 +79,7 @@ export const EatProp =  (prop_id, callback) => {
         if (response.data.code === 0) {
             // 使用成功
             // window.location.reload()
-            callback(response.data);
-            NotificationManager.success('', '使用成功');
+            callback(response.data.data);
         } else {
             // 购买失败
             NotificationManager.error('', response.data.message, 3000, () => {

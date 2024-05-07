@@ -6,9 +6,8 @@ import {
     BASE_WS_ENDPOINT,
 } from './config';
 import Market from "./Market"; // 导入配置文件
-import {NotificationContainer} from "react-notifications";
+import {NotificationContainer, NotificationManager} from "react-notifications";
 import {
-    Badge,
     Stack,
     Button,
     Grid,
@@ -52,8 +51,16 @@ import {
     RefineFish,
     SleepFish
 } from "./request/Fish";
-import {ExpandFishParking, FetchUserAsset} from "./request/User";
-import {GetFishSkillColor, GetFishStatusColor, GetHpProgressColor, GetParkingStatusColor} from "./style/ColorUtil";
+import {ExpandFishParking, FetchUserAsset, FetchUserBaseInfo} from "./request/User";
+import {
+    GetFishColorByRating,
+    GetFishSkillColor,
+    GetHpProgressColor,
+    GetParkingStatusColor
+} from "./style/ColorUtil";
+import UserBaseInfo from "./UserBaseInfo";
+import FishStatusIcon from "./FishStatusIcon";
+import {FishCardClassNameByStatus} from "./style/StyleUtil";
 
 let socket = null;
 
@@ -62,6 +69,7 @@ function Playground() {
     const [fishMap, setFishMap] = useState({});
     const [fishParkingList, setFishParkingList] = useState([]);
     const [asset, setAsset] = useState({exp: 0, level: 0, gold: 0});
+    const [baseInfo, setBaseInfo] = useState({username: ''});
     const {isOpen, onOpen, onClose} = useDisclosure()
     const [marketOpen, setMarketOpen] = useState(false);
     const [propOpen, setPropOpen] = useState(false);
@@ -196,25 +204,25 @@ function Playground() {
         switch (fish.status) {
             case 0:
                 return (<Stack mt={3} direction='row' spacing={4} align='center'>
-                    <Button bg='blue.300' onClick={() => handleSleepClick(fish.id)}>休息</Button>
+                    <Button bg='yellow.50' onClick={() => handleSleepClick(fish.id)}>休息</Button>
                 </Stack>);
             case 1:
                 return (
                     <Stack mt={3} direction='row' spacing={4} align='center'>
-                        <Button bg='green.300'
+                        <Button bg='green.100'
                                 onClick={() => handleAliveClick(fish.id)}>激活</Button>
-                        <Button bg='yellow.300' onClick={() => handleSellClickOpen(fish)}>上架</Button>
-                        <Button bg='orange.300' onClick={() => handleRefineClick(fish.id)}>炼化</Button>
+                        <Button bg='cyan.50' onClick={() => handleSellClickOpen(fish)}>上架</Button>
+                        <Button bg='orange.100' onClick={() => handleRefineClick(fish.id)}>炼化</Button>
                     </Stack>
                 );
             case 2:
                 return (<Stack mt={3} direction='row' spacing={4} align='center'>
-                    <Button bg='blue.300' onClick={() => handleDownSellClickOpen(fish)}>下架</Button>
+                    <Button bg='blue.200' onClick={() => handleDownSellClickOpen(fish)}>下架</Button>
                 </Stack>);
             case 3:
                 return (
                     <Stack mt={3} direction='row' spacing={4} align='center'>
-                        <Button bg='orange.300' onClick={() => handleRefineClick(fish.id)}>炼化</Button>
+                        <Button bg='orange.100' onClick={() => handleRefineClick(fish.id)}>炼化</Button>
                     </Stack>
                 );
             default:
@@ -236,7 +244,10 @@ function Playground() {
                     def: newFish.def,
                     earn_speed: newFish.earn_speed,
                     dodge: newFish.dodge,
-                    money: newFish.money
+                    money: newFish.money,
+                    protect_count: newFish.protect_count,
+                    awaking_remain: newFish.awaking_remain,
+                    fish_skills: newFish.fish_skills,
                 };
             }
         });
@@ -261,6 +272,7 @@ function Playground() {
                 newFishList[deadFish.index_in_old_list] = {
                     ...deadFish,
                     parking: oldFish.parking,
+                    rating: oldFish.rating,
                 };
                 refreshFishList(newFishList);
                 setNeedDestroyFish(null);
@@ -362,6 +374,7 @@ function Playground() {
         FetchFishParkingList(setFishParkingList).then();
         FetchFishList(refreshFishList).then();
         FetchUserAsset(setAsset).then();
+        FetchUserBaseInfo(setBaseInfo).then();
         const handleAccessTokenChange = (event) => {
             console.log(event);
             if (event.key === 'access_token' && !event.newValue) {
@@ -379,17 +392,7 @@ function Playground() {
     return (
         <Grid templateColumns='repeat(24, 1fr)'>
             <GridItem colSpan={23}>
-                <Stack direction='row' mt={5} ml={10}>
-                    <Badge variant='solid' colorScheme='whatsapp'>
-                        等级: {asset.level}
-                    </Badge>
-                    <Badge variant='solid' colorScheme='whatsapp'>
-                        经验: {asset.exp}
-                    </Badge>
-                    <Badge variant='solid' colorScheme='whatsapp'>
-                        晶石: {asset.gold}
-                    </Badge>
-                </Stack>
+                <UserBaseInfo asset={asset} userBaseInfo={baseInfo}/>
                 <Grid templateRows='repeat(2, 1fr)'
                       templateColumns='repeat(3, 1fr)'
                       gap={10}
@@ -399,22 +402,30 @@ function Playground() {
                         <GridItem colSpan={1} rowSpan={1} key={fishParking.parking}>
                             {fishMap[fishParking.parking] != null && (
                                 <Card
-                                    bg={GetFishStatusColor(fishMap[fishParking.parking].status)}
+                                    className={FishCardClassNameByStatus(fishMap[fishParking.parking].status)}
+                                    bg={GetFishColorByRating(fishMap[fishParking.parking].rating)}
                                     height='100%'
                                     padding={5}>
                                     <CardHeader>
-                                        <Stack direction='row'>
-                                            <Heading>
-                                                {fishParking.parking + ': ' + fishMap[fishParking.parking].name}
-                                            </Heading>
-                                            {fishMap[fishParking.parking].protect_count > 0 &&
-                                                <Tooltip
-                                                    label={'保护中~(成长' + fishMap[fishParking.parking].protect_count + '次后结束保护)'}
-                                                    placement='bottom'>
-                                                    <LockIcon color='pink.500' boxSize='2em'/>
-                                                </Tooltip>
-                                            }
-                                        </Stack>
+                                        <Grid templateColumns='repeat(5, 1fr)' gap={4}>
+                                            <GridItem colSpan={3}>
+                                                <Heading>
+                                                    {fishParking.parking + ': ' + fishMap[fishParking.parking].name}
+                                                </Heading>
+                                            </GridItem>
+                                            <GridItem colStart={4} colEnd={5}>
+                                                {fishMap[fishParking.parking].protect_count > 0 &&
+                                                    <Tooltip
+                                                        label={'保护中~(成长' + fishMap[fishParking.parking].protect_count + '次后结束保护)'}
+                                                        placement='bottom'>
+                                                        <LockIcon color='pink.500' boxSize='2em'/>
+                                                    </Tooltip>
+                                                }
+                                            </GridItem>
+                                            <GridItem colStart={6} colEnd={8}>
+                                                <FishStatusIcon status={fishMap[fishParking.parking].status}/>
+                                            </GridItem>
+                                        </Grid>
                                     </CardHeader>
                                     <CardBody>
                                         <Progress
@@ -528,11 +539,17 @@ function Playground() {
                     )}
                     {propOpen && (
                         <ModalContent>
-                            <PropList incrExp={(exp) => {
+                            <PropList incrExp={(exp, levelUpCount) => {
                                 const newAsset = {
                                     ...asset
                                 };
                                 newAsset.exp = asset.exp + exp
+                                if (levelUpCount !== 0) {
+                                    newAsset.level = newAsset + levelUpCount
+                                    NotificationManager.success('', '升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！');
+                                } else {
+                                    NotificationManager.success('', '升级啦~ 增加经验' + exp + '！');
+                                }
                                 setAsset(newAsset);
                             }}/>
                         </ModalContent>
@@ -628,7 +645,7 @@ function Playground() {
                 <NotificationContainer/>
             </GridItem>
             <GridItem colSpan={1} padding={3}>
-                <Stack mt={2}>
+                <Stack mt={90}>
                     <Button className="circle" onClick={handleCreateClick}>创建</Button>
                     <Button className="circle" onClick={handleOpenMarket}>交易</Button>
                     <Button className="circle" onClick={handleOpenPoolRank}>排行</Button>
@@ -638,7 +655,6 @@ function Playground() {
                     <Button className="circle" onClick={handleLogout}>退出</Button>
                 </Stack>
             </GridItem>
-
         </Grid>
     );
 }
