@@ -1,7 +1,8 @@
 // 假设您使用 Axios 进行 HTTP 请求
 
 import axios from 'axios';
-import { API_URL } from './config'; // 导入配置文件
+import { API_URL } from './config';
+import {NotificationManager} from "react-notifications"; // 导入配置文件
 // 创建一个 Axios 实例
 export const api = axios.create({
     baseURL: API_URL,
@@ -22,7 +23,7 @@ api.interceptors.request.use(
     },
     (error) => {
         return Promise.reject(error);
-    }
+    },
 );
 
 // 添加响应拦截器
@@ -42,6 +43,9 @@ api.interceptors.response.use(
             // 可以选择进行页面跳转或其他操作
             // 例如：window.location.href = '/login'; // 跳转到登录页
         }
+        NotificationManager.error('', error.message, 3000, () => {
+            alert('callback');
+        })
         return Promise.reject(error);
     }
 );

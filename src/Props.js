@@ -13,7 +13,6 @@ import {
     TableContainer,
 } from '@chakra-ui/react'
 import {EatProp, FetchProps} from "./request/User";
-import {NotificationManager} from "react-notifications";
 
 function PropList({incrExp}) {
     const [props, setProps] = useState([]);

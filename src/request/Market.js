@@ -57,7 +57,8 @@ export const FetchMarkets = (page, callback) => {
         .then(response => {
             const {code, data} = response.data;
             if (code === 0) {
-                const {list, total_page} = data.data;
+                const {list, total_page} = data;
+                console.log(list)
                 if (list !== undefined) {
                     callback(list, total_page);
                 }

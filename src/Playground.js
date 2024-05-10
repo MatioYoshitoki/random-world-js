@@ -83,7 +83,7 @@ function Playground() {
     const [needDestroyFish, setNeedDestroyFish] = useState(null)
 
     const refreshFishList = (fishes) => {
-        if (fishes != null && fishes.length > 0) {
+        if (fishes != null) {
             setFishList(fishes);
         }
     }
@@ -167,17 +167,17 @@ function Playground() {
         // 发送炼化请求
         RefineFish(fishId, () => {
             const newFishList = fishList.filter(fish => fish.id !== fishId);
-            fishList.forEach(fish => {
+            const newParkingList = [...fishParkingList];
+            for (let fish of fishList) {
                 if (fish.id === fishId) {
-                    const newParkingList = [...fishParkingList];
-                    for (let i = 0; i < newParkingList.length; i++) {
-                        if (newParkingList[i].parking === fish.parking) {
-                            newParkingList[i].status = 1;
+                    for (let parking of newParkingList) {
+                        if (parking.parking === fish.parking) {
+                            parking.status = 1;
                         }
                     }
-                    setFishParkingList(newParkingList);
                 }
-            })
+            }
+            setFishParkingList(newParkingList);
             refreshFishList(newFishList);
             closeTopModal();
         }).then();
@@ -231,26 +231,30 @@ function Playground() {
     }
     const afterPull = (pullList) => {
         const newList = [...fishList];
-        pullList.forEach(newFish => {
-            const index = newList.findIndex(oldFish => oldFish.id === newFish.id);
-            if (index !== -1) {
-                newList[index] = {
-                    ...fishList[index],
-                    weight: newFish.weight,
-                    max_heal: newFish.max_heal,
-                    heal: newFish.heal,
-                    recover_speed: newFish.recover_speed,
-                    atk: newFish.atk,
-                    def: newFish.def,
-                    earn_speed: newFish.earn_speed,
-                    dodge: newFish.dodge,
-                    money: newFish.money,
-                    protect_count: newFish.protect_count,
-                    awaking_remain: newFish.awaking_remain,
-                    fish_skills: newFish.fish_skills,
-                };
-            }
-        });
+        if (Array.isArray(pullList)) {
+            pullList.forEach(newFish => {
+                const index = newList.findIndex(oldFish => oldFish.id === newFish.id);
+                if (index !== -1) {
+                    newList[index] = {
+                        ...fishList[index],
+                        weight: newFish.weight,
+                        level: newFish.level,
+                        max_heal: newFish.max_heal,
+                        heal: newFish.heal,
+                        recover_speed: newFish.recover_speed,
+                        atk: newFish.atk,
+                        def: newFish.def,
+                        earn_speed: newFish.earn_speed,
+                        dodge: newFish.dodge,
+                        money: newFish.money,
+                        protect_count: newFish.protect_count,
+                        awaking_remain: newFish.awaking_remain,
+                        fish_skills: newFish.fish_skills,
+                        fish_statistics: newFish.fish_statistics,
+                    };
+                }
+            });
+        }
         refreshFishList(newList);
     }
     useEffect(() => {
@@ -268,18 +272,20 @@ function Playground() {
             console.log(needDestroyFish);
             const destroyFish = (deadFish) => {
                 const newFishList = [...fishList];
-                const oldFish = fishList[deadFish.index_in_old_list];
-                newFishList[deadFish.index_in_old_list] = {
+                const index = newFishList.findIndex(fish => fish.id === deadFish.id);
+                const oldFish = fishList[index];
+                newFishList[index] = {
                     ...deadFish,
                     parking: oldFish.parking,
                     rating: oldFish.rating,
+                    level: oldFish.level,
                 };
                 refreshFishList(newFishList);
                 setNeedDestroyFish(null);
             }
             destroyFish(needDestroyFish)
         }
-    }, [needDestroyFish]);
+    }, [needDestroyFish, fishList]);
 
     useEffect(() => {
         // 获取本地缓存中的 access_token 和 uid
@@ -312,13 +318,7 @@ function Playground() {
                 }
                 if (message.type === 'fish_dead' && (message.err_no === 0 || message.err_no == null)) {
                     const deadFish = JSON.parse(DecodeBase64(message.body)).fish;
-                    const index = fishList.findIndex(fish => fish.id === deadFish.id);
-                    if (index !== -1) {
-                        setNeedDestroyFish({
-                            ...deadFish,
-                            index_in_old_list: index
-                        });
-                    }
+                    setNeedDestroyFish(deadFish);
                 }
             };
             // 监听 WebSocket 连接错误事件
@@ -434,14 +434,19 @@ function Playground() {
                                             colorScheme={GetHpProgressColor(fishMap[fishParking.parking].heal, fishMap[fishParking.parking].max_heal)}
                                             isAnimated={true}/>
                                         <Text>生命：{fishMap[fishParking.parking].heal < 0 ? 0 : fishMap[fishParking.parking].heal}/{fishMap[fishParking.parking].max_heal}</Text>
-                                        <Text>修为：{fishMap[fishParking.parking].weight}</Text>
+                                        <Text>境界：{fishMap[fishParking.parking].level}</Text>
                                         <Text>性格：{fishMap[fishParking.parking].personality_name}</Text>
                                         <Text>自愈：{fishMap[fishParking.parking].recover_speed}</Text>
                                         <Text>攻击：{fishMap[fishParking.parking].atk}</Text>
                                         <Text>防御：{fishMap[fishParking.parking].def}</Text>
                                         <Text>修炼：{fishMap[fishParking.parking].earn_speed}</Text>
                                         <Text>闪避：{fishMap[fishParking.parking].dodge}</Text>
-                                        <Text>灵气：{fishMap[fishParking.parking].money}</Text>
+                                        <Tooltip label={'自然增长: '+fishMap[fishParking.parking].fish_statistics.earn_detail[0] + '\n击杀：'+fishMap[fishParking.parking].fish_statistics.earn_detail[1] + '\n技能：'+fishMap[fishParking.parking].fish_statistics.earn_detail[3]} placement='left'>
+                                            <Text>灵气：{fishMap[fishParking.parking].money}</Text>
+                                        </Tooltip>
+                                        <Tooltip label={'主动攻击: '+fishMap[fishParking.parking].fish_statistics.proactive_attack_count + '\t反击：'+fishMap[fishParking.parking].fish_statistics.counter_attack_count} placement='left'>
+                                            <Text width='30%'>击杀数：{fishMap[fishParking.parking].fish_statistics.kills}</Text>
+                                        </Tooltip>
                                         <Tooltip label={'剩余觉醒次数:' + fishMap[fishParking.parking].awaking_remain}
                                                  placement='left'>
                                             <Text width='15%'>技能：</Text>
@@ -545,10 +550,10 @@ function Playground() {
                                 };
                                 newAsset.exp = asset.exp + exp
                                 if (levelUpCount !== 0) {
-                                    newAsset.level = newAsset + levelUpCount
+                                    newAsset.level = newAsset.level + levelUpCount
                                     NotificationManager.success('', '升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！');
                                 } else {
-                                    NotificationManager.success('', '升级啦~ 增加经验' + exp + '！');
+                                    NotificationManager.success('', '增加经验' + exp + '！');
                                 }
                                 setAsset(newAsset);
                             }}/>

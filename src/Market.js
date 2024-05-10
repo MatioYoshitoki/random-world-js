@@ -20,10 +20,11 @@ import {
     CardBody,
     Text,
     Card,
-    useDisclosure,
+    useDisclosure, UnorderedList, ListItem, Tooltip,
 } from '@chakra-ui/react'
 import {Buy, FetchMarketDetail, FetchMarkets} from "./request/Market";
 import {FormatTime} from "./style/TimeDisplayUtil";
+import {GetFishSkillColor} from "./style/ColorUtil";
 
 function MarketList() {
     const [markets, setMarkets] = useState([]);
@@ -95,7 +96,11 @@ function MarketList() {
                             <Td>
                                 <Stack direction='row' align='center'>
                                     <Button colorScheme='teal' size='xs'
-                                            onClick={() => FetchMarketDetail(market.product_id)}>详情</Button>
+                                            onClick={() => FetchMarketDetail(market.product_id, (data) => {
+                                                console.log(data);
+                                                setDetailData(data);
+                                                onOpen();
+                                            })}>详情</Button>
                                     <Button colorScheme='orange' size='xs'
                                             onClick={() => openBuyModal(market.product_id, market.fish_name, market.price)}>购买</Button>
                                 </Stack>
@@ -106,7 +111,7 @@ function MarketList() {
             </Table>
             <Modal
                 isOpen={isOpen}
-                onClose={onClose}
+                onClose={closeDetailModal}
                 isCentered
                 motionPreset='slideInBottom'
                 size='xl'
@@ -129,46 +134,24 @@ function MarketList() {
                                 <Text>修炼：{detailData.earn_speed}</Text>
                                 <Text>闪避：{detailData.dodge}</Text>
                                 <Text>灵气：{detailData.money}</Text>
+                                <Text width='15%'>技能：</Text>
+                                <UnorderedList width='30%'>
+                                    {Array.isArray(detailData.fish_skills) && detailData.fish_skills.map(fishSkill => (
+                                        <ListItem key={fishSkill.skill_id}>
+                                            <Tooltip label={fishSkill.skill_desc} placement='left'>
+                                                <Text
+                                                    textColor={GetFishSkillColor(fishSkill.skill_level)}>{fishSkill.skill_name}(Lv.{fishSkill.skill_level})</Text>
+                                            </Tooltip>
+                                        </ListItem>
+                                    ))}
+                                </UnorderedList>
+                                {!Array.isArray(detailData.fish_skills) &&
+                                    <Text>暂未觉醒技能</Text>}
                             </CardBody>
                             <Stack direction='row'>
                                 <Button colorScheme='orange'
                                         onClick={() => openBuyModal(detailData.product_id, detailData.name, detailData.price)}>购买
                                 </Button>
-                                <Button colorScheme='blue' onClick={closeDetailModal}>关闭</Button>
-                            </Stack>
-                        </Card>
-                    )}
-                </ModalContent>
-            </Modal>
-            <Modal
-                isOpen={isOpen}
-                onClose={onClose}
-                isCentered
-                motionPreset='slideInBottom'
-                size='6xl'
-            >
-                <ModalOverlay/>
-                <ModalContent>
-                    {detailData != null && (
-                        <Card padding={5}>
-                            <CardHeader>
-                                <Heading>
-                                    {detailData.name}
-                                </Heading>
-                            </CardHeader>
-                            <CardBody>
-                                <Text>修为：{detailData.weight}</Text>
-                                <Text>生命：{detailData.heal}/{detailData.max_heal}</Text>
-                                <Text>自愈：{detailData.recover_speed}</Text>
-                                <Text>攻击：{detailData.atk}</Text>
-                                <Text>防御：{detailData.def}</Text>
-                                <Text>修炼：{detailData.earn_speed}</Text>
-                                <Text>闪避：{detailData.dodge}</Text>
-                                <Text>灵气：{detailData.money}</Text>
-                            </CardBody>
-                            <Stack direction='row'>
-                                <Button colorScheme='orange'
-                                        onClick={() => openBuyModal(detailData.product_id, detailData.name, detailData.price)}>购买</Button>
                                 <Button colorScheme='blue' onClick={closeDetailModal}>关闭</Button>
                             </Stack>
                         </Card>
