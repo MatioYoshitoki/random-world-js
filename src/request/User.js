@@ -2,7 +2,7 @@ import {
     USER_ASSET_API_ENDPOINT, USER_BASE_INFO_API_ENDPOINT,
     USER_EAT_API_ENDPOINT,
     USER_EXPAND_PARKING_API_ENDPOINT,
-    USER_PROPS_API_ENDPOINT
+    USER_PROPS_API_ENDPOINT, USER_RANK_API_ENDPOINT
 } from "../config";
 import {NotificationManager} from "react-notifications";
 import api from "../BaseApi";
@@ -93,4 +93,21 @@ export const EatProp =  (prop_id, callback) => {
             alert('callback');
         });
     })
+};
+
+
+export const FetchUserLevelRanks = (page, callback) => {
+    return api.post(USER_RANK_API_ENDPOINT, {
+        page: page,
+        page_size: 10
+    })
+        .then(response => {
+            const {user_level_rank} = response.data.data;
+            if (user_level_rank !== undefined) {
+                callback(user_level_rank, user_level_rank.total_page);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching user ranks:', error);
+        })
 };

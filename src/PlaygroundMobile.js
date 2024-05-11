@@ -36,10 +36,9 @@ import {
     UnorderedList,
     ListItem,
     Progress,
-    Box, IconButton, Image,
+    Box, IconButton, Image, TabList, Tab, TabPanels, TabPanel, Tabs,
 } from '@chakra-ui/react'
 import PropList from "./Props";
-import PoolRank from "./PoolRank";
 import {LockIcon} from "@chakra-ui/icons";
 import {DecodeBase64} from "./Base64.js";
 import {SellStart, SellStop} from "./request/Market";
@@ -65,6 +64,8 @@ import skillsIcon from './assets/mobile_button_icon/skills.svg';
 import poolRankIcon from './assets/mobile_button_icon/pool_rank.svg';
 import propsIcon from './assets/mobile_button_icon/props.svg';
 import PoolRankMobile from "./PoolRankMobile";
+import UserLevelRank from "./UserLevelRank";
+import PoolRank from "./PoolRank";
 
 let socket = null;
 
@@ -590,7 +591,20 @@ function PlaygroundMobile() {
                         }}/>
                     </ModalContent>)}
                     {poolRankOpen && (<ModalContent maxWidth='90%'>
-                        <PoolRankMobile/>
+                        <Tabs variant='enclosed'>
+                            <TabList>
+                                <Tab>玩家等级榜</Tab>
+                                <Tab>🐟修为榜</Tab>
+                            </TabList>
+                            <TabPanels>
+                                <TabPanel>
+                                    <UserLevelRank/>
+                                </TabPanel>
+                                <TabPanel>
+                                    <PoolRankMobile/>
+                                </TabPanel>
+                            </TabPanels>
+                        </Tabs>
                     </ModalContent>)}
                     {sellFish != null && (<ModalContent>
                         <Card padding={5}>

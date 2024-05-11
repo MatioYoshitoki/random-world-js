@@ -13,6 +13,7 @@ export const FISH_ALIVE_API_ENDPOINT = `/api/v1/fish/alive`;
 export const FISH_CREATE_API_ENDPOINT = `/api/v1/fish/create`;
 export const FISH_REFINE_API_ENDPOINT = `/api/v1/fish/refining`;
 export const FISH_POOL_RANK_API_ENDPOINT = `/api/v1/fish/pool/rank`;
+export const USER_RANK_API_ENDPOINT = `/api/v1/user/rank`;
 export const MARKET_LIST_API_ENDPOINT = `/api/v1/market/list`;
 export const MARKET_DETAIL_API_ENDPOINT = `/api/v1/market/detail`;
 export const MARKET_BUY_API_ENDPOINT = `/api/v1/market/buy`;

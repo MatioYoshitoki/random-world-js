@@ -35,7 +35,7 @@ import {
     Tooltip,
     UnorderedList,
     ListItem,
-    Progress,
+    Progress, Tabs, TabList, Tab, TabPanels, TabPanel,
 } from '@chakra-ui/react'
 import PropList from "./Props";
 import PoolRank from "./PoolRank";
@@ -61,6 +61,7 @@ import {
 import UserBaseInfo from "./UserBaseInfo";
 import FishStatusIcon from "./FishStatusIcon";
 import {FishCardClassNameByStatus} from "./style/StyleUtil";
+import UserLevelRank from "./UserLevelRank";
 
 let socket = null;
 
@@ -561,7 +562,20 @@ function Playground() {
                     )}
                     {poolRankOpen && (
                         <ModalContent>
-                            <PoolRank/>
+                            <Tabs variant='enclosed'>
+                                <TabList>
+                                    <Tab>玩家等级榜</Tab>
+                                    <Tab>🐟修为榜</Tab>
+                                </TabList>
+                                <TabPanels>
+                                    <TabPanel>
+                                        <UserLevelRank/>
+                                    </TabPanel>
+                                    <TabPanel>
+                                        <PoolRank/>
+                                    </TabPanel>
+                                </TabPanels>
+                            </Tabs>
                         </ModalContent>
                     )}
                     {sellFish != null && (
