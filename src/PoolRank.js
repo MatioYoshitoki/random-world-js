@@ -63,16 +63,15 @@ function PoolRank() {
                 <Tr>
                     <Th>排名</Th>
                     <Th>名称</Th>
-                    <Th>修为</Th>
+                    <Th>境界</Th>
                     <Th>主人</Th>
-                    <Th>年龄</Th>
                 </Tr>
             </Thead>
             {poolRanks.map(poolRank => (
                 <Tr key={poolRank.fish_id}>
                     <Td>{poolRank.rank}</Td>
                     <Td>{poolRank.fish.name}</Td>
-                    <Td>{poolRank.weight}</Td>
+                    <Td>{poolRank.fish.level}</Td>
                     <Td>{poolRank.master_name}</Td>
                     <Td>{FormatTime(poolRank.alive_time_ms)}</Td>
                     <Td>
@@ -97,7 +96,9 @@ function PoolRank() {
                                 </Heading>
                             </CardHeader>
                             <CardBody>
-                                <Text>修为：{selectedFish.weight}</Text>
+                                <Tooltip label={'修为:'+selectedFish.weight} placement='left'>
+                                    <Text width='30%'>境界：{selectedFish.level}</Text>
+                                </Tooltip>
                                 <Text>性格：{selectedFish.personality_name}</Text>
                                 <Text>生命：{selectedFish.heal}/{selectedFish.max_heal}</Text>
                                 <Text>自愈：{selectedFish.recover_speed}</Text>

@@ -5,12 +5,11 @@ import fishUpSellIcon from './assets/fish_status/fish_up_sell.svg';
 import fishDeadIcon from './assets/fish_status/fish_dead.svg';
 
 
-function FishStatusIcon({status}) {
+function FishStatusIcon({status, boxSize}) {
     return (
-        <Stack>
+        <Stack boxSize={boxSize}>
             <Image
                 borderRadius='full'
-                boxSize='50px'
                 src={fishStatusIconUrl(status)}
             />
         </Stack>

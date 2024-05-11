@@ -81,7 +81,7 @@ function MarketList() {
                 <Thead>
                     <Tr>
                         <Th>商品名称</Th>
-                        <Th>修为</Th>
+                        <Th>境界</Th>
                         <Th>价格</Th>
                         <Th>剩余时间</Th>
                     </Tr>
@@ -90,7 +90,7 @@ function MarketList() {
                     {markets.map(market => (
                         <Tr key={market.product_id}>
                             <Td>{market.fish_name}</Td>
-                            <Td>{market.weight}</Td>
+                            <Td>{market.level}</Td>
                             <Td>{market.price}</Td>
                             <Td>{FormatTime(market.sell_time_remain)}</Td>
                             <Td>
@@ -126,7 +126,7 @@ function MarketList() {
                                 </Heading>
                             </CardHeader>
                             <CardBody>
-                                <Text>修为：{detailData.weight}</Text>
+                                <Text>境界：{detailData.level}</Text>
                                 <Text>生命：{detailData.heal}/{detailData.max_heal}</Text>
                                 <Text>自愈：{detailData.recover_speed}</Text>
                                 <Text>攻击：{detailData.atk}</Text>

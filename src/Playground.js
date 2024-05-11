@@ -423,7 +423,7 @@ function Playground() {
                                                 }
                                             </GridItem>
                                             <GridItem colStart={6} colEnd={8}>
-                                                <FishStatusIcon status={fishMap[fishParking.parking].status}/>
+                                                <FishStatusIcon status={fishMap[fishParking.parking].status} boxSize='50px'/>
                                             </GridItem>
                                         </Grid>
                                     </CardHeader>

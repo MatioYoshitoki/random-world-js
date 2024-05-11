@@ -4,7 +4,7 @@ import React from "react";
 function UserBaseInfo({asset, userBaseInfo}) {
     return (
         <Box ml='10' mt='2'>
-            <Text fontSize={20} fontWeight="bold">{userBaseInfo.username}</Text>
+            <Text fontSize={14} fontWeight="bold">{userBaseInfo.username}</Text>
             <Stack direction='row' alignItems='center'>
                 <Text>
                     <Badge variant='solid' colorScheme='whatsapp'>

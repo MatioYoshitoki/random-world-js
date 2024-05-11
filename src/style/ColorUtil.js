@@ -28,6 +28,22 @@ export function GetFishColorByRating(rating) {
 }
 
 
+
+export function GetFishColorByRatingMobile(rating) {
+    if (rating < 2000) {
+        return 'teal';
+    } else if (rating < 4000) {
+        return 'blue';
+    } else if (rating < 6000) {
+        return 'purple';
+    } else if (rating < 8000) {
+        return 'yellow';
+    } else if (rating <= 10000) {
+        return 'orange.';
+    }
+}
+
+
 export function GetFishSkillColor(level) {
     switch (level) {
         case 1:
@@ -51,6 +67,17 @@ export function GetParkingStatusColor(status) {
             return 'gray.400';
         case 1:
             return 'gray.300';
+        default:
+            return '';
+    }
+}
+
+export function GetParkingStatusColorMobile(status) {
+    switch (status) {
+        case 0:
+            return 'teal';
+        case 1:
+            return 'gray';
         default:
             return '';
     }
