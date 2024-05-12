@@ -259,7 +259,7 @@ function PlaygroundMobile() {
             pullList.forEach(newFish => {
                 const index = newList.findIndex(oldFish => oldFish.id === newFish.id);
                 if (index !== -1) {
-                    newList[index] = {
+                    const nf = {
                         ...fishList[index],
                         weight: newFish.weight,
                         level: newFish.level,
@@ -276,6 +276,10 @@ function PlaygroundMobile() {
                         fish_skills: newFish.fish_skills,
                         fish_statistics: newFish.fish_statistics,
                     };
+                    newList[index] = nf;
+                    if (showFish.id === nf.id) {
+                        setShowFish(nf);
+                    }
                 }
             });
         }
