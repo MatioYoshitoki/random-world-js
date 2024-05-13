@@ -1,12 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import './Login.css'
 import {Box, VStack, HStack, Button, Text, Image, Badge, Heading,} from '@chakra-ui/react'
-import {FetchUserSkills, UserSkillUpgrade} from "./request/User";
+import {FetchUserSkills, UserCrazyFish, UserSkillUpgrade} from "./request/User";
 import CrazyFish from "./assets/user_skills/crazy_fish.svg";
 import FeedFish from "./assets/user_skills/feed_fish.svg";
 import HealFish from "./assets/user_skills/heal_fish.svg";
 import RefineFish from "./assets/user_skills/refine_fish.svg";
 import ShadowFish from "./assets/user_skills/shadow_fish.svg";
+import SkillTargetSelector from "./SkillTargetSelector";
 
 function UserSkills({userLevel, fishList}) {
     const [userSkills, setUserSkills] = useState([]);
@@ -26,7 +27,7 @@ function UserSkills({userLevel, fishList}) {
         if (coldDownAtMs === 0) {
             callback(0);
         } else {
-            callback(Math.round((new Date().getTime() - coldDownAtMs) / 1000));
+            callback(Math.round((coldDownAtMs - new Date().getTime()) / 1000));
         }
     }
 
@@ -135,13 +136,17 @@ function UserSkills({userLevel, fishList}) {
                     <Box>
                         <VStack>
                             <Image maxH={50} maxW={50} src={CrazyFish}/>
-                            <Text fontSize={14}>狂暴术<Badge>Lv.{crazyFish.level}</Badge>{crazyFishCD !== 0 && <Badge colorScheme='green'>{crazyFishCD}秒</Badge>}</Text>
+                            <Text fontSize={14}>狂暴术<Badge>Lv.{crazyFish.level}</Badge>{crazyFishCD !== 0 && <Badge ml={1} colorScheme='green'>{crazyFishCD}秒</Badge>}</Text>
                             <Text textAlign='center' maxW='150px' fontSize={12}>{crazyFish.desc}</Text>
                             <HStack>
                                 <Button maxW='60px' size='xs' colorScheme='blue'
                                         isDisabled={crazyFish.upgrade_required_level > userLevel} onClick={() => UserSkillUpgrade(crazyFish.id, () => FetchUserSkills(enrichUserSkills))}>升级</Button>
-                                <Button maxW='60px' size='xs' colorScheme='whatsapp'
-                                        isDisabled={crazyFish.level <= 0}>使用</Button>
+                                <SkillTargetSelector fishList={fishList} isDisabled={crazyFish.level <= 0} targetStatus={0} callback={(fishId) => {
+                                    console.log('crazy fish:'+fishId);
+                                    UserCrazyFish(fishId, ( coldDownAtMs, durationAtMs) => {
+                                        setColdDownSecond(coldDownAtMs, setCrazyFishCD);
+                                    }).then();
+                                }}/>
                             </HStack>
                             {crazyFish.upgrade_required_level > userLevel && (
                                 <Text fontSize={10}>人物等级达到{crazyFish.upgrade_required_level}级解锁下一等级</Text>

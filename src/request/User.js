@@ -1,5 +1,5 @@
 import {
-    USER_ASSET_API_ENDPOINT, USER_BASE_INFO_API_ENDPOINT,
+    USER_ASSET_API_ENDPOINT, USER_BASE_INFO_API_ENDPOINT, USER_CRAZY_FISH_API_ENDPOINT,
     USER_EAT_API_ENDPOINT,
     USER_EXPAND_PARKING_API_ENDPOINT,
     USER_PROPS_API_ENDPOINT, USER_RANK_API_ENDPOINT, USER_SKILL_UPGRADE_API_ENDPOINT, USER_SKILLS_API_ENDPOINT
@@ -143,5 +143,22 @@ export const UserSkillUpgrade = (skillId, callback) => {
         })
         .catch(error => {
             console.error('Error fetching user skills:', error);
+        })
+};
+
+
+export const UserCrazyFish = (fishId, callback) => {
+    console.log('try crazy fish: '+ fishId);
+    return api.post(USER_CRAZY_FISH_API_ENDPOINT, {
+        fish_id: fishId,
+    })
+        .then(response => {
+            const {crazy_skill_cold_down_at_ms, crazy_duration_at_ms} = response.data.data;
+            if (response.data === 0) {
+                callback(crazy_skill_cold_down_at_ms, crazy_duration_at_ms);
+            }
+        })
+        .catch(error => {
+            console.error('Error crazy fish:', error);
         })
 };
