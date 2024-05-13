@@ -66,6 +66,7 @@ import propsIcon from './assets/mobile_button_icon/props.svg';
 import PoolRankMobile from "./PoolRankMobile";
 import UserLevelRank from "./UserLevelRank";
 import PoolRank from "./PoolRank";
+import UserSkills from "./UserSkills";
 
 let socket = null;
 
@@ -86,7 +87,8 @@ function PlaygroundMobile() {
     const [price, setPrice] = useState(0);
     const [sellDuration, setSellDuration] = useState('half_day');
     const [needPull, setNeedPull] = useState(false);
-    const [needDestroyFish, setNeedDestroyFish] = useState(null)
+    const [needDestroyFish, setNeedDestroyFish] = useState(null);
+    const [userSkillsOpen, setUserSkillsOpen] = useState(false);
 
     const expandParking = () => {
         ExpandFishParking((newParking) => {
@@ -143,6 +145,10 @@ function PlaygroundMobile() {
     }
     const handleOpenPoolRank = () => {
         setPoolRankOpen(true);
+        onOpen();
+    }
+    const handleOpenUserSkills = () => {
+        setUserSkillsOpen(true);
         onOpen();
     }
     const closeTopModal = () => {
@@ -575,6 +581,11 @@ function PlaygroundMobile() {
                     {marketOpen && (<ModalContent>
                         <Market/>
                     </ModalContent>)}
+                    {userSkillsOpen && (
+                        <ModalContent>
+                            <UserSkills userLevel={asset.level} fishList={fishList}/>
+                        </ModalContent>
+                    )}
                     {propOpen && (<ModalContent>
                         <PropList incrExp={(exp, levelUpCount) => {
                             const newAsset = {
@@ -691,7 +702,7 @@ function PlaygroundMobile() {
             <IconButton aria-label='排行' onClick={handleOpenPoolRank} icon={<Image src={poolRankIcon}/>}/>
             <IconButton aria-label='背包' onClick={handleOpenProps} icon={<Image src={propsIcon}/>}/>
             <IconButton aria-label='交易' onClick={handleOpenMarket} icon={<Image src={marketIcon}/>}/>
-            <IconButton aria-label='技能' icon={<Image src={skillsIcon}/>}/>
+            <IconButton aria-label='技能' onClick={handleOpenUserSkills} icon={<Image src={skillsIcon}/>}/>
             <IconButton aria-label='建筑' icon={<Image src={buildingIcon}/>}/>
         </Stack>
     </Box>);

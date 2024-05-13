@@ -62,6 +62,7 @@ import UserBaseInfo from "./UserBaseInfo";
 import FishStatusIcon from "./FishStatusIcon";
 import {FishCardClassNameByStatus} from "./style/StyleUtil";
 import UserLevelRank from "./UserLevelRank";
+import UserSkills from "./UserSkills";
 
 let socket = null;
 
@@ -74,6 +75,7 @@ function Playground() {
     const {isOpen, onOpen, onClose} = useDisclosure()
     const [marketOpen, setMarketOpen] = useState(false);
     const [propOpen, setPropOpen] = useState(false);
+    const [userSkillsOpen, setUserSkillsOpen] = useState(false);
     const [sellFish, setSellFish] = useState(null);
     const [downSellFish, setDownSellFish] = useState(null);
     const [poolRankOpen, setPoolRankOpen] = useState(false);
@@ -114,6 +116,10 @@ function Playground() {
         setPropOpen(true);
         onOpen();
     }
+    const handleOpenUserSkills = () => {
+        setUserSkillsOpen(true);
+        onOpen();
+    }
     const handleOpenPoolRank = () => {
         setPoolRankOpen(true);
         onOpen();
@@ -124,6 +130,7 @@ function Playground() {
         setPoolRankOpen(false);
         setRefineFishId(0)
         setSellFish(null);
+        setUserSkillsOpen(false);
         setDownSellFish(null);
         setPrice(0);
         setSellDuration('0');
@@ -543,6 +550,11 @@ function Playground() {
                             <Market/>
                         </ModalContent>
                     )}
+                    {userSkillsOpen && (
+                        <ModalContent>
+                            <UserSkills userLevel={asset.level} fishList={fishList}/>
+                        </ModalContent>
+                    )}
                     {propOpen && (
                         <ModalContent>
                             <PropList incrExp={(exp, levelUpCount) => {
@@ -669,7 +681,7 @@ function Playground() {
                     <Button className="circle" onClick={handleOpenMarket}>交易</Button>
                     <Button className="circle" onClick={handleOpenPoolRank}>排行</Button>
                     <Button className="circle" onClick={handleOpenProps}>背包</Button>
-                    <Button className="circle">技能</Button>
+                    <Button className="circle" onClick={handleOpenUserSkills}>技能</Button>
                     <Button className="circle">建筑</Button>
                     <Button className="circle" onClick={handleLogout}>退出</Button>
                 </Stack>

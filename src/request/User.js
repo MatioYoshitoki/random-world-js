@@ -2,7 +2,7 @@ import {
     USER_ASSET_API_ENDPOINT, USER_BASE_INFO_API_ENDPOINT,
     USER_EAT_API_ENDPOINT,
     USER_EXPAND_PARKING_API_ENDPOINT,
-    USER_PROPS_API_ENDPOINT, USER_RANK_API_ENDPOINT
+    USER_PROPS_API_ENDPOINT, USER_RANK_API_ENDPOINT, USER_SKILL_UPGRADE_API_ENDPOINT, USER_SKILLS_API_ENDPOINT
 } from "../config";
 import {NotificationManager} from "react-notifications";
 import api from "../BaseApi";
@@ -109,5 +109,39 @@ export const FetchUserLevelRanks = (page, callback) => {
         })
         .catch(error => {
             console.error('Error fetching user ranks:', error);
+        })
+};
+
+
+export const FetchUserSkills = (callback) => {
+    console.log('try fetch skills')
+    return api.post(USER_SKILLS_API_ENDPOINT, {})
+        .then(response => {
+            const {skills} = response.data.data;
+            console.log()
+            if (skills !== undefined) {
+                callback(skills);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching user skills:', error);
+        })
+};
+
+
+export const UserSkillUpgrade = (skillId, callback) => {
+    return api.post(USER_SKILL_UPGRADE_API_ENDPOINT, {
+        skill_id: skillId
+    })
+        .then(response => {
+            const {code} = response.data;
+            console.log()
+            if (code === 0) {
+                NotificationManager.success('', '升级成功！');
+                callback();
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching user skills:', error);
         })
 };
