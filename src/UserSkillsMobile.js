@@ -122,7 +122,7 @@ function UserSkillsMobile({userLevel, fishList}) {
                             <Text textAlign='center' maxW='150px' fontSize={12}>{feedFish.desc}</Text>
                             <HStack>
                                 <Button maxW='60px' size='xs' colorScheme='blue'
-                                        isDisabled={feedFish.upgrade_required_level > userLevel}
+                                        isDisabled={feedFish.upgrade_required_level > userLevel || feedFish.upgrade_required_level < 0}
                                         onClick={() => UserSkillUpgrade(feedFish.id, () => {
                                             FetchUserSkills(enrichUserSkills, defaultFailedCallback).then();
                                             SuccessToast('升级成功!', toast);
@@ -139,8 +139,11 @@ function UserSkillsMobile({userLevel, fishList}) {
                             {feedFish.upgrade_required_level > userLevel && (
                                 <Text fontSize={10}>人物等级达到{feedFish.upgrade_required_level}级解锁下一等级</Text>
                             )}
-                            {feedFish.upgrade_required_level < userLevel && (
+                            {feedFish.upgrade_required_level < userLevel && feedFish.upgrade_required_level > 0 && (
                                 <Text fontSize={10}>升级需要消耗{feedFish.upgrade_required_gold}晶石</Text>
+                            )}
+                            {feedFish.upgrade_required_level < 0 && (
+                                <Text fontSize={10}>已满级</Text>
                             )}
                         </VStack>
                     </Box>
@@ -152,7 +155,7 @@ function UserSkillsMobile({userLevel, fishList}) {
                             <Text textAlign='center' maxW='150px' fontSize={12}>{healFish.desc}</Text>
                             <HStack>
                                 <Button maxW='60px' size='xs' colorScheme='blue'
-                                        isDisabled={healFish.upgrade_required_level > userLevel}
+                                        isDisabled={healFish.upgrade_required_level > userLevel  || healFish.upgrade_required_level < 0}
                                         onClick={() => UserSkillUpgrade(healFish.id, () => {
                                             FetchUserSkills(enrichUserSkills, defaultFailedCallback).then();
                                             SuccessToast('升级成功!', toast);
@@ -169,8 +172,11 @@ function UserSkillsMobile({userLevel, fishList}) {
                             {healFish.upgrade_required_level > userLevel && (
                                 <Text fontSize={10}>人物等级达到{healFish.upgrade_required_level}级解锁下一等级</Text>
                             )}
-                            {healFish.upgrade_required_level < userLevel && (
+                            {healFish.upgrade_required_level < userLevel && healFish.upgrade_required_level > 0 && (
                                 <Text fontSize={10}>升级需要消耗{healFish.upgrade_required_gold}晶石</Text>
+                            )}
+                            {healFish.upgrade_required_level < 0 && (
+                                <Text fontSize={10}>已满级</Text>
                             )}
                         </VStack>
                     </Box>
@@ -184,7 +190,7 @@ function UserSkillsMobile({userLevel, fishList}) {
                             <Text textAlign='center' maxW='150px' fontSize={12}>{shadowFish.desc}</Text>
                             <HStack>
                                 <Button maxW='60px' size='xs' colorScheme='blue'
-                                        isDisabled={shadowFish.upgrade_required_level > userLevel}
+                                        isDisabled={shadowFish.upgrade_required_level > userLevel || shadowFish.upgrade_required_level < 0}
                                         onClick={() => UserSkillUpgrade(shadowFish.id, () => {
                                             FetchUserSkills(enrichUserSkills, defaultFailedCallback).then();
                                             SuccessToast('升级成功!', toast);
@@ -198,11 +204,14 @@ function UserSkillsMobile({userLevel, fishList}) {
                                     }, defaultFailedCallback).then();
                                 }}/>
                             </HStack>
-                            {shadowFish.upgrade_required_level > userLevel && (
+                            {shadowFish.upgrade_required_level > userLevel  && (
                                 <Text fontSize={10}>人物等级达到{shadowFish.upgrade_required_level}级解锁下一等级</Text>
                             )}
-                            {shadowFish.upgrade_required_level < userLevel && (
+                            {shadowFish.upgrade_required_level < userLevel && shadowFish.upgrade_required_level > 0 && (
                                 <Text fontSize={10}>升级需要消耗{shadowFish.upgrade_required_gold}晶石</Text>
+                            )}
+                            {shadowFish.upgrade_required_level < 0 && (
+                                <Text fontSize={10}>已满级</Text>
                             )}
                         </VStack>
                     </Box>
@@ -214,7 +223,7 @@ function UserSkillsMobile({userLevel, fishList}) {
                             <Text textAlign='center' maxW='150px' fontSize={12}>{crazyFish.desc}</Text>
                             <HStack>
                                 <Button maxW='60px' size='xs' colorScheme='blue'
-                                        isDisabled={crazyFish.upgrade_required_level > userLevel}
+                                        isDisabled={crazyFish.upgrade_required_level > userLevel || crazyFish.upgrade_required_level < 0}
                                         onClick={() => UserSkillUpgrade(crazyFish.id, () => {
                                             FetchUserSkills(enrichUserSkills, defaultFailedCallback).then();
                                             SuccessToast('升级成功!', toast);
@@ -228,11 +237,14 @@ function UserSkillsMobile({userLevel, fishList}) {
                                     }, defaultFailedCallback).then();
                                 }}/>
                             </HStack>
-                            {crazyFish.upgrade_required_level > userLevel && (
+                            {crazyFish.upgrade_required_level > userLevel  && (
                                 <Text fontSize={10}>人物等级达到{crazyFish.upgrade_required_level}级解锁下一等级</Text>
                             )}
-                            {crazyFish.upgrade_required_level < userLevel && (
+                            {crazyFish.upgrade_required_level < userLevel  && crazyFish.upgrade_required_level > 0 && (
                                 <Text fontSize={10}>升级需要消耗{crazyFish.upgrade_required_gold}晶石</Text>
+                            )}
+                            {crazyFish.upgrade_required_level < 0 && (
+                                <Text fontSize={10}>已满级</Text>
                             )}
                         </VStack>
                     </Box>
@@ -245,7 +257,7 @@ function UserSkillsMobile({userLevel, fishList}) {
                             <Text textAlign='center' maxW='150px' fontSize={12}>{refineFish.desc}</Text>
                             <HStack>
                                 <Button maxW='60px' size='xs' colorScheme='blue'
-                                        isDisabled={refineFish.upgrade_required_level > userLevel}
+                                        isDisabled={refineFish.upgrade_required_level > userLevel || refineFish.upgrade_required_level < 0}
                                         onClick={() => UserSkillUpgrade(refineFish.id, () => {
                                             FetchUserSkills(enrichUserSkills, defaultFailedCallback).then();
                                             SuccessToast('升级成功!', toast);
@@ -254,8 +266,11 @@ function UserSkillsMobile({userLevel, fishList}) {
                             {refineFish.upgrade_required_level > userLevel && (
                                 <Text fontSize={10}>人物等级达到{refineFish.upgrade_required_level}级解锁下一等级</Text>
                             )}
-                            {refineFish.upgrade_required_level < userLevel && (
+                            {refineFish.upgrade_required_level < userLevel && refineFish.upgrade_required_level > 0 && (
                                 <Text fontSize={10}>升级需要消耗{refineFish.upgrade_required_gold}晶石</Text>
+                            )}
+                            {refineFish.upgrade_required_level < 0 && (
+                                <Text fontSize={10}>已满级</Text>
                             )}
                         </VStack>
                     </Box>

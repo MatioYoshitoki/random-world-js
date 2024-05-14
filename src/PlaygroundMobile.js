@@ -279,7 +279,7 @@ function PlaygroundMobile() {
             pullList.forEach(newFish => {
                 const index = newList.findIndex(oldFish => oldFish.id === newFish.id);
                 if (index !== -1) {
-                    newList[index] = {
+                    const newShowFish = {
                         ...fishList[index],
                         weight: newFish.weight,
                         level: newFish.level,
@@ -296,6 +296,10 @@ function PlaygroundMobile() {
                         fish_skills: newFish.fish_skills,
                         fish_statistics: newFish.fish_statistics,
                     };
+                    newList[index] = newShowFish;
+                    if (showFish !== null && newShowFish.id === showFish.id) {
+                        setShowFish(newShowFish);
+                    }
                 }
             });
         }
@@ -444,7 +448,7 @@ function PlaygroundMobile() {
         return () => {
             clearInterval(pingInterval);
         }
-    })
+    }, [socket])
     useEffect(() => {
         // 每隔 3 秒发送 ask 消息
         const askInterval = setInterval(() => {
@@ -456,7 +460,7 @@ function PlaygroundMobile() {
         return () => {
             clearInterval(askInterval);
         }
-    })
+    }, [socket])
 
     useEffect(() => {
         FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();

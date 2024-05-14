@@ -368,6 +368,7 @@ function Playground() {
             };
             socket.onmessage = (event) => {
                 const message = JSON.parse(event.data);
+                console.log(message);
                 if (message.type === 'pong') {
                     return
                 }
@@ -420,7 +421,7 @@ function Playground() {
         return () => {
             clearInterval(pingInterval);
         }
-    })
+    }, [socket])
     useEffect(() => {
         // 每隔 3 秒发送 ask 消息
         const askInterval = setInterval(() => {
@@ -432,7 +433,7 @@ function Playground() {
         return () => {
             clearInterval(askInterval);
         }
-    })
+    }, [socket])
 
     useEffect(() => {
         FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
