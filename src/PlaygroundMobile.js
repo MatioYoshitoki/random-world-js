@@ -295,6 +295,7 @@ function PlaygroundMobile() {
                         awaking_remain: newFish.awaking_remain,
                         fish_skills: newFish.fish_skills,
                         fish_statistics: newFish.fish_statistics,
+                        effects: newFish.effects,
                     };
                     newList[index] = newShowFish;
                     if (showFish !== null && newShowFish.id === showFish.id) {
@@ -650,7 +651,13 @@ function PlaygroundMobile() {
                     </ModalContent>)}
                     {userSkillsOpen && (
                         <ModalContent>
-                            <UserSkillsMobile userLevel={asset.level} fishList={fishList}/>
+                            <UserSkillsMobile userLevel={asset.level} fishList={fishList} expendGold={(cost) => {
+                                const newAsset = {
+                                    ...asset
+                                };
+                                newAsset.gold = asset.gold - cost
+                                setAsset(newAsset);
+                            }}/>
                         </ModalContent>
                     )}
                     {propOpen && (<ModalContent>
@@ -718,7 +725,12 @@ function PlaygroundMobile() {
                             </CardBody>
                             <Stack direction='row'>
                                 <Button colorScheme='yellow'
-                                        onClick={() => SellStart(sellFish, price, sellDuration, asset, setAsset, () => {
+                                        onClick={() => SellStart(sellFish, price, sellDuration, asset, setAsset, (commission) => {
+                                            SuccessToast('上架成功! 扣除手续费' + commission + '晶石', toast)
+                                            setAsset({
+                                                ...asset,
+                                                gold: asset.gold - commission
+                                            })
                                             closeTopModal();
                                             FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
                                             FetchFishList(refreshFishList).then();
@@ -737,6 +749,7 @@ function PlaygroundMobile() {
                             <CardBody>
                                 <Stack direction='row'>
                                     <Button bg='blue.300' onClick={() => SellStop(downSellFish.id, () => {
+                                        SuccessToast('下架成功', toast);
                                         closeTopModal();
                                         FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
                                         FetchFishList(refreshFishList).then();

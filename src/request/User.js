@@ -171,8 +171,8 @@ export const UserCrazyFish = (fishId, callback, failedCallback) => {
     })
         .then(response => {
             if (response.data.code === 0) {
-                const {crazy_skill_cold_down_at_ms, crazy_duration_at_ms} = response.data.data;
-                callback(crazy_skill_cold_down_at_ms, crazy_duration_at_ms);
+                const {crazy_skill_cold_down_at_ms, crazy_duration_at_ms, cost} = response.data.data;
+                callback(crazy_skill_cold_down_at_ms, crazy_duration_at_ms, cost);
             } else {
                 failedCallback(response.data.message);
             }
@@ -192,8 +192,8 @@ export const UserShadowFish = (fishId, callback, failedCallback) => {
     })
         .then(response => {
             if (response.data.code === 0) {
-                const {shadow_skill_cold_down_at_ms, shadow_duration_at_ms} = response.data.data;
-                callback(shadow_skill_cold_down_at_ms, shadow_duration_at_ms);
+                const {shadow_skill_cold_down_at_ms, shadow_duration_at_ms, cost} = response.data.data;
+                callback(shadow_skill_cold_down_at_ms, shadow_duration_at_ms, cost);
             } else {
                 failedCallback(response.data.message);
             }
@@ -214,8 +214,8 @@ export const UserFeedFish = (fishId, callback, failedCallback) => {
         .then(response => {
             console.log(response.data);
             if (response.data.code === 0) {
-                const {feed_skill_cold_down_at_ms} = response.data.data;
-                callback(feed_skill_cold_down_at_ms);
+                const {feed_skill_cold_down_at_ms, cost} = response.data.data;
+                callback(feed_skill_cold_down_at_ms, cost);
             } else {
                 console.log(response.data.message);
                 failedCallback(response.data.message);
@@ -237,8 +237,8 @@ export const UserHealFish = (fishId, callback, failedCallback) => {
     })
         .then(response => {
             if (response.data.code === 0) {
-                const {heal_skill_cold_down_at_ms} = response.data.data;
-                callback(heal_skill_cold_down_at_ms);
+                const {heal_skill_cold_down_at_ms, cost} = response.data.data;
+                callback(heal_skill_cold_down_at_ms, cost);
             } else {
                 failedCallback(response.data.message);
             }

@@ -1,12 +1,14 @@
 import {
     FISH_ALIVE_API_ENDPOINT,
     FISH_CREATE_API_ENDPOINT,
-    FISH_LIST_API_ENDPOINT, FISH_PARKING_LIST_API_ENDPOINT, FISH_POOL_RANK_API_ENDPOINT,
-    FISH_PULL_API_ENDPOINT, FISH_REFINE_API_ENDPOINT,
+    FISH_LIST_API_ENDPOINT,
+    FISH_PARKING_LIST_API_ENDPOINT,
+    FISH_POOL_RANK_API_ENDPOINT,
+    FISH_PULL_API_ENDPOINT,
+    FISH_REFINE_API_ENDPOINT,
     FISH_SLEEP_API_ENDPOINT
 } from "../config";
 import api from "../BaseApi";
-import {SuccessToast} from "../style/ShowToast";
 
 export const PullFish = (afterPull, failedCallback) => {
     return api.post(FISH_PULL_API_ENDPOINT, {})

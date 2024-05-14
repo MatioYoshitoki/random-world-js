@@ -25,7 +25,7 @@ import {
 import {Buy, FetchMarketDetail, FetchMarkets} from "./request/Market";
 import {FormatTime} from "./style/TimeDisplayUtil";
 import {GetFishSkillColor} from "./style/ColorUtil";
-import {FailedToast} from "./style/ShowToast";
+import {FailedToast, SuccessToast} from "./style/ShowToast";
 
 function MarketList() {
     const [markets, setMarkets] = useState([]);
@@ -182,6 +182,7 @@ function MarketList() {
                             )}
                             <Stack direction='row'>
                                 <Button size='sm' colorScheme='orange' onClick={() => Buy(selectedProduct.product_id, () => {
+                                    SuccessToast('购买成功', toast);
                                     closeBuyModal();
                                 }, defaultFailedCallback)}>确认购买</Button>
                                 <Button size='sm' colorScheme='blue' onClick={closeBuyModal}>取消</Button>

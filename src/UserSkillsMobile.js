@@ -17,7 +17,7 @@ import ShadowFish from "./assets/user_skills/shadow_fish.svg";
 import SkillTargetSelector from "./SkillTargetSelector";
 import {FailedToast, SuccessToast} from "./style/ShowToast";
 
-function UserSkillsMobile({userLevel, fishList}) {
+function UserSkillsMobile({userLevel, fishList, expendGold}) {
     const [userSkills, setUserSkills] = useState([]);
     const [healFish, setHealFish] = useState({})
     const [feedFish, setFeedFish] = useState({})
@@ -125,13 +125,15 @@ function UserSkillsMobile({userLevel, fishList}) {
                                         isDisabled={feedFish.upgrade_required_level > userLevel || feedFish.upgrade_required_level < 0}
                                         onClick={() => UserSkillUpgrade(feedFish.id, () => {
                                             FetchUserSkills(enrichUserSkills, defaultFailedCallback).then();
+                                            expendGold(feedFish.upgrade_required_gold);
                                             SuccessToast('升级成功!', toast);
                                         }, defaultFailedCallback)}>升级</Button>
-                                <SkillTargetSelector fishList={fishList} isDisabled={feedFish.level <= 0}
+                                <SkillTargetSelector fishList={fishList} isDisabled={feedFish.level <= 0 || feedFishCD > 0}
                                                      targetStatus={1} callback={(fishId) => {
                                     console.log('heal fish:' + fishId);
-                                    UserFeedFish(fishId, (coldDownAtMs) => {
+                                    UserFeedFish(fishId, (coldDownAtMs, cost) => {
                                         setColdDownSecond(coldDownAtMs, setFeedFishCD);
+                                        expendGold(cost);
                                         SuccessToast('使用成功', toast);
                                     }, defaultFailedCallback).then();
                                 }}/>
@@ -158,13 +160,15 @@ function UserSkillsMobile({userLevel, fishList}) {
                                         isDisabled={healFish.upgrade_required_level > userLevel  || healFish.upgrade_required_level < 0}
                                         onClick={() => UserSkillUpgrade(healFish.id, () => {
                                             FetchUserSkills(enrichUserSkills, defaultFailedCallback).then();
+                                            expendGold(healFish.upgrade_required_gold);
                                             SuccessToast('升级成功!', toast);
                                         }, defaultFailedCallback)}>升级</Button>
-                                <SkillTargetSelector fishList={fishList} isDisabled={healFish.level <= 0}
+                                <SkillTargetSelector fishList={fishList} isDisabled={healFish.level <= 0 || healFishCD > 0}
                                                      targetStatus={1} callback={(fishId) => {
                                     console.log('heal fish:' + fishId);
-                                    UserHealFish(fishId, (coldDownAtMs) => {
+                                    UserHealFish(fishId, (coldDownAtMs, cost) => {
                                         setColdDownSecond(coldDownAtMs, setHealFishCD);
+                                        expendGold(cost);
                                         SuccessToast('使用成功', toast);
                                     }, defaultFailedCallback).then();
                                 }}/>
@@ -193,13 +197,15 @@ function UserSkillsMobile({userLevel, fishList}) {
                                         isDisabled={shadowFish.upgrade_required_level > userLevel || shadowFish.upgrade_required_level < 0}
                                         onClick={() => UserSkillUpgrade(shadowFish.id, () => {
                                             FetchUserSkills(enrichUserSkills, defaultFailedCallback).then();
+                                            expendGold(shadowFish.upgrade_required_gold);
                                             SuccessToast('升级成功!', toast);
                                         }, defaultFailedCallback)}>升级</Button>
-                                <SkillTargetSelector fishList={fishList} isDisabled={shadowFish.level <= 0}
+                                <SkillTargetSelector fishList={fishList} isDisabled={shadowFish.level <= 0  || shadowFishCD > 0}
                                                      targetStatus={0} callback={(fishId) => {
                                     console.log('shadow fish:' + fishId);
-                                    UserShadowFish(fishId, (coldDownAtMs) => {
+                                    UserShadowFish(fishId, (coldDownAtMs, durationAtMs, cost) => {
                                         setColdDownSecond(coldDownAtMs, setShadowFishCD);
+                                        expendGold(cost);
                                         SuccessToast('使用成功', toast);
                                     }, defaultFailedCallback).then();
                                 }}/>
@@ -226,13 +232,15 @@ function UserSkillsMobile({userLevel, fishList}) {
                                         isDisabled={crazyFish.upgrade_required_level > userLevel || crazyFish.upgrade_required_level < 0}
                                         onClick={() => UserSkillUpgrade(crazyFish.id, () => {
                                             FetchUserSkills(enrichUserSkills, defaultFailedCallback).then();
+                                            expendGold(crazyFish.upgrade_required_gold);
                                             SuccessToast('升级成功!', toast);
                                         }, defaultFailedCallback)}>升级</Button>
-                                <SkillTargetSelector fishList={fishList} isDisabled={crazyFish.level <= 0}
+                                <SkillTargetSelector fishList={fishList} isDisabled={crazyFish.level <= 0 || crazyFishCD > 0}
                                                      targetStatus={0} callback={(fishId) => {
                                     console.log('crazy fish:' + fishId);
-                                    UserCrazyFish(fishId, (coldDownAtMs, _) => {
+                                    UserCrazyFish(fishId, (coldDownAtMs, _, cost) => {
                                         setColdDownSecond(coldDownAtMs, setCrazyFishCD);
+                                        expendGold(cost);
                                         SuccessToast('使用成功', toast);
                                     }, defaultFailedCallback).then();
                                 }}/>
@@ -260,6 +268,7 @@ function UserSkillsMobile({userLevel, fishList}) {
                                         isDisabled={refineFish.upgrade_required_level > userLevel || refineFish.upgrade_required_level < 0}
                                         onClick={() => UserSkillUpgrade(refineFish.id, () => {
                                             FetchUserSkills(enrichUserSkills, defaultFailedCallback).then();
+                                            expendGold(refineFish.upgrade_required_gold);
                                             SuccessToast('升级成功!', toast);
                                         }, defaultFailedCallback)}>升级</Button>
                             </HStack>

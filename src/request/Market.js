@@ -6,9 +6,8 @@ import {
     MARKET_SELL_START_API_ENDPOINT,
     MARKET_SELL_STOP_API_ENDPOINT
 } from "../config";
-import {SuccessToast} from "../style/ShowToast";
 
-export const SellStart = (sellFish, price, sellDuration, asset, setAsset, callback, failedCallback) => {
+export const SellStart = (sellFish, price, sellDuration, asset, callback, failedCallback) => {
     return api.post(MARKET_SELL_START_API_ENDPOINT, {
         fish_id: sellFish.id,
         price: price,
@@ -17,13 +16,7 @@ export const SellStart = (sellFish, price, sellDuration, asset, setAsset, callba
         .then(response => {
             const {code, data} = response.data;
             if (code === 0) {
-                const commission = data.commission
-                SuccessToast('上架成功! 扣除手续费' + commission + '晶石')
-                setAsset({
-                    ...asset,
-                    gold: asset.gold - commission
-                })
-                callback();
+                callback(data.commission);
             } else {
                 failedCallback(response.data.message);
             }
@@ -42,7 +35,6 @@ export const SellStop = async (fishId, callback, failedCallback) => {
         .then(response => {
             const {code, data} = response.data;
             if (code === 0) {
-                SuccessToast('下架成功');
                 callback()
             } else {
                 failedCallback(response.data.message);
@@ -103,7 +95,6 @@ export const Buy = async (productId, callback, failedCallback) => {
         .then(response => {
             if (response.data.code === 0) {
                 // 购买成功
-                SuccessToast('购买成功');
                 window.location.reload()
             } else {
                 failedCallback(response.data.message);
