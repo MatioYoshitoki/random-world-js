@@ -6,9 +6,9 @@ import {
     MARKET_SELL_START_API_ENDPOINT,
     MARKET_SELL_STOP_API_ENDPOINT
 } from "../config";
-import {NotificationManager} from "react-notifications";
+import {SuccessToast} from "../style/ShowToast";
 
-export const SellStart = (sellFish, price, sellDuration, asset, setAsset, callback) => {
+export const SellStart = (sellFish, price, sellDuration, asset, setAsset, callback, failedCallback) => {
     return api.post(MARKET_SELL_START_API_ENDPOINT, {
         fish_id: sellFish.id,
         price: price,
@@ -18,38 +18,44 @@ export const SellStart = (sellFish, price, sellDuration, asset, setAsset, callba
             const {code, data} = response.data;
             if (code === 0) {
                 const commission = data.commission
-                NotificationManager.success('', '上架成功! 扣除手续费' + commission + '晶石');
+                SuccessToast('上架成功! 扣除手续费' + commission + '晶石')
                 setAsset({
                     ...asset,
                     gold: asset.gold - commission
                 })
                 callback();
+            } else {
+                failedCallback(response.data.message);
             }
         })
         .catch(error => {
-            console.error('上架失败：', error);
+            if (error.response) {
+                failedCallback(error.response.message);
+            }
         })
 };
 
-export const SellStop = async (fishId, callback) => {
+export const SellStop = async (fishId, callback, failedCallback) => {
     return api.post(MARKET_SELL_STOP_API_ENDPOINT, {
         fish_id: fishId,
     })
         .then(response => {
             const {code, data} = response.data;
             if (code === 0) {
-                NotificationManager.success('', '下架成功!');
+                SuccessToast('下架成功');
                 callback()
             } else {
-                console.error('下架失败：', response.data.message);
+                failedCallback(response.data.message);
             }
         })
         .catch(error => {
-            console.error('下架失败：', error);
+            if (error.response) {
+                failedCallback(error.response.message);
+            }
         })
 };
 
-export const FetchMarkets = (page, callback) => {
+export const FetchMarkets = (page, callback, failedCallback) => {
     return api.post(MARKET_LIST_API_ENDPOINT, {
         page: page,
         page_size: 20
@@ -58,20 +64,21 @@ export const FetchMarkets = (page, callback) => {
             const {code, data} = response.data;
             if (code === 0) {
                 const {list, total_page} = data;
-                console.log(list)
                 if (list !== undefined) {
                     callback(list, total_page);
                 }
             } else {
-                console.error('Error fetching markets：', response.data.message);
+                failedCallback(response.data.message);
             }
         })
         .catch(error => {
-            console.error('Error fetching markets:', error);
+            if (error.response) {
+                failedCallback(error.response.message);
+            }
         })
 };
 
-export const FetchMarketDetail = (productId, callback) => {
+export const FetchMarketDetail = (productId, callback, failedCallback) => {
     return api.post(MARKET_DETAIL_API_ENDPOINT, {product_id: productId})
         .then(response => {
             const {code, data} = response.data;
@@ -79,37 +86,36 @@ export const FetchMarketDetail = (productId, callback) => {
                 data.product_id = productId;
                 callback(data)
             } else {
-                console.error('Error fetching markets：', response.data.message);
+                failedCallback(response.data.message);
             }
         })
         .catch(error => {
-            console.error('Error fetching market detail:', error);
+            if (error.response) {
+                failedCallback(error.response.message);
+            }
         });
 };
 
-export const Buy = async (productId, callback) => {
+export const Buy = async (productId, callback, failedCallback) => {
     return api.post(MARKET_BUY_API_ENDPOINT, {
         product_id: productId
     })
         .then(response => {
             if (response.data.code === 0) {
                 // 购买成功
-                NotificationManager.success('', '购买成功');
+                SuccessToast('购买成功');
                 window.location.reload()
             } else {
-                // 购买失败
-                NotificationManager.error('', response.data.message, 3000, () => {
-                    alert('callback');
-                });
+                failedCallback(response.data.message);
             }
             callback();
         })
         .catch(error => {
             // 请求失败
             console.error('购买请求失败:', error);
-            NotificationManager.error('', '购买失败', 3000, () => {
-                alert('callback');
-            });
+            if (error.response) {
+                failedCallback(error.response.message);
+            }
             callback();
         })
 };

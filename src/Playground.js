@@ -6,7 +6,6 @@ import {
     BASE_WS_ENDPOINT,
 } from './config';
 import Market from "./Market"; // 导入配置文件
-import {NotificationContainer, NotificationManager} from "react-notifications";
 import {
     Stack,
     Button,
@@ -35,7 +34,7 @@ import {
     Tooltip,
     UnorderedList,
     ListItem,
-    Progress, Tabs, TabList, Tab, TabPanels, TabPanel,
+    Progress, Tabs, TabList, Tab, TabPanels, TabPanel, Flex, Spacer, VStack, Box, Image, useToast,
 } from '@chakra-ui/react'
 import PropList from "./Props";
 import PoolRank from "./PoolRank";
@@ -60,9 +59,10 @@ import {
 } from "./style/ColorUtil";
 import UserBaseInfo from "./UserBaseInfo";
 import FishStatusIcon from "./FishStatusIcon";
-import {FishCardClassNameByStatus} from "./style/StyleUtil";
+import {FishCardClassNameByStatus, FishEffectIconByEffectType} from "./style/StyleUtil";
 import UserLevelRank from "./UserLevelRank";
 import UserSkills from "./UserSkills";
+import {FailedToast, SuccessToast} from "./style/ShowToast";
 
 let socket = null;
 
@@ -84,6 +84,46 @@ function Playground() {
     const [sellDuration, setSellDuration] = useState('half_day');
     const [needPull, setNeedPull] = useState(false);
     const [needDestroyFish, setNeedDestroyFish] = useState(null)
+    const toast = useToast()
+    const [parkingEffect, setParkingEffect] = useState({});
+
+    const [coldDownTriger, setColdDownTriger] = useState(false)
+    const defaultFailedCallback = (message) => {
+        FailedToast(message, toast);
+    }
+
+    useEffect(() => {
+        if (coldDownTriger) {
+            const coldDown = () => {
+                const newParkingEffects = {
+                    ...parkingEffect
+                }
+                const nowMs = new Date().getTime()
+                for (let key of Object.keys(newParkingEffects)) {
+                    const effects = [...newParkingEffects[key]]
+                    for (let i = 0; i < effects.length; i++) {
+                        if (effects[i].effect_expire_ms > 0) {
+                            effects[i].effect_expire_ms = effects[i].effect_expire_ms - 1
+                        }
+                    }
+                    newParkingEffects[key] = effects.filter(ef => Math.round((ef.effect_expire_ms - nowMs) / 1000) > 0);
+                }
+                setParkingEffect(newParkingEffects);
+            }
+            coldDown();
+            setColdDownTriger(false);
+        }
+    }, [coldDownTriger, parkingEffect]);
+
+    useEffect(() => {
+        const cdInterval = setInterval(() => {
+            setColdDownTriger(true);
+        }, 1000);
+        return () => {
+            clearInterval(cdInterval);
+        }
+    }, []);
+
 
     const refreshFishList = (fishes) => {
         if (fishes != null) {
@@ -139,7 +179,7 @@ function Playground() {
 
     const handleSleepClick = (fishId) => {
         // 发送休息请求
-        SleepFish(fishId, () => {
+        SleepFish(fishId, defaultFailedCallback, () => {
             const newFishList = [...fishList]
             for (let i = 0; i < newFishList.length; i++) {
                 if (newFishList[i].id === fishId) {
@@ -161,8 +201,9 @@ function Playground() {
             ];
             newList.push(newFish);
             refreshFishList(newList);
-            FetchUserAsset(setAsset).then();
-        }).then();
+            FetchUserAsset(setAsset, defaultFailedCallback).then();
+            SuccessToast('创建成功', toast);
+        }, defaultFailedCallback).then();
     };
 
     const handleRefineClick = (fishId) => {
@@ -173,7 +214,7 @@ function Playground() {
 
     const refine = (fishId) => {
         // 发送炼化请求
-        RefineFish(fishId, () => {
+        RefineFish(fishId, defaultFailedCallback, () => {
             const newFishList = fishList.filter(fish => fish.id !== fishId);
             const newParkingList = [...fishParkingList];
             for (let fish of fishList) {
@@ -193,7 +234,7 @@ function Playground() {
 
     const handleAliveClick = (fishId) => {
         // 发送休息请求
-        AliveFish(fishId, () => {
+        AliveFish(fishId, defaultFailedCallback, () => {
             const newFishList = [...fishList]
             for (let i = 0; i < newFishList.length; i++) {
                 if (newFishList[i].id === fishId) {
@@ -267,11 +308,26 @@ function Playground() {
     }
     useEffect(() => {
         const newFishMap = {}
+        const newParkingEffects = {}
         // console.log('refresh fish map: ' + fishList);
         fishList.forEach(item => {
             newFishMap[item.parking] = item;
+            if (Array.isArray(item.effects)) {
+                let idx = 0
+                newParkingEffects[item.parking] = Array.of();
+                const nowMs = new Date().getTime()
+                for (let effect of item.effects) {
+                    if (Math.round((effect.effect_expire_ms - nowMs) / 1000) > 0) {
+                        newParkingEffects[item.parking][idx] = {
+                            ...effect
+                        };
+                        idx ++;
+                    }
+                }
+            }
+
         })
-        // console.log(newFishMap)
+        setParkingEffect(newParkingEffects);
         setFishMap(newFishMap);
     }, [fishList])
 
@@ -349,7 +405,7 @@ function Playground() {
 
     useEffect(() => {
         if (needPull) {
-            PullFish(afterPull).then();
+            PullFish(afterPull, defaultFailedCallback).then();
             setNeedPull(false);
         }
     }, [needPull]);
@@ -379,10 +435,10 @@ function Playground() {
     })
 
     useEffect(() => {
-        FetchFishParkingList(setFishParkingList).then();
-        FetchFishList(refreshFishList).then();
-        FetchUserAsset(setAsset).then();
-        FetchUserBaseInfo(setBaseInfo).then();
+        FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
+        FetchFishList(refreshFishList, defaultFailedCallback).then();
+        FetchUserAsset(setAsset, defaultFailedCallback).then();
+        FetchUserBaseInfo(setBaseInfo, defaultFailedCallback).then();
         const handleAccessTokenChange = (event) => {
             console.log(event);
             if (event.key === 'access_token' && !event.newValue) {
@@ -415,25 +471,27 @@ function Playground() {
                                     height='100%'
                                     padding={5}>
                                     <CardHeader>
-                                        <Grid templateColumns='repeat(5, 1fr)' gap={4}>
-                                            <GridItem colSpan={3}>
-                                                <Heading>
-                                                    {fishParking.parking + ': ' + fishMap[fishParking.parking].name}
-                                                </Heading>
-                                            </GridItem>
-                                            <GridItem colStart={4} colEnd={5}>
-                                                {fishMap[fishParking.parking].protect_count > 0 &&
-                                                    <Tooltip
-                                                        label={'保护中~(成长' + fishMap[fishParking.parking].protect_count + '次后结束保护)'}
-                                                        placement='bottom'>
-                                                        <LockIcon color='pink.500' boxSize='2em'/>
-                                                    </Tooltip>
-                                                }
-                                            </GridItem>
-                                            <GridItem colStart={6} colEnd={8}>
-                                                <FishStatusIcon status={fishMap[fishParking.parking].status} boxSize='50px'/>
-                                            </GridItem>
-                                        </Grid>
+                                        <Flex>
+                                            <Heading>
+                                                {fishParking.parking + ': ' + fishMap[fishParking.parking].name}
+                                            </Heading>
+                                            {fishMap[fishParking.parking].protect_count > 0 &&
+                                                <Tooltip
+                                                    label={'保护中~(成长' + fishMap[fishParking.parking].protect_count + '次后结束保护)'}
+                                                    placement='bottom'>
+                                                    <LockIcon color='pink.500' boxSize='2em'/>
+                                                </Tooltip>
+                                            }
+                                            <Spacer />
+                                            <FishStatusIcon status={fishMap[fishParking.parking].status} boxSize='50px'/>
+                                        </Flex>
+                                        <HStack>
+                                            {Array.isArray(parkingEffect[fishParking.parking]) && (parkingEffect[fishParking.parking].map(effect => (
+                                                <Tooltip label={effect.name+'('+Math.round((effect.effect_expire_ms - new Date().getTime()) / 1000)+'秒)'} placement='bottom'>
+                                                    <Image maxW='30px' src={FishEffectIconByEffectType(effect.effect_type)}/>
+                                                </Tooltip>
+                                            )))}
+                                        </HStack>
                                     </CardHeader>
                                     <CardBody>
                                         <Progress
@@ -530,7 +588,8 @@ function Playground() {
                                                 newAsset.gold = asset.gold - newParking.cost;
                                                 setAsset(newAsset);
                                             }
-                                        }).then()
+                                            SuccessToast('拓展成功!', toast);
+                                        }, defaultFailedCallback).then()
                                     }}>拓展</Button>
                                 </Stack>
                             </Card>
@@ -564,9 +623,9 @@ function Playground() {
                                 newAsset.exp = asset.exp + exp
                                 if (levelUpCount !== 0) {
                                     newAsset.level = newAsset.level + levelUpCount
-                                    NotificationManager.success('', '升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！');
+                                    SuccessToast( '升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！', toast);
                                 } else {
-                                    NotificationManager.success('', '增加经验' + exp + '！');
+                                    SuccessToast( '增加经验' + exp + '！', toast);
                                 }
                                 setAsset(newAsset);
                             }}/>
@@ -627,9 +686,9 @@ function Playground() {
                                     <Button colorScheme='yellow'
                                             onClick={() => SellStart(sellFish, price, sellDuration, asset, setAsset, () => {
                                                 closeTopModal();
-                                                FetchFishParkingList(setFishParkingList).then();
-                                                FetchFishList(refreshFishList).then();
-                                            })}>上架</Button>
+                                                FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
+                                                FetchFishList(refreshFishList, defaultFailedCallback).then();
+                                            }, defaultFailedCallback)}>上架</Button>
                                     <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
                                 </Stack>
                             </Card>
@@ -647,9 +706,9 @@ function Playground() {
                                     <Stack direction='row'>
                                         <Button bg='blue.300' onClick={() => SellStop(downSellFish.id, () => {
                                             closeTopModal();
-                                            FetchFishParkingList(setFishParkingList).then();
-                                            FetchFishList(refreshFishList).then();
-                                        })}>下架</Button>
+                                            FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
+                                            FetchFishList(refreshFishList, defaultFailedCallback).then();
+                                        }, defaultFailedCallback)}>下架</Button>
                                         <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
                                     </Stack>
                                 </CardBody>
@@ -673,7 +732,6 @@ function Playground() {
                         </ModalContent>
                     )}
                 </Modal>
-                <NotificationContainer/>
             </GridItem>
             <GridItem colSpan={1} padding={3}>
                 <Stack mt={90}>

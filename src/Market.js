@@ -20,11 +20,12 @@ import {
     CardBody,
     Text,
     Card,
-    useDisclosure, UnorderedList, ListItem, Tooltip,
+    useDisclosure, UnorderedList, ListItem, Tooltip, useToast,
 } from '@chakra-ui/react'
 import {Buy, FetchMarketDetail, FetchMarkets} from "./request/Market";
 import {FormatTime} from "./style/TimeDisplayUtil";
 import {GetFishSkillColor} from "./style/ColorUtil";
+import {FailedToast} from "./style/ShowToast";
 
 function MarketList() {
     const [markets, setMarkets] = useState([]);
@@ -34,6 +35,10 @@ function MarketList() {
     const [buyModalIsOpen, setBuyModalIsOpen] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
     const {isOpen, onOpen, onClose} = useDisclosure()
+    const toast = useToast()
+    const defaultFailedCallback = (message) => {
+        FailedToast(message, toast);
+    }
 
     useEffect(() => {
         FetchMarkets(currentPage, (markets, totalPage) => {
@@ -41,7 +46,7 @@ function MarketList() {
                 setMarkets(markets);
             }
             setTotalPages(totalPage);
-        }).then();
+        }, defaultFailedCallback).then();
     }, [currentPage]);
 
 
@@ -100,7 +105,7 @@ function MarketList() {
                                                 console.log(data);
                                                 setDetailData(data);
                                                 onOpen();
-                                            })}>详情</Button>
+                                            }, defaultFailedCallback)}>详情</Button>
                                     <Button colorScheme='orange' size='xs'
                                             onClick={() => openBuyModal(market.product_id, market.fish_name, market.price)}>购买</Button>
                                 </Stack>
@@ -178,7 +183,7 @@ function MarketList() {
                             <Stack direction='row'>
                                 <Button size='sm' colorScheme='orange' onClick={() => Buy(selectedProduct.product_id, () => {
                                     closeBuyModal();
-                                })}>确认购买</Button>
+                                }, defaultFailedCallback)}>确认购买</Button>
                                 <Button size='sm' colorScheme='blue' onClick={closeBuyModal}>取消</Button>
                             </Stack>
                         </CardBody>

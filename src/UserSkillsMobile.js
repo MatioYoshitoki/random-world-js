@@ -17,7 +17,7 @@ import ShadowFish from "./assets/user_skills/shadow_fish.svg";
 import SkillTargetSelector from "./SkillTargetSelector";
 import {FailedToast, SuccessToast} from "./style/ShowToast";
 
-function UserSkills({userLevel, fishList}) {
+function UserSkillsMobile({userLevel, fishList}) {
     const [userSkills, setUserSkills] = useState([]);
     const [healFish, setHealFish] = useState({})
     const [feedFish, setFeedFish] = useState({})
@@ -111,8 +111,8 @@ function UserSkills({userLevel, fishList}) {
     return (
         <VStack>
             <Heading>技能</Heading>
-            <VStack padding={10} spacing={100}>
-                <HStack spacing={150}>
+            <VStack>
+                <HStack>
                     <Box>
                         <VStack>
                             <Image maxH={50} maxW={50} src={FeedFish}/>
@@ -174,6 +174,8 @@ function UserSkills({userLevel, fishList}) {
                             )}
                         </VStack>
                     </Box>
+                </HStack>
+                <HStack>
                     <Box>
                         <VStack>
                             <Image maxH={50} maxW={50} src={ShadowFish}/>
@@ -204,8 +206,6 @@ function UserSkills({userLevel, fishList}) {
                             )}
                         </VStack>
                     </Box>
-                </HStack>
-                <HStack spacing={150}>
                     <Box>
                         <VStack>
                             <Image maxH={50} maxW={50} src={CrazyFish}/>
@@ -236,6 +236,8 @@ function UserSkills({userLevel, fishList}) {
                             )}
                         </VStack>
                     </Box>
+                </HStack>
+                <HStack>
                     <Box>
                         <VStack>
                             <Image maxH={50} maxW={50} src={RefineFish}/>
@@ -263,4 +265,4 @@ function UserSkills({userLevel, fishList}) {
     );
 }
 
-export default UserSkills;
+export default UserSkillsMobile;

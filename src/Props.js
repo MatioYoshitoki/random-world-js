@@ -10,20 +10,25 @@ import {
     Thead,
     Td,
     Tbody,
-    TableContainer,
+    TableContainer, useToast,
 } from '@chakra-ui/react'
 import {EatProp, FetchProps} from "./request/User";
+import {FailedToast} from "./style/ShowToast";
 
 function PropList({incrExp}) {
     const [props, setProps] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+    const toast = useToast()
+    const defaultFailedCallback = (message) => {
+        FailedToast(message, toast);
+    }
 
     useEffect(() => {
         FetchProps(currentPage, (propList, totalPage) => {
             setProps(propList);
             setTotalPages(totalPage);
-        }).then();
+        }, defaultFailedCallback).then();
     }, [currentPage]);
 
     const handlePageChange = (newPage) => {
@@ -59,7 +64,7 @@ function PropList({incrExp}) {
                                             const newProps = props.filter(pt => pt.prop_id !== prop.prop_id);
                                             setProps(newProps);
                                             incrExp(data.exp, data.level_up_count);
-                                        })}>使用</Button>
+                                        }, defaultFailedCallback)}>使用</Button>
                             </Td>
                         </Tr>
                     ))}

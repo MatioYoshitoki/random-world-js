@@ -6,9 +6,9 @@ import {
     FISH_SLEEP_API_ENDPOINT
 } from "../config";
 import api from "../BaseApi";
-import {NotificationManager} from "react-notifications";
+import {SuccessToast} from "../style/ShowToast";
 
-export const PullFish = (afterPull) => {
+export const PullFish = (afterPull, failedCallback) => {
     return api.post(FISH_PULL_API_ENDPOINT, {})
         .then(response => {
             const {code, data} = response.data;
@@ -16,128 +16,139 @@ export const PullFish = (afterPull) => {
                 afterPull(data.list)
                 localStorage.setItem("ts_ms", data.ts_ms)
             } else {
-                console.error('获取用户鱼信息失败：', response.data.message);
+                failedCallback(response.data.message);
             }
         })
         .catch(error => {
-            console.error('获取用户鱼信息失败：', error);
+            if (error.response) {
+                failedCallback(error.response.message);
+            }
         });
 };
 
-export const FetchFishList = (callback) => {
+export const FetchFishList = (callback, failedCallback) => {
     return api.post(FISH_LIST_API_ENDPOINT, {})
         .then(response => {
             const {code, data} = response.data;
             if (code === 0) {
                 callback(data.list);
             } else {
-                console.error('获取用户鱼信息失败：', response.data.message);
+                failedCallback(response.data.message);
             }
         })
         .catch(error => {
-            console.error('获取用户鱼信息失败：', error);
+            if (error.response) {
+                failedCallback(error.response.message);
+            }
         })
 };
 
-export const SleepFish = (fishId, callback) => {
+export const SleepFish = (fishId, failedCallback, callback) => {
     return api.post(FISH_SLEEP_API_ENDPOINT, {fish_id: fishId})
         .then(response => {
             if (response.data.code === 0) {
                 callback()
             } else {
-                NotificationManager.error('', response.data.message, 3000, () => {
-                    alert('callback');
-                });
+                failedCallback(response.data.message);
             }
             // 重新加载鱼列表数据
         })
         .catch(error => {
-            console.error('Error resting fish:', error);
+            if (error.response) {
+                failedCallback(error.response.message);
+            }
         });
 }
 
-export const AliveFish = (fishId, callback) => {
+export const AliveFish = (fishId, failedCallback, callback) => {
     return api.post(FISH_ALIVE_API_ENDPOINT, {fish_id: fishId})
         .then(response => {
             if (response.data.code === 0) {
                 callback()
             } else {
-                NotificationManager.error('', response.data.message, 3000, () => {
-                    alert('callback');
-                })
+                failedCallback(response.data.message);
             }
             // 重新加载鱼列表数据
         })
         .catch(error => {
-            console.error('Error resting fish:', error);
+            if (error.response) {
+                failedCallback(error.response.message);
+            }
         });
 }
 
 
-export const RefineFish = (fishId, callback) => {
+export const RefineFish = (fishId, failedCallback, callback) => {
     return api.post(FISH_REFINE_API_ENDPOINT, {fish_id: fishId})
         .then(response => {
             if (response.data.code === 0) {
                 callback();
             } else {
-                NotificationManager.error('', response.data.message, 3000, () => {
-                    alert('callback');
-                });
+                failedCallback(response.data.message);
             }
             // 重新加载鱼列表数据
         })
         .catch(error => {
-            console.error('Error resting fish:', error);
+            if (error.response) {
+                failedCallback(error.response.message);
+            }
         });
 
 }
 
 
-export const CreateFish = (callback) => {
+export const CreateFish = (callback, failedCallback) => {
     return api.post(FISH_CREATE_API_ENDPOINT, {})
         .then(response => {
             if (response.data.code === 0) {
-                NotificationManager.success('', '创建成功');
                 callback(response.data.data);
             } else {
-                NotificationManager.error('', response.data.message, 3000, () => {
-                    alert('callback');
-                });
+                failedCallback(response.data.message);
             }
             // 重新加载鱼列表数据
         })
         .catch(error => {
-            console.error('Error resting fish:', error);
+            if (error.response) {
+                failedCallback(error.response.message);
+            }
         });
 }
 
-export const FetchFishParkingList = (callback) => {
+export const FetchFishParkingList = (callback, failedCallback) => {
     return api.post(FISH_PARKING_LIST_API_ENDPOINT, {})
         .then(response => {
             const {code, data} = response.data;
             if (code === 0) {
                 callback(data.parking_list);
             } else {
-                console.error('获取鱼位置信息失败：', response.data.message);
+                failedCallback(response.data.message);
             }
         })
         .catch(error => {
-            console.error('获取鱼位置信息失败：', error);
+            if (error.response) {
+                failedCallback(error.response.message);
+            }
         });
 };
 
-export const FetchPoolRanks = (page, callback) => {
+export const FetchPoolRanks = (page, failedCallback, callback) => {
     return api.post(FISH_POOL_RANK_API_ENDPOINT, {
         page: page,
         page_size: 10
     })
         .then(response => {
-            const {list, total_page} = response.data.data;
-            if (list !== undefined) {
-                callback(list, total_page);
+            if (response.data.code === 0) {
+                const {list, total_page} = response.data.data;
+                if (list !== undefined) {
+                    callback(list, total_page);
+                }
+            } else {
+                failedCallback(response.data.message);
             }
         })
         .catch(error => {
-            console.error('Error fetching props:', error);
+            if (error.response) {
+                failedCallback(error.response.message);
+            }
         })
 };

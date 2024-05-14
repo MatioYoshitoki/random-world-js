@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import {API_URL} from './config';
-import {NotificationManager} from "react-notifications"; // 导入配置文件
+import {FailedToast} from "./style/ShowToast";
 // 创建一个 Axios 实例
 export const api = axios.create({
     baseURL: API_URL,
@@ -44,9 +44,7 @@ api.interceptors.response.use(
             // 例如：window.location.href = '/login'; // 跳转到登录页
         }
         if (error.response) {
-            NotificationManager.error('', error.response.message, 3000, () => {
-                alert('callback');
-            })
+            FailedToast(error.response.message);
         }
         return Promise.reject(error);
     }

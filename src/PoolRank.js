@@ -11,11 +11,24 @@ import {
     Heading,
     CardBody,
     Text,
-    Card, Table, TableCaption, Tr, Th, Thead, Td, useDisclosure, Tooltip, UnorderedList, ListItem, TableContainer,
+    Card,
+    Table,
+    TableCaption,
+    Tr,
+    Th,
+    Thead,
+    Td,
+    useDisclosure,
+    Tooltip,
+    UnorderedList,
+    ListItem,
+    TableContainer,
+    useToast,
 } from '@chakra-ui/react'
 import {GetFishSkillColor} from "./style/ColorUtil";
 import {FetchPoolRanks} from "./request/Fish";
 import {FormatTime} from "./style/TimeDisplayUtil";
+import {FailedToast} from "./style/ShowToast";
 
 function PoolRank() {
     const [poolRanks, setPoolRanks] = useState([]);
@@ -23,10 +36,13 @@ function PoolRank() {
     const [totalPages, setTotalPages] = useState(0);
     const [selectedFish, setSelectedFish] = useState(null);
     const {isOpen, onOpen, onClose} = useDisclosure()
-
+    const toast = useToast()
+    const defaultFailedCallback = (message) => {
+        FailedToast(message, toast);
+    }
 
     useEffect(() => {
-        FetchPoolRanks(currentPage, (poolRank, totalPage) =>{
+        FetchPoolRanks(currentPage, defaultFailedCallback, (poolRank, totalPage) =>{
             if (poolRank !== undefined) {
                 setPoolRanks(poolRank);
             }

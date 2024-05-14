@@ -1,13 +1,18 @@
 import React, {useState, useEffect} from 'react';
 import './Login.css'
 import ReactPager from 'react-pager';
-import {Table, TableCaption, Tr, Th, Thead, Td, TableContainer} from '@chakra-ui/react'
+import {Table, TableCaption, Tr, Th, Thead, Td, TableContainer, useToast} from '@chakra-ui/react'
 import {FetchUserLevelRanks} from "./request/User";
+import {FailedToast} from "./style/ShowToast";
 
 function UserLevelRank() {
     const [userLevelRanks, setUserLevelRanks] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+    const toast = useToast()
+    const defaultFailedCallback = (message) => {
+        FailedToast(message, toast);
+    }
 
     useEffect(() => {
         FetchUserLevelRanks(currentPage, (userLevelRanks, totalPage) =>{
@@ -16,7 +21,7 @@ function UserLevelRank() {
                 setUserLevelRanks(userLevelRanks.ranks);
             }
             setTotalPages(totalPage);
-        }).then();
+        }, defaultFailedCallback).then();
     }, [currentPage]);
 
     const handlePageChange = (newPage) => {

@@ -3,15 +3,15 @@ import {api} from './BaseApi'
 import md5 from 'md5'; // 导入 md5 库
 import {AUTH_API_ENDPOINT} from './config'; // 导入配置文件
 import {useNavigate} from 'react-router-dom';
-import {NotificationManager} from "react-notifications"; // 导入 useHistory
-import {Input, Stack, Heading, Button} from '@chakra-ui/react';
+import {Input, Stack, Heading, Button, useToast} from '@chakra-ui/react';
+import {FailedToast, SuccessToast} from "./style/ShowToast";
 
 
 function Login() {
     const [account, setAccount] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
-
+    const toast = useToast()
     useEffect(() => {
         // 检查本地缓存中是否存在 access_token
         const accessToken = localStorage.getItem('access_token');
@@ -35,20 +35,16 @@ function Login() {
             const {code, message, data} = response.data;
 
             if (code === 0) {
-                NotificationManager.success('', '登录成功');
+                SuccessToast( '登录成功', toast);
                 localStorage.setItem('access_token', data.access_token);
                 localStorage.setItem('uid', data.uid);
                 navigate('/playground'); // 登录成功后跳转到空页面
             } else {
-                NotificationManager.error('', message, 3000, () => {
-                    alert('callback');
-                });
+                FailedToast(message, toast);
                 // alert('登录失败：' + message); // 显示警告弹窗
             }
         } catch (error) {
-            NotificationManager.error('', error.response.data.message, 3000, () => {
-                alert('callback');
-            })
+            FailedToast(error.response.data.message, toast);
             // alert('登录失败：' + error.response.data.message); // 显示警告弹窗
         }
     };
