@@ -664,9 +664,9 @@ function PlaygroundMobile() {
                             newAsset.exp = asset.exp + exp
                             if (levelUpCount !== 0) {
                                 newAsset.level = newAsset.level + levelUpCount
-                                SuccessToast( '升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！');
+                                SuccessToast( '升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！', toast);
                             } else {
-                                SuccessToast( '增加经验' + exp + '！');
+                                SuccessToast( '增加经验' + exp + '！', toast);
                             }
                             setAsset(newAsset);
                         }}/>

@@ -83,6 +83,7 @@ function PoolRank({rankType}) {
                         <Th>境界</Th>
                         <Th>击杀</Th>
                         <Th>主人</Th>
+                        <Th>年龄</Th>
                     </Tr>
                 </Thead>
                 {poolRanks.map(poolRank => (
