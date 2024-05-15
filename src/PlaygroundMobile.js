@@ -38,7 +38,6 @@ import {
     Box, IconButton, Image, TabList, Tab, TabPanels, TabPanel, Tabs, useToast, Flex, Spacer,
 } from '@chakra-ui/react'
 import PropList from "./Props";
-import {LockIcon} from "@chakra-ui/icons";
 import {DecodeBase64} from "./Base64.js";
 import {SellStart, SellStop} from "./request/Market";
 import {
@@ -66,6 +65,7 @@ import PoolRankMobile from "./PoolRankMobile";
 import UserLevelRank from "./UserLevelRank";
 import {FailedToast, SuccessToast} from "./style/ShowToast";
 import UserSkillsMobile from "./UserSkillsMobile";
+import ProtectCountIcon from "./assets/fish/protect_count.svg";
 
 let socket = null;
 
@@ -503,11 +503,7 @@ function PlaygroundMobile() {
                                 {showFish.name}
                             </Heading>
                             {showFish.protect_count > 0 &&
-                                <Tooltip
-                                    label={'保护中~(成长' + showFish.protect_count + '次后结束保护)'}
-                                    placement='bottom'>
-                                    <LockIcon color='pink.500' boxSize='2em'/>
-                                </Tooltip>
+                                <Image mt={-5} maxW='25px' src={ProtectCountIcon}/>
                             }
                             <Spacer />
                             <FishStatusIcon status={showFish.status} boxSize='50px'/>
@@ -680,13 +676,17 @@ function PlaygroundMobile() {
                             <TabList>
                                 <Tab>玩家等级榜</Tab>
                                 <Tab>🐟修为榜</Tab>
+                                <Tab>🐟击杀榜</Tab>
                             </TabList>
                             <TabPanels>
                                 <TabPanel>
                                     <UserLevelRank/>
                                 </TabPanel>
                                 <TabPanel>
-                                    <PoolRankMobile/>
+                                    <PoolRankMobile rankType={0}/>
+                                </TabPanel>
+                                <TabPanel>
+                                    <PoolRankMobile rankType={1}/>
                                 </TabPanel>
                             </TabPanels>
                         </Tabs>

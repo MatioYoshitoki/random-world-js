@@ -133,10 +133,11 @@ export const FetchFishParkingList = (callback, failedCallback) => {
         });
 };
 
-export const FetchPoolRanks = (page, failedCallback, callback) => {
+export const FetchPoolRanks = (rankType, page, failedCallback, callback) => {
     return api.post(FISH_POOL_RANK_API_ENDPOINT, {
         page: page,
-        page_size: 10
+        page_size: 10,
+        rank_type: rankType
     })
         .then(response => {
             if (response.data.code === 0) {

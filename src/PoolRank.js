@@ -30,7 +30,7 @@ import {FetchPoolRanks} from "./request/Fish";
 import {FormatTime} from "./style/TimeDisplayUtil";
 import {FailedToast} from "./style/ShowToast";
 
-function PoolRank() {
+function PoolRank({rankType}) {
     const [poolRanks, setPoolRanks] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
@@ -42,7 +42,7 @@ function PoolRank() {
     }
 
     useEffect(() => {
-        FetchPoolRanks(currentPage, defaultFailedCallback, (poolRank, totalPage) =>{
+        FetchPoolRanks(rankType, currentPage, defaultFailedCallback, (poolRank, totalPage) =>{
             if (poolRank !== undefined) {
                 setPoolRanks(poolRank);
             }
@@ -81,6 +81,7 @@ function PoolRank() {
                         <Th>排名</Th>
                         <Th>名称</Th>
                         <Th>境界</Th>
+                        <Th>击杀</Th>
                         <Th>主人</Th>
                     </Tr>
                 </Thead>
@@ -89,6 +90,7 @@ function PoolRank() {
                         <Td>{poolRank.rank}</Td>
                         <Td>{poolRank.fish.name}</Td>
                         <Td>{poolRank.fish.level}</Td>
+                        <Td>{poolRank.fish.fish_statistics && poolRank.fish.fish_statistics.kills}</Td>
                         <Td>{poolRank.master_name}</Td>
                         <Td>{FormatTime(poolRank.alive_time_ms)}</Td>
                         <Td>

@@ -30,7 +30,7 @@ import {GetFishSkillColor} from "./style/ColorUtil";
 import {FetchPoolRanks} from "./request/Fish";
 import {FailedToast} from "./style/ShowToast";
 
-function PoolRankMobile() {
+function PoolRankMobile({rankType}) {
     const [poolRanks, setPoolRanks] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
@@ -42,7 +42,7 @@ function PoolRankMobile() {
     }
 
     useEffect(() => {
-        FetchPoolRanks(currentPage, defaultFailedCallback, (poolRank, totalPage) =>{
+        FetchPoolRanks(rankType, currentPage, defaultFailedCallback, (poolRank, totalPage) =>{
             if (poolRank !== undefined) {
                 setPoolRanks(poolRank);
             }
@@ -79,7 +79,8 @@ function PoolRankMobile() {
                 <Thead>
                     <Tr>
                         <Th>#.名称</Th>
-                        <Th>境界</Th>
+                        {rankType === 1 && (<Th>击杀</Th>)}
+                        {rankType === 0 && (<Th>境界</Th>)}
                         <Th>主人</Th>
                     </Tr>
                 </Thead>
@@ -90,7 +91,13 @@ function PoolRankMobile() {
                                 {poolRank.rank}.{poolRank.fish.name}
                             </Link>
                         </Td>
-                        <Td fontSize={14}>{poolRank.fish.level}</Td>
+                        {rankType === 1 && poolRank.fish.fish_statistics && (
+                            <Td fontSize={14}>{poolRank.fish.fish_statistics.kills}</Td>
+                        )}
+                        {rankType === 0 && (
+                            <Td fontSize={14}>{poolRank.fish.level}</Td>
+                        )}
+
                         <Td fontSize={14}>{poolRank.master_name}</Td>
                     </Tr>
                 ))}
@@ -111,9 +118,7 @@ function PoolRankMobile() {
                                     </Heading>
                                 </CardHeader>
                                 <CardBody>
-                                    <Tooltip label={'修为:'+selectedFish.weight} placement='left'>
-                                        <Text width='30%'>境界：{selectedFish.level}</Text>
-                                    </Tooltip>
+                                    <Text>境界：{selectedFish.level}【{selectedFish.weight}】</Text>
                                     <Text>性格：{selectedFish.personality_name}</Text>
                                     <Text>生命：{selectedFish.heal}/{selectedFish.max_heal}</Text>
                                     <Text>自愈：{selectedFish.recover_speed}</Text>
@@ -122,7 +127,10 @@ function PoolRankMobile() {
                                     <Text>修炼：{selectedFish.earn_speed}</Text>
                                     <Text>闪避：{selectedFish.dodge}</Text>
                                     <Text>灵气：{selectedFish.money}</Text>
-                                    <Text width='15%'>技能：</Text>
+                                    {selectedFish.fish_statistics && (
+                                        <Text>击杀：{selectedFish.fish_statistics.kills}</Text>
+                                    )}
+                                    <Text>技能【未觉醒{selectedFish.awaking_remain}条】：</Text>
                                     <UnorderedList width='30%'>
                                         {Array.isArray(selectedFish.fish_skills) && selectedFish.fish_skills.map(fishSkill => (
                                             <ListItem key={fishSkill.skill_id}>

@@ -34,7 +34,7 @@ import {
     Tooltip,
     UnorderedList,
     ListItem,
-    Progress, Tabs, TabList, Tab, TabPanels, TabPanel, Flex, Spacer, VStack, Box, Image, useToast,
+    Progress, Tabs, TabList, Tab, TabPanels, TabPanel, Flex, Spacer, Image, useToast,
 } from '@chakra-ui/react'
 import PropList from "./Props";
 import PoolRank from "./PoolRank";
@@ -63,6 +63,7 @@ import {FishCardClassNameByStatus, FishEffectIconByEffectType} from "./style/Sty
 import UserLevelRank from "./UserLevelRank";
 import UserSkills from "./UserSkills";
 import {FailedToast, SuccessToast} from "./style/ShowToast";
+import ProtectCountIcon from "./assets/fish/protect_count.svg";
 
 let socket = null;
 
@@ -481,7 +482,7 @@ function Playground() {
                                                 <Tooltip
                                                     label={'保护中~(成长' + fishMap[fishParking.parking].protect_count + '次后结束保护)'}
                                                     placement='bottom'>
-                                                    <LockIcon color='pink.500' boxSize='2em'/>
+                                                    <Image mt={-5} maxW='25px' src={ProtectCountIcon}/>
                                                 </Tooltip>
                                             }
                                             <Spacer />
@@ -645,13 +646,17 @@ function Playground() {
                                 <TabList>
                                     <Tab>玩家等级榜</Tab>
                                     <Tab>🐟修为榜</Tab>
+                                    <Tab>🐟击杀榜</Tab>
                                 </TabList>
                                 <TabPanels>
                                     <TabPanel>
                                         <UserLevelRank/>
                                     </TabPanel>
                                     <TabPanel>
-                                        <PoolRank/>
+                                        <PoolRank rankType={0}/>
+                                    </TabPanel>
+                                    <TabPanel>
+                                        <PoolRank rankType={1}/>
                                     </TabPanel>
                                 </TabPanels>
                             </Tabs>
