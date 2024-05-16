@@ -26,6 +26,7 @@ import {Buy, FetchMarketDetail, FetchMarkets} from "./request/Market";
 import {FormatTime} from "./style/TimeDisplayUtil";
 import {GetFishSkillColor} from "./style/ColorUtil";
 import {FailedToast, SuccessToast} from "./style/ShowToast";
+import FishSkills from "./FishSkills";
 
 function MarketList() {
     const [markets, setMarkets] = useState([]);
@@ -139,19 +140,7 @@ function MarketList() {
                                 <Text>修炼：{detailData.earn_speed}</Text>
                                 <Text>闪避：{detailData.dodge}</Text>
                                 <Text>灵气：{detailData.money}</Text>
-                                <Text width='15%'>技能：</Text>
-                                <UnorderedList width='30%'>
-                                    {Array.isArray(detailData.fish_skills) && detailData.fish_skills.map(fishSkill => (
-                                        <ListItem key={fishSkill.skill_id}>
-                                            <Tooltip label={fishSkill.skill_desc} placement='left'>
-                                                <Text
-                                                    textColor={GetFishSkillColor(fishSkill.skill_level)}>{fishSkill.skill_name}(Lv.{fishSkill.skill_level})</Text>
-                                            </Tooltip>
-                                        </ListItem>
-                                    ))}
-                                </UnorderedList>
-                                {!Array.isArray(detailData.fish_skills) &&
-                                    <Text>暂未觉醒技能</Text>}
+                                <FishSkills fishSkillList={detailData.fish_skills}/>
                             </CardBody>
                             <Stack direction='row'>
                                 <Button colorScheme='orange'
