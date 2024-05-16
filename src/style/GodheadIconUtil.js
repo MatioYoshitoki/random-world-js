@@ -108,5 +108,8 @@ const levelIconMap = {
 }
 
 export function GetGodheadIcon(level) {
-    return levelIconMap[level]
+    if (level <= 96) {
+        return levelIconMap[level]
+    }
+    return levelIconMap[96]
 }
