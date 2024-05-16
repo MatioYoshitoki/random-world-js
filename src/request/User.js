@@ -19,8 +19,8 @@ export const Configs = () => {
             const {code, data} = response.data;
             if (code === 0) {
                 localStorage.setItem('fish_level_name_configs', JSON.stringify(data.fish_level_name));
-                console.log(localStorage.getItem('fish_level_name_configs'));
-
+                localStorage.setItem('fish_skill_name_configs', JSON.stringify(data.fish_skill_name));
+                console.log(localStorage.getItem('fish_skill_name_configs'));
             }
         })
         .catch((error) => {

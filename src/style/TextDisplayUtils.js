@@ -1,3 +1,10 @@
+export function getFishSkillNameByLevel(skillId, level) {
+    const fishSkillNameMap = JSON.parse(localStorage.getItem('fish_skill_name_configs'));
+    const skillMap = fishSkillNameMap[skillId]
+    return skillMap.name + '·' + skillMap.level_name[level]
+}
+
+
 export function getFishLevelNameByLevel(level) {
     const fishLevelNameMap = JSON.parse(localStorage.getItem('fish_level_name_configs'));
     if (fishLevelNameMap && level > Object.keys(fishLevelNameMap).length) {

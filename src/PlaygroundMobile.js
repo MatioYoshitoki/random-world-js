@@ -197,6 +197,9 @@ function PlaygroundMobile() {
             console.log(newFish)
             const newList = [...fishList];
             newList.push(newFish);
+            if (showFish == null) {
+                setShowFish(newFish);
+            }
             refreshFishList(newList);
             FetchUserAsset(setAsset, defaultFailedCallback).then();
             SuccessToast('创建成功', toast);

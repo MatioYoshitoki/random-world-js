@@ -99,7 +99,6 @@ function PoolRankMobile({rankType}) {
                         {rankType === 0 && (
                             <Td fontSize={14}>{getFishLevelNameByLevel(poolRank.fish.level)}</Td>
                         )}
-
                         <Td fontSize={14}>{poolRank.master_name}</Td>
                     </Tr>
                 ))}
@@ -120,7 +119,7 @@ function PoolRankMobile({rankType}) {
                                     </Heading>
                                 </CardHeader>
                                 <CardBody>
-                                    <Text>境界：{getFishLevelNameByLevel(selectedFish.level)}【{selectedFish.weight}】</Text>
+                                    <Text>境界：{getFishLevelNameByLevel(selectedFish.level)}</Text>
                                     <Text>性格：{selectedFish.personality_name}</Text>
                                     <Text>生命：{selectedFish.heal}/{selectedFish.max_heal}</Text>
                                     <Text>自愈：{selectedFish.recover_speed}</Text>
@@ -133,19 +132,6 @@ function PoolRankMobile({rankType}) {
                                         <Text>击杀：{selectedFish.fish_statistics.kills}</Text>
                                     )}
                                     <FishSkills fishSkillList={selectedFish.fish_skills} awakingRemain={selectedFish.awaking_remain}/>
-                                    <Text>技能【未觉醒{selectedFish.awaking_remain}条】：</Text>
-                                    <UnorderedList width='30%'>
-                                        {Array.isArray(selectedFish.fish_skills) && selectedFish.fish_skills.map(fishSkill => (
-                                            <ListItem key={fishSkill.skill_id}>
-                                                <Tooltip label={fishSkill.skill_desc} placement='left'>
-                                                    <Text
-                                                        textColor={GetFishSkillColor(fishSkill.skill_level)}>{fishSkill.skill_name}(Lv.{fishSkill.skill_level})</Text>
-                                                </Tooltip>
-                                            </ListItem>
-                                        ))}
-                                    </UnorderedList>
-                                    {!Array.isArray(selectedFish.fish_skills) &&
-                                        <Text>暂未觉醒技能</Text>}
                                 </CardBody>
                                 <Stack direction='row'>
                                     <Button colorScheme='blue' onClick={closeDetail}>关闭</Button>
