@@ -30,6 +30,7 @@ import {GetFishSkillColor} from "./style/ColorUtil";
 import {FetchPoolRanks} from "./request/Fish";
 import {FailedToast} from "./style/ShowToast";
 import {getFishLevelNameByLevel} from "./style/TextDisplayUtils";
+import FishSkills from "./FishSkills";
 
 function PoolRankMobile({rankType}) {
     const [poolRanks, setPoolRanks] = useState([]);
@@ -131,6 +132,7 @@ function PoolRankMobile({rankType}) {
                                     {selectedFish.fish_statistics && (
                                         <Text>击杀：{selectedFish.fish_statistics.kills}</Text>
                                     )}
+                                    <FishSkills fishSkillList={selectedFish.fish_skills} awakingRemain={selectedFish.awaking_remain}/>
                                     <Text>技能【未觉醒{selectedFish.awaking_remain}条】：</Text>
                                     <UnorderedList width='30%'>
                                         {Array.isArray(selectedFish.fish_skills) && selectedFish.fish_skills.map(fishSkill => (

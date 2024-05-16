@@ -2,18 +2,10 @@ import {Box, ListItem, Text, Tooltip, UnorderedList} from "@chakra-ui/react";
 import {GetFishSkillColor} from "./style/ColorUtil";
 import React from "react";
 
-function FishSkills(fishSkillList, awakingRemain) {
+function FishSkills({fishSkillList, awakingRemain}) {
     return (
         <Box>
-            {awakingRemain && (
-                <Tooltip label={'剩余觉醒次数:' + awakingRemain}
-                         placement='left'>
-                    <Text width='30%'>技能：</Text>
-                </Tooltip>
-            )}
-            {!awakingRemain && (
-                <Text width='30%'>技能：</Text>
-            )}
+            <Text>技能{awakingRemain != null && awakingRemain !== 0 && ('【未觉醒' + {awakingRemain} + '条】')}：</Text>
             <UnorderedList width='30%'>
                 {Array.isArray(fishSkillList) && fishSkillList.map(fishSkill => (
                     <ListItem key={fishSkill.skill_id}>

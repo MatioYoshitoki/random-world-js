@@ -67,6 +67,7 @@ import ProtectCountIcon from "./assets/fish/protect_count.svg";
 import Godhead from "./Godhead";
 import {getFishLevelNameByLevel} from "./style/TextDisplayUtils";
 import {GetGrowthRequireMoney} from "./pkg/FishUtils";
+import FishSkills from "./FishSkills";
 
 let socket = null;
 
@@ -537,23 +538,7 @@ function Playground() {
                                         <Tooltip label={'主动攻击: '+fishMap[fishParking.parking].fish_statistics.proactive_attack_count + '\t反击：'+fishMap[fishParking.parking].fish_statistics.counter_attack_count} placement='left'>
                                             <Text width='30%'>击杀数：{fishMap[fishParking.parking].fish_statistics.kills}</Text>
                                         </Tooltip>
-                                        <Tooltip label={'剩余觉醒次数:' + fishMap[fishParking.parking].awaking_remain}
-                                                 placement='left'>
-                                            <Text width='30%'>技能：</Text>
-                                        </Tooltip>
-                                        <UnorderedList width='30%'>
-                                            {Array.isArray(fishMap[fishParking.parking].fish_skills) && fishMap[fishParking.parking].fish_skills.map(fishSkill => (
-                                                <ListItem key={fishSkill.skill_id}>
-                                                    <Tooltip label={fishSkill.skill_desc} placement='left'>
-                                                        <Text
-                                                            textColor={GetFishSkillColor(fishSkill.skill_level)}>{fishSkill.skill_name}(Lv.{fishSkill.skill_level})</Text>
-                                                    </Tooltip>
-                                                </ListItem>
-                                            ))}
-                                        </UnorderedList>
-                                        {!Array.isArray(fishMap[fishParking.parking].fish_skills) &&
-                                            <Text>暂未觉醒技能</Text>}
-
+                                        <FishSkills fishSkillList={fishMap[fishParking.parking].fish_skills} awakingRemain={fishMap[fishParking.parking].awaking_remain}/>
                                     </CardBody>
                                     {renderActionButtons(fishMap[fishParking.parking])}
                                 </Card>

@@ -69,6 +69,7 @@ import ProtectCountIcon from "./assets/fish/protect_count.svg";
 import Godhead from "./Godhead";
 import {getFishLevelNameByLevel} from "./style/TextDisplayUtils";
 import {GetGrowthRequireMoney} from "./pkg/FishUtils";
+import FishSkills from "./FishSkills";
 
 let socket = null;
 
@@ -550,23 +551,7 @@ function PlaygroundMobile() {
                                 placement='left'>
                                 <Text fontSize={13}>击杀数：{showFish.fish_statistics.kills}</Text>
                             </Tooltip>)}
-                        <Tooltip label={'剩余觉醒次数:' + showFish.awaking_remain}
-                                 placement='left'>
-                            <Text fontSize={13}>技能：</Text>
-                        </Tooltip>
-                        <UnorderedList width='30%'>
-                            {Array.isArray(showFish.fish_skills) && showFish.fish_skills.map(fishSkill => (
-                                <ListItem key={fishSkill.skill_id}>
-                                    <Tooltip label={fishSkill.skill_desc} placement='left'>
-                                        <Text fontSize={13}
-                                              textColor={GetFishSkillColor(fishSkill.skill_level)}>{fishSkill.skill_name}(Lv.{fishSkill.skill_level})</Text>
-                                    </Tooltip>
-                                </ListItem>
-                            ))}
-                        </UnorderedList>
-                        {!Array.isArray(showFish.fish_skills) &&
-                            <Text>暂未觉醒技能</Text>}
-
+                        <FishSkills fishSkillList={showFish.fish_skills} awakingRemain={showFish.awaking_remain}/>
                     </CardBody>
                     {renderActionButtons(showFish)}
                 </Card>)}

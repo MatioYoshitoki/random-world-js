@@ -30,6 +30,7 @@ import {FetchPoolRanks} from "./request/Fish";
 import {FormatTime} from "./style/TimeDisplayUtil";
 import {FailedToast} from "./style/ShowToast";
 import {getFishLevelNameByLevel} from "./style/TextDisplayUtils";
+import FishSkills from "./FishSkills";
 
 function PoolRank({rankType}) {
     const [poolRanks, setPoolRanks] = useState([]);
@@ -128,19 +129,7 @@ function PoolRank({rankType}) {
                                     <Text>修炼：{selectedFish.earn_speed}</Text>
                                     <Text>闪避：{selectedFish.dodge}</Text>
                                     <Text>灵气：{selectedFish.money}</Text>
-                                    <Text width='15%'>技能：</Text>
-                                    <UnorderedList width='30%'>
-                                        {Array.isArray(selectedFish.fish_skills) && selectedFish.fish_skills.map(fishSkill => (
-                                            <ListItem key={fishSkill.skill_id}>
-                                                <Tooltip label={fishSkill.skill_desc} placement='left'>
-                                                    <Text
-                                                        textColor={GetFishSkillColor(fishSkill.skill_level)}>{fishSkill.skill_name}(Lv.{fishSkill.skill_level})</Text>
-                                                </Tooltip>
-                                            </ListItem>
-                                        ))}
-                                    </UnorderedList>
-                                    {!Array.isArray(selectedFish.fish_skills) &&
-                                        <Text>暂未觉醒技能</Text>}
+                                    <FishSkills fishSkillList={selectedFish.fish_skills} awakingRemain={selectedFish.awaking_remain}/>
                                 </CardBody>
                                 <Stack direction='row'>
                                     <Button colorScheme='blue' onClick={closeDetail}>关闭</Button>
