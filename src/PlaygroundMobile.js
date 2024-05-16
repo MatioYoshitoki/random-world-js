@@ -43,7 +43,7 @@ import {SellStart, SellStop} from "./request/Market";
 import {
     AliveFish, CreateFish, FetchFishList, FetchFishParkingList, PullFish, RefineFish, SleepFish
 } from "./request/Fish";
-import {ExpandFishParking, FetchUserAsset, FetchUserBaseInfo} from "./request/User";
+import {Configs, ExpandFishParking, FetchUserAsset, FetchUserBaseInfo} from "./request/User";
 import {
     GetFishColorByRating,
     GetFishColorByRatingMobile,
@@ -66,6 +66,9 @@ import UserLevelRank from "./UserLevelRank";
 import {FailedToast, SuccessToast} from "./style/ShowToast";
 import UserSkillsMobile from "./UserSkillsMobile";
 import ProtectCountIcon from "./assets/fish/protect_count.svg";
+import Godhead from "./Godhead";
+import {getFishLevelNameByLevel} from "./style/TextDisplayUtils";
+import {GetGrowthRequireMoney} from "./pkg/FishUtils";
 
 let socket = null;
 
@@ -464,16 +467,18 @@ function PlaygroundMobile() {
     }, [socket])
 
     useEffect(() => {
-        FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
-        FetchFishList((list) => {
-            refreshFishList(list);
-            if (list.length > 0) {
-                console.log(list[0]);
-                setShowFish(list[0])
-            }
-        }, defaultFailedCallback).then();
-        FetchUserAsset(setAsset, defaultFailedCallback).then();
-        FetchUserBaseInfo(setBaseInfo, defaultFailedCallback).then();
+        Configs().then(() => {
+            FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
+            FetchFishList((list) => {
+                refreshFishList(list);
+                if (list.length > 0) {
+                    console.log(list[0]);
+                    setShowFish(list[0])
+                }
+            }, defaultFailedCallback).then();
+            FetchUserAsset(setAsset, defaultFailedCallback).then();
+            FetchUserBaseInfo(setBaseInfo, defaultFailedCallback).then();
+        });
         const handleAccessTokenChange = (event) => {
             console.log(event);
             if (event.key === 'access_token' && !event.newValue) {
@@ -487,7 +492,6 @@ function PlaygroundMobile() {
             window.removeEventListener('storage', handleAccessTokenChange);
         }
     }, [])
-
     return (<Box>
         <Grid templateColumns='repeat(24, 1fr)' alignItems='center'>
             <GridItem colSpan={24}>
@@ -502,17 +506,21 @@ function PlaygroundMobile() {
                             <Heading>
                                 {showFish.name}
                             </Heading>
-                            {showFish.protect_count > 0 &&
-                                <Image mt={-5} maxW='25px' src={ProtectCountIcon}/>
-                            }
-                            <Spacer />
+                            <Spacer/>
+                            <Godhead godheadInfo={showFish.godhead}/>
+                            <Spacer/>
+                            <Spacer/>
+                            <Spacer/>
+                            <Spacer/>
+                            <Spacer/>
                             <FishStatusIcon status={showFish.status} boxSize='50px'/>
                         </Flex>
                         <HStack>
+                            {showFish.protect_count > 0 &&
+                                <Image maxW='30px' src={ProtectCountIcon}/>
+                            }
                             {Array.isArray(parkingEffect[showFish.parking]) && (parkingEffect[showFish.parking].map(effect => (
-                                <Tooltip label={effect.name+'('+Math.round((effect.effect_expire_ms - new Date().getTime()) / 1000)+'秒)'} placement='bottom'>
-                                    <Image maxW='30px' src={FishEffectIconByEffectType(effect.effect_type)}/>
-                                </Tooltip>
+                                <Image maxW='30px' src={FishEffectIconByEffectType(effect.effect_type)}/>
                             )))}
                         </HStack>
                     </CardHeader>
@@ -522,22 +530,20 @@ function PlaygroundMobile() {
                             max={showFish.max_heal}
                             colorScheme={GetHpProgressColor(showFish.heal, showFish.max_heal)}
                             isAnimated={true}/>
-                        <Text fontSize={13}>生命：{showFish.heal < 0 ? 0 : showFish.heal}/{showFish.max_heal}</Text>
-                        <Text fontSize={13}>境界：{showFish.level}</Text>
+                        <Text fontSize={10}>生命：{showFish.heal < 0 ? 0 : showFish.heal}/{showFish.max_heal}</Text>
+                        <Progress
+                            value={showFish.money}
+                            max={GetGrowthRequireMoney(showFish.level)}
+                            size='sm'
+                            mt={1}/>
+                        <Text fontSize={10}>灵气：{showFish.money}/{GetGrowthRequireMoney(showFish.level)}</Text>
+                        <Text fontSize={13}>境界：{getFishLevelNameByLevel(showFish.level)}</Text>
                         <Text fontSize={13}>性格：{showFish.personality_name}</Text>
                         <Text fontSize={13}>自愈：{showFish.recover_speed}</Text>
                         <Text fontSize={13}>攻击：{showFish.atk}</Text>
                         <Text fontSize={13}>防御：{showFish.def}</Text>
                         <Text fontSize={13}>修炼：{showFish.earn_speed}</Text>
                         <Text fontSize={13}>闪避：{showFish.dodge}</Text>
-                        {showFish.fish_statistics != null && (
-                            <Tooltip
-                                label={'自然增长: ' + showFish.fish_statistics.earn_detail[0] + '\n击杀：' + showFish.fish_statistics.earn_detail[1] + '\n技能：' + showFish.fish_statistics.earn_detail[3]}
-                                placement='left'>
-                                <Text fontSize={13}>灵气：{showFish.money}</Text>
-                            </Tooltip>
-
-                        )}
                         {showFish.fish_statistics != null &&
                             (<Tooltip
                                 label={'主动攻击: ' + showFish.fish_statistics.proactive_attack_count + '\t反击：' + showFish.fish_statistics.counter_attack_count}

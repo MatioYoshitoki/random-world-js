@@ -1,4 +1,5 @@
 import {
+    CONFIGS_API_ENDPOINT,
     USER_ASSET_API_ENDPOINT,
     USER_BASE_INFO_API_ENDPOINT,
     USER_CRAZY_FISH_API_ENDPOINT,
@@ -11,6 +12,21 @@ import {
     USER_SKILLS_API_ENDPOINT
 } from "../config";
 import api from "../BaseApi";
+
+export const Configs = () => {
+    return api.post(CONFIGS_API_ENDPOINT, {})
+        .then((response) => {
+            const {code, data} = response.data;
+            if (code === 0) {
+                localStorage.setItem('fish_level_name_configs', JSON.stringify(data.fish_level_name));
+                console.log(localStorage.getItem('fish_level_name_configs'));
+
+            }
+        })
+        .catch((error) => {
+            console.error('拓展失败：', error);
+        })
+}
 
 export const ExpandFishParking = (callback, failedCallback) => {
     return api.post(USER_EXPAND_PARKING_API_ENDPOINT, {})

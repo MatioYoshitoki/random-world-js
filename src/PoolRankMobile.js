@@ -29,6 +29,7 @@ import {
 import {GetFishSkillColor} from "./style/ColorUtil";
 import {FetchPoolRanks} from "./request/Fish";
 import {FailedToast} from "./style/ShowToast";
+import {getFishLevelNameByLevel} from "./style/TextDisplayUtils";
 
 function PoolRankMobile({rankType}) {
     const [poolRanks, setPoolRanks] = useState([]);
@@ -95,7 +96,7 @@ function PoolRankMobile({rankType}) {
                             <Td fontSize={14}>{poolRank.fish.fish_statistics.kills}</Td>
                         )}
                         {rankType === 0 && (
-                            <Td fontSize={14}>{poolRank.fish.level}</Td>
+                            <Td fontSize={14}>{getFishLevelNameByLevel(poolRank.fish.level)}</Td>
                         )}
 
                         <Td fontSize={14}>{poolRank.master_name}</Td>
@@ -118,7 +119,7 @@ function PoolRankMobile({rankType}) {
                                     </Heading>
                                 </CardHeader>
                                 <CardBody>
-                                    <Text>境界：{selectedFish.level}【{selectedFish.weight}】</Text>
+                                    <Text>境界：{getFishLevelNameByLevel(selectedFish.level)}【{selectedFish.weight}】</Text>
                                     <Text>性格：{selectedFish.personality_name}</Text>
                                     <Text>生命：{selectedFish.heal}/{selectedFish.max_heal}</Text>
                                     <Text>自愈：{selectedFish.recover_speed}</Text>

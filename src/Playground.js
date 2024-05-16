@@ -34,11 +34,11 @@ import {
     Tooltip,
     UnorderedList,
     ListItem,
-    Progress, Tabs, TabList, Tab, TabPanels, TabPanel, Flex, Spacer, Image, useToast,
+    Progress, Tabs, TabList, Tab, TabPanels, TabPanel, Flex, Spacer, Image, useToast, VStack, Badge, Box,
 } from '@chakra-ui/react'
 import PropList from "./Props";
 import PoolRank from "./PoolRank";
-import {AddIcon, LockIcon} from "@chakra-ui/icons";
+import {AddIcon} from "@chakra-ui/icons";
 import {DecodeBase64} from "./Base64.js";
 import {SellStart, SellStop} from "./request/Market";
 import {
@@ -50,7 +50,7 @@ import {
     RefineFish,
     SleepFish
 } from "./request/Fish";
-import {ExpandFishParking, FetchUserAsset, FetchUserBaseInfo} from "./request/User";
+import {Configs, ExpandFishParking, FetchUserAsset, FetchUserBaseInfo} from "./request/User";
 import {
     GetFishColorByRating,
     GetFishSkillColor,
@@ -64,6 +64,9 @@ import UserLevelRank from "./UserLevelRank";
 import UserSkills from "./UserSkills";
 import {FailedToast, SuccessToast} from "./style/ShowToast";
 import ProtectCountIcon from "./assets/fish/protect_count.svg";
+import Godhead from "./Godhead";
+import {getFishLevelNameByLevel} from "./style/TextDisplayUtils";
+import {GetGrowthRequireMoney} from "./pkg/FishUtils";
 
 let socket = null;
 
@@ -323,7 +326,7 @@ function Playground() {
                         newParkingEffects[item.parking][idx] = {
                             ...effect
                         };
-                        idx ++;
+                        idx++;
                     }
                 }
             }
@@ -438,10 +441,12 @@ function Playground() {
     }, [socket])
 
     useEffect(() => {
-        FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
-        FetchFishList(refreshFishList, defaultFailedCallback).then();
-        FetchUserAsset(setAsset, defaultFailedCallback).then();
-        FetchUserBaseInfo(setBaseInfo, defaultFailedCallback).then();
+        Configs().then(() => {
+            FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
+            FetchFishList(refreshFishList, defaultFailedCallback).then();
+            FetchUserAsset(setAsset, defaultFailedCallback).then();
+            FetchUserBaseInfo(setBaseInfo, defaultFailedCallback).then();
+        });
         const handleAccessTokenChange = (event) => {
             console.log(event);
             if (event.key === 'access_token' && !event.newValue) {
@@ -455,7 +460,6 @@ function Playground() {
             window.removeEventListener('storage', handleAccessTokenChange);
         }
     }, [])
-
     return (
         <Grid templateColumns='repeat(24, 1fr)'>
             <GridItem colSpan={23}>
@@ -476,49 +480,66 @@ function Playground() {
                                     <CardHeader>
                                         <Flex>
                                             <Heading>
-                                                {fishParking.parking + ': ' + fishMap[fishParking.parking].name}
+                                                {fishMap[fishParking.parking].name}
                                             </Heading>
+                                            <Spacer/>
+                                            <Godhead godheadInfo={fishMap[fishParking.parking].godhead}/>
+                                            <Spacer/>
+                                            <Spacer/>
+                                            <Spacer/>
+                                            <Spacer/>
+                                            <Spacer/>
+                                            <FishStatusIcon status={fishMap[fishParking.parking].status}
+                                                            boxSize='50px'/>
+                                        </Flex>
+                                        <HStack>
                                             {fishMap[fishParking.parking].protect_count > 0 &&
                                                 <Tooltip
                                                     label={'保护中~(成长' + fishMap[fishParking.parking].protect_count + '次后结束保护)'}
                                                     placement='bottom'>
-                                                    <Image mt={-5} maxW='25px' src={ProtectCountIcon}/>
+                                                    <Image maxW='30px' src={ProtectCountIcon}/>
                                                 </Tooltip>
                                             }
-                                            <Spacer />
-                                            <FishStatusIcon status={fishMap[fishParking.parking].status} boxSize='50px'/>
-                                        </Flex>
-                                        <HStack>
                                             {Array.isArray(parkingEffect[fishParking.parking]) && (parkingEffect[fishParking.parking].map(effect => (
-                                                <Tooltip label={effect.name+'('+Math.round((effect.effect_expire_ms - new Date().getTime()) / 1000)+'秒)'} placement='bottom'>
-                                                    <Image maxW='30px' src={FishEffectIconByEffectType(effect.effect_type)}/>
+                                                <Tooltip
+                                                    label={effect.name + '(' + Math.round((effect.effect_expire_ms - new Date().getTime()) / 1000) + '秒)'}
+                                                    placement='bottom'>
+                                                    <Image maxW='30px'
+                                                           src={FishEffectIconByEffectType(effect.effect_type)}/>
                                                 </Tooltip>
                                             )))}
                                         </HStack>
-                                    </CardHeader>
-                                    <CardBody>
                                         <Progress
                                             value={fishMap[fishParking.parking].heal < 0 ? 0 : fishMap[fishParking.parking].heal}
                                             max={fishMap[fishParking.parking].max_heal}
-                                            colorScheme={GetHpProgressColor(fishMap[fishParking.parking].heal, fishMap[fishParking.parking].max_heal)}
-                                            isAnimated={true}/>
-                                        <Text>生命：{fishMap[fishParking.parking].heal < 0 ? 0 : fishMap[fishParking.parking].heal}/{fishMap[fishParking.parking].max_heal}</Text>
-                                        <Text>境界：{fishMap[fishParking.parking].level}</Text>
+                                            mt={1}
+                                            colorScheme={GetHpProgressColor(fishMap[fishParking.parking].heal, fishMap[fishParking.parking].max_heal)}/>
+                                        <Text fontSize={13}>生命：{fishMap[fishParking.parking].heal < 0 ? 0 : fishMap[fishParking.parking].heal}/{fishMap[fishParking.parking].max_heal}</Text>
+                                        <Tooltip label={'自然增长: '+fishMap[fishParking.parking].fish_statistics.earn_detail[0] + '\n击杀：'+fishMap[fishParking.parking].fish_statistics.earn_detail[1] + '\n技能：'+fishMap[fishParking.parking].fish_statistics.earn_detail[3]} placement='left'>
+                                            <Box>
+                                                <Progress
+                                                    value={fishMap[fishParking.parking].money}
+                                                    max={GetGrowthRequireMoney(fishMap[fishParking.parking].level)}
+                                                    size='sm'
+                                                    mt={1}/>
+                                                <Text fontSize={13}>灵气：{fishMap[fishParking.parking].money}/{GetGrowthRequireMoney(fishMap[fishParking.parking].level)}</Text>
+                                            </Box>
+                                        </Tooltip>
+                                    </CardHeader>
+                                    <CardBody mt={-5}>
+                                        <Text>境界：{getFishLevelNameByLevel(fishMap[fishParking.parking].level)}</Text>
                                         <Text>性格：{fishMap[fishParking.parking].personality_name}</Text>
                                         <Text>自愈：{fishMap[fishParking.parking].recover_speed}</Text>
                                         <Text>攻击：{fishMap[fishParking.parking].atk}</Text>
                                         <Text>防御：{fishMap[fishParking.parking].def}</Text>
                                         <Text>修炼：{fishMap[fishParking.parking].earn_speed}</Text>
                                         <Text>闪避：{fishMap[fishParking.parking].dodge}</Text>
-                                        <Tooltip label={'自然增长: '+fishMap[fishParking.parking].fish_statistics.earn_detail[0] + '\n击杀：'+fishMap[fishParking.parking].fish_statistics.earn_detail[1] + '\n技能：'+fishMap[fishParking.parking].fish_statistics.earn_detail[3]} placement='left'>
-                                            <Text>灵气：{fishMap[fishParking.parking].money}</Text>
-                                        </Tooltip>
                                         <Tooltip label={'主动攻击: '+fishMap[fishParking.parking].fish_statistics.proactive_attack_count + '\t反击：'+fishMap[fishParking.parking].fish_statistics.counter_attack_count} placement='left'>
                                             <Text width='30%'>击杀数：{fishMap[fishParking.parking].fish_statistics.kills}</Text>
                                         </Tooltip>
                                         <Tooltip label={'剩余觉醒次数:' + fishMap[fishParking.parking].awaking_remain}
                                                  placement='left'>
-                                            <Text width='15%'>技能：</Text>
+                                            <Text width='30%'>技能：</Text>
                                         </Tooltip>
                                         <UnorderedList width='30%'>
                                             {Array.isArray(fishMap[fishParking.parking].fish_skills) && fishMap[fishParking.parking].fish_skills.map(fishSkill => (
@@ -632,9 +653,9 @@ function Playground() {
                                 newAsset.exp = asset.exp + exp
                                 if (levelUpCount !== 0) {
                                     newAsset.level = newAsset.level + levelUpCount
-                                    SuccessToast( '升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！', toast);
+                                    SuccessToast('升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！', toast);
                                 } else {
-                                    SuccessToast( '增加经验' + exp + '！', toast);
+                                    SuccessToast('增加经验' + exp + '！', toast);
                                 }
                                 setAsset(newAsset);
                             }}/>

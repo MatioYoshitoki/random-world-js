@@ -39,6 +39,7 @@ api.interceptors.response.use(
             localStorage.removeItem('access_token');
             localStorage.removeItem('uid');
             localStorage.removeItem('ts_ms');
+            localStorage.removeItem('fish_level_name_configs');
             window.location.href = '/'
             // 可以选择进行页面跳转或其他操作
             // 例如：window.location.href = '/login'; // 跳转到登录页

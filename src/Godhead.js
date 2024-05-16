@@ -1,16 +1,33 @@
-import {HStack, Image} from "@chakra-ui/react";
-import {GetGodheadIcon} from "./style/GodheadIconUtil";
+import {HStack, VStack} from "@chakra-ui/react";
+import GodheadDetail from "./GodheadDetail";
 
 function Godhead({godheadInfo}) {
-    return (
-        <HStack>
-            {Array.isArray(godheadInfo) && godheadInfo.map( info => (
-                <Image maxW='10px'
-                    src={GetGodheadIcon(info.level)}
-                />
-            ))}
+    let firstLine = []
+    const secondLine = []
+    if (godheadInfo && godheadInfo.length > 3) {
+        for (let i = 0; i < 3; i++) {
+            firstLine[i] = godheadInfo[i]
+        }
+        for (let i = 3; i < godheadInfo.length; i++) {
+            secondLine[i-3] = godheadInfo[i]
+        }
+    } else {
+        firstLine = godheadInfo
+    }
 
-        </HStack>
+    return (
+        <VStack>
+            <HStack>
+                {Array.isArray(firstLine) && firstLine.map(info => (
+                    <GodheadDetail godhead={info}/>
+                ))}
+            </HStack>
+            <HStack>
+                {Array.isArray(secondLine) && secondLine.map(info => (
+                    <GodheadDetail godhead={info}/>
+                ))}
+            </HStack>
+        </VStack>
     )
 }
 

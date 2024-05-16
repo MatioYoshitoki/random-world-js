@@ -6,6 +6,7 @@ const WS_URL = 'ws://14.103.9.84:7001'; // 设置 API 地址
 // const WS_URL = 'ws://192.168.12.78:7001'; // 设置 API 地址
 
 export const AUTH_API_ENDPOINT = `/api/v0/auth`;
+export const CONFIGS_API_ENDPOINT = `/api/v1/user/configs`
 export const FISH_LIST_API_ENDPOINT = `/api/v1/fish/list`;
 export const FISH_PULL_API_ENDPOINT = `/api/v1/fish/pull`;
 export const FISH_SLEEP_API_ENDPOINT = `/api/v1/fish/sleep`;
