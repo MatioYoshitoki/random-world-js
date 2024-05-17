@@ -19,14 +19,10 @@ import {
     Thead,
     Td,
     useDisclosure,
-    Tooltip,
-    UnorderedList,
-    ListItem,
     TableContainer,
     Link,
     useToast,
 } from '@chakra-ui/react'
-import {GetFishSkillColor} from "./style/ColorUtil";
 import {FetchPoolRanks} from "./request/Fish";
 import {FailedToast} from "./style/ShowToast";
 import {getFishLevelNameByLevel} from "./style/TextDisplayUtils";

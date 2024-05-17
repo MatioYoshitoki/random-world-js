@@ -20,12 +20,9 @@ import {
     Td,
     useDisclosure,
     Tooltip,
-    UnorderedList,
-    ListItem,
     TableContainer,
     useToast,
 } from '@chakra-ui/react'
-import {GetFishSkillColor} from "./style/ColorUtil";
 import {FetchPoolRanks} from "./request/Fish";
 import {FormatTime} from "./style/TimeDisplayUtil";
 import {FailedToast} from "./style/ShowToast";

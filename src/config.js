@@ -1,9 +1,9 @@
 // config.js
 
-export const API_URL = 'http://14.103.9.84:8002'; // 设置 API 地址
-const WS_URL = 'ws://14.103.9.84:7001'; // 设置 API 地址
-// export const API_URL = 'http://192.168.12.78:8002'; // 设置 API 地址
-// const WS_URL = 'ws://192.168.12.78:7001'; // 设置 API 地址
+// export const API_URL = 'http://14.103.9.84:8002'; // 设置 API 地址
+// const WS_URL = 'ws://14.103.9.84:7001'; // 设置 API 地址
+export const API_URL = 'http://192.168.12.78:8002'; // 设置 API 地址
+const WS_URL = 'ws://192.168.12.78:7001'; // 设置 API 地址
 
 export const AUTH_API_ENDPOINT = `/api/v0/auth`;
 export const CONFIGS_API_ENDPOINT = `/api/v1/user/configs`
@@ -14,6 +14,7 @@ export const FISH_ALIVE_API_ENDPOINT = `/api/v1/fish/alive`;
 export const FISH_CREATE_API_ENDPOINT = `/api/v1/fish/create`;
 export const FISH_REFINE_API_ENDPOINT = `/api/v1/fish/refining`;
 export const FISH_POOL_RANK_API_ENDPOINT = `/api/v1/fish/pool/rank`;
+export const FISH_DEAD_RECORDS_API_ENDPOINT = `/api/v1/fish/dead_records`;
 export const USER_RANK_API_ENDPOINT = `/api/v1/user/rank`;
 export const MARKET_LIST_API_ENDPOINT = `/api/v1/market/list`;
 export const MARKET_DETAIL_API_ENDPOINT = `/api/v1/market/detail`;

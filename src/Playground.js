@@ -32,8 +32,6 @@ import {
     NumberInputStepper,
     NumberIncrementStepper,
     Tooltip,
-    UnorderedList,
-    ListItem,
     Progress, Tabs, TabList, Tab, TabPanels, TabPanel, Flex, Spacer, Image, useToast, VStack, Badge, Box,
 } from '@chakra-ui/react'
 import PropList from "./Props";
@@ -53,7 +51,6 @@ import {
 import {Configs, ExpandFishParking, FetchUserAsset, FetchUserBaseInfo} from "./request/User";
 import {
     GetFishColorByRating,
-    GetFishSkillColor,
     GetHpProgressColor,
     GetParkingStatusColor
 } from "./style/ColorUtil";
@@ -68,6 +65,7 @@ import Godhead from "./Godhead";
 import {getFishLevelNameByLevel} from "./style/TextDisplayUtils";
 import {GetGrowthRequireMoney} from "./pkg/FishUtils";
 import FishSkills from "./FishSkills";
+import FishDeadRecordsTriger from "./FishDeadRecordsTriger";
 
 let socket = null;
 
@@ -490,6 +488,7 @@ function Playground() {
                                             <Spacer/>
                                             <Spacer/>
                                             <Spacer/>
+                                            {fishMap[fishParking.parking].status === 3 && <FishDeadRecordsTriger fishId={fishMap[fishParking.parking].id}/>}
                                             <FishStatusIcon status={fishMap[fishParking.parking].status}
                                                             boxSize='50px'/>
                                         </Flex>
