@@ -70,6 +70,7 @@ import Godhead from "./Godhead";
 import {getFishLevelNameByLevel} from "./style/TextDisplayUtils";
 import {GetGrowthRequireMoney} from "./pkg/FishUtils";
 import FishSkills from "./FishSkills";
+import FishDeadRecordsTrigger from "./FishDeadRecordsTrigger";
 
 let socket = null;
 
@@ -506,19 +507,24 @@ function PlaygroundMobile() {
                     bg={GetFishColorByRating(showFish.rating)}
                     padding={3}>
                     <CardHeader mt={-5}>
-                        <Flex>
-                            <Heading>
-                                {showFish.name}
-                            </Heading>
-                            <Spacer/>
-                            <Godhead godheadInfo={showFish.godhead}/>
-                            <Spacer/>
-                            <Spacer/>
-                            <Spacer/>
-                            <Spacer/>
-                            <Spacer/>
-                            <FishStatusIcon status={showFish.status} boxSize='50px'/>
-                        </Flex>
+                        <Grid templateColumns='repeat(10, 1fr)'>
+                            <GridItem colSpan={3}>
+                                <Heading>
+                                    {showFish.name}
+                                </Heading>
+                            </GridItem>
+                            <GridItem colSpan={3}>
+                                <Godhead godheadInfo={showFish.godhead}/>
+                            </GridItem>
+                            <GridItem colSpan={2}></GridItem>
+                            <GridItem colSpan={1}>
+                                {showFish.status === 3 && <FishDeadRecordsTrigger fishId={showFish.id}/>}
+                            </GridItem>
+                            <GridItem colSpan={1}>
+                                <FishStatusIcon status={showFish.status}
+                                                boxSize='50px'/>
+                            </GridItem>
+                        </Grid>
                         <HStack>
                             {showFish.protect_count > 0 &&
                                 <Image maxW='30px' src={ProtectCountIcon}/>

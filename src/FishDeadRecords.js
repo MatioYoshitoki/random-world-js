@@ -1,14 +1,34 @@
-import {Badge, HStack, List, ListItem, Text} from "@chakra-ui/react";
+import {Badge, List, ListItem, Text, VStack} from "@chakra-ui/react";
 import moment from 'moment';
 
 function FishDeadRecords({records}) {
+    const recordWithTag = []
+    let latestTag = ''
+    if (Array.isArray(records)) {
+        let tmp = [];
+        for (let record of records) {
+            const currentTag = moment(record.record_at_ms).format('YYYY-MM-DD hh:mm:ss');
+            if (currentTag === latestTag || latestTag === '') {
+                tmp.push(record.content);
+            } else if (latestTag !== ''){
+                recordWithTag.push({
+                    time_tag: latestTag,
+                    content_list: tmp,
+                })
+                tmp = [record.content]
+            }
+            latestTag = currentTag;
+        }
+    }
     return (<List spacing={3}>
-        {Array.isArray(records) && records.map(record => (
+        {Array.isArray(recordWithTag) && recordWithTag.map(record => (
             <ListItem>
-                <HStack textAlign='left'>
-                    <Badge>{moment(record.record_at_ms).format('YYYY-MM-DD hh:mm:ss')}</Badge>
-                    <Text>{record.content}</Text>
-                </HStack>
+                <VStack textAlign='left'>
+                    <Badge>{record.time_tag}</Badge>
+                    {Array.isArray(record.content_list) && record.content_list.map(content => (
+                        <Text>{content}</Text>
+                    ))}
+                </VStack>
             </ListItem>
         ))}
     </List>)

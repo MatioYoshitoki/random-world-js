@@ -32,7 +32,7 @@ import {
     NumberInputStepper,
     NumberIncrementStepper,
     Tooltip,
-    Progress, Tabs, TabList, Tab, TabPanels, TabPanel, Flex, Spacer, Image, useToast, VStack, Badge, Box,
+    Progress, Tabs, TabList, Tab, TabPanels, TabPanel, Flex, Spacer, Image, useToast, VStack, Badge, Box, SimpleGrid,
 } from '@chakra-ui/react'
 import PropList from "./Props";
 import PoolRank from "./PoolRank";
@@ -65,7 +65,7 @@ import Godhead from "./Godhead";
 import {getFishLevelNameByLevel} from "./style/TextDisplayUtils";
 import {GetGrowthRequireMoney} from "./pkg/FishUtils";
 import FishSkills from "./FishSkills";
-import FishDeadRecordsTriger from "./FishDeadRecordsTriger";
+import FishDeadRecordsTrigger from "./FishDeadRecordsTrigger";
 
 let socket = null;
 
@@ -477,21 +477,24 @@ function Playground() {
                                     height='100%'
                                     padding={5}>
                                     <CardHeader>
-                                        <Flex>
-                                            <Heading>
-                                                {fishMap[fishParking.parking].name}
-                                            </Heading>
-                                            <Spacer/>
-                                            <Godhead godheadInfo={fishMap[fishParking.parking].godhead}/>
-                                            <Spacer/>
-                                            <Spacer/>
-                                            <Spacer/>
-                                            <Spacer/>
-                                            <Spacer/>
-                                            {fishMap[fishParking.parking].status === 3 && <FishDeadRecordsTriger fishId={fishMap[fishParking.parking].id}/>}
-                                            <FishStatusIcon status={fishMap[fishParking.parking].status}
-                                                            boxSize='50px'/>
-                                        </Flex>
+                                        <Grid templateColumns='repeat(10, 1fr)'>
+                                            <GridItem colSpan={3}>
+                                                <Heading>
+                                                    {fishMap[fishParking.parking].name}
+                                                </Heading>
+                                            </GridItem>
+                                            <GridItem colSpan={3}>
+                                                <Godhead godheadInfo={fishMap[fishParking.parking].godhead}/>
+                                            </GridItem>
+                                            <GridItem colSpan={2}></GridItem>
+                                            <GridItem colSpan={1}>
+                                                {fishMap[fishParking.parking].status === 3 && <FishDeadRecordsTrigger fishId={fishMap[fishParking.parking].id}/>}
+                                            </GridItem>
+                                            <GridItem colSpan={1}>
+                                                <FishStatusIcon status={fishMap[fishParking.parking].status}
+                                                                boxSize='50px'/>
+                                            </GridItem>
+                                        </Grid>
                                         <HStack>
                                             {fishMap[fishParking.parking].protect_count > 0 &&
                                                 <Tooltip

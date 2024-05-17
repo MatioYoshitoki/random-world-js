@@ -9,7 +9,7 @@ import {FetchFishDeadRecords} from "./request/Fish";
 import {useState} from "react";
 import FishDeadRecords from "./FishDeadRecords";
 
-function FishDeadRecordsTriger({fishId}) {
+function FishDeadRecordsTrigger({fishId}) {
     const [records, setRecords] = useState(null);
     const {isOpen, onOpen, onClose} = useDisclosure();
     const openRecord = (fishId) => {
@@ -18,7 +18,7 @@ function FishDeadRecordsTriger({fishId}) {
     const btnRef = React.useRef(null)
     return (
         <>
-            <IconButton variant='ghost' isRound size='xs' aria-label='1' onClick={openRecord} ref={btnRef}>
+            <IconButton variant='ghost' isRound size='xs' aria-label='1' onClick={() => openRecord(fishId)} ref={btnRef}>
                 <Image maxW='30px' src={FishDeadRecordIcon}/>
             </IconButton>
             <Modal
@@ -35,11 +35,11 @@ function FishDeadRecordsTriger({fishId}) {
                         <FishDeadRecords records={records}/>
                     </ModalBody>
                     <ModalFooter>
-                        <Button onClick={onClose}>Close</Button>
+                        <Button onClick={onClose}>关闭</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>
         </>)
 }
 
-export default FishDeadRecordsTriger;
+export default FishDeadRecordsTrigger;
