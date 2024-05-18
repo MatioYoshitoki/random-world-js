@@ -6,6 +6,7 @@ function FishDeadRecords({records}) {
     let latestTag = ''
     if (Array.isArray(records)) {
         let tmp = [];
+        let idx = 0
         for (let record of records) {
             const currentTag = moment(record.record_at_ms).format('YYYY-MM-DD hh:mm:ss');
             if (currentTag === latestTag || latestTag === '') {
@@ -18,6 +19,13 @@ function FishDeadRecords({records}) {
                 tmp = [record.content]
             }
             latestTag = currentTag;
+            idx ++;
+            if (idx === records.length) {
+                recordWithTag.push({
+                    time_tag: latestTag,
+                    content_list: tmp,
+                })
+            }
         }
     }
     return (<List spacing={3}>
