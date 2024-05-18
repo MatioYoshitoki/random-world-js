@@ -49,13 +49,13 @@ export function GetFishSkillColor(level) {
         case 1:
             return 'gray.500';
         case 2:
-            return 'green.500';
+            return 'green.400';
         case 3:
-            return 'blue.500';
+            return 'blue.400';
         case 4:
-            return 'purple.500';
+            return 'purple.600';
         case 5:
-            return 'orange.500';
+            return 'orange.600';
         default:
             return '';
     }

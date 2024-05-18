@@ -20,13 +20,13 @@ import {
     CardBody,
     Text,
     Card,
-    useDisclosure, UnorderedList, ListItem, Tooltip, useToast,
+    useDisclosure, useToast,
 } from '@chakra-ui/react'
 import {Buy, FetchMarketDetail, FetchMarkets} from "./request/Market";
 import {FormatTime} from "./style/TimeDisplayUtil";
-import {GetFishSkillColor} from "./style/ColorUtil";
 import {FailedToast, SuccessToast} from "./style/ShowToast";
 import FishSkills from "./FishSkills";
+import {getFishLevelNameByLevel} from "./style/TextDisplayUtils";
 
 function MarketList() {
     const [markets, setMarkets] = useState([]);
@@ -103,7 +103,6 @@ function MarketList() {
                                 <Stack direction='row' align='center'>
                                     <Button colorScheme='teal' size='xs'
                                             onClick={() => FetchMarketDetail(market.product_id, (data) => {
-                                                console.log(data);
                                                 setDetailData(data);
                                                 onOpen();
                                             }, defaultFailedCallback)}>详情</Button>
@@ -132,7 +131,7 @@ function MarketList() {
                                 </Heading>
                             </CardHeader>
                             <CardBody>
-                                <Text>境界：{detailData.level}</Text>
+                                <Text>境界：{getFishLevelNameByLevel(detailData.level)}</Text>
                                 <Text>生命：{detailData.heal}/{detailData.max_heal}</Text>
                                 <Text>自愈：{detailData.recover_speed}</Text>
                                 <Text>攻击：{detailData.atk}</Text>

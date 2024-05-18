@@ -12,7 +12,7 @@ function FishSkills({fishSkillList, awakingRemain}) {
                 {Array.isArray(fishSkillList) && fishSkillList.map(fishSkill => (
                     <ListItem key={fishSkill.skill_id}>
                         <Tooltip label={fishSkill.skill_desc} placement='left'>
-                            <Text textColor={GetFishSkillColor(fishSkill.skill_level)}>{getFishSkillNameByLevel(fishSkill.skill_id, fishSkill.skill_level)}</Text>
+                            <Text fontWeight='bold' textColor={GetFishSkillColor(fishSkill.skill_level)}>{getFishSkillNameByLevel(fishSkill.skill_id, fishSkill.skill_level)}</Text>
                         </Tooltip>
                     </ListItem>
                 ))}

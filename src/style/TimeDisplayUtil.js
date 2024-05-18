@@ -1,6 +1,7 @@
 export const FormatTime = (seconds) => {
     if (seconds < 60_000) {
-        return `${seconds}秒`;
+        const sec = Math.floor(seconds / 1000);
+        return `${sec}秒`;
     } else if (seconds < 3600_000) {
         const minutes = Math.floor(seconds / 60_000);
         return `${minutes}分钟`;
