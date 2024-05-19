@@ -1,4 +1,3 @@
-import './Login.css'
 import {
     VStack,
     Button,
@@ -23,7 +22,7 @@ function SkillTargetSelector({fishList, targetStatus, callback, isDisabled}) {
                 <PopoverBody>
                    <VStack spacing={2}>
                        {Array.isArray(fishList) && fishList.filter(fish => fish.status === targetStatus).map(fish => (
-                           <Button colorScheme='teal' onClick={() => {
+                           <Button key={fish.id} colorScheme='teal' onClick={() => {
                                callback(fish.id);
                                onClose();
                            }}>{fish.name}</Button>

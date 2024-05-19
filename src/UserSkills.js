@@ -121,7 +121,7 @@ function UserSkills({userLevel, fishList, expendGold}) {
                             <Text textAlign='center' maxW='150px' fontSize={12}>{feedFish.desc}</Text>
                             <HStack>
                                 <Button maxW='60px' size='xs' colorScheme='blue'
-                                        isDisabled={feedFish.upgrade_required_level > userLevel}
+                                        isDisabled={feedFish.upgrade_required_level > userLevel || feedFish.upgrade_required_level < 0}
                                         onClick={() => UserSkillUpgrade(feedFish.id, () => {
                                             FetchUserSkills(enrichUserSkills, defaultFailedCallback).then();
                                             expendGold(feedFish.upgrade_required_gold);
@@ -156,7 +156,7 @@ function UserSkills({userLevel, fishList, expendGold}) {
                             <Text textAlign='center' maxW='150px' fontSize={12}>{healFish.desc}</Text>
                             <HStack>
                                 <Button maxW='60px' size='xs' colorScheme='blue'
-                                        isDisabled={healFish.upgrade_required_level > userLevel}
+                                        isDisabled={healFish.upgrade_required_level > userLevel || healFish.upgrade_required_level < 0}
                                         onClick={() => UserSkillUpgrade(healFish.id, () => {
                                             FetchUserSkills(enrichUserSkills, defaultFailedCallback).then();
                                             expendGold(healFish.upgrade_required_gold);
@@ -191,7 +191,7 @@ function UserSkills({userLevel, fishList, expendGold}) {
                             <Text textAlign='center' maxW='150px' fontSize={12}>{shadowFish.desc}</Text>
                             <HStack>
                                 <Button maxW='60px' size='xs' colorScheme='blue'
-                                        isDisabled={shadowFish.upgrade_required_level > userLevel}
+                                        isDisabled={shadowFish.upgrade_required_level > userLevel || shadowFish.upgrade_required_level < 0}
                                         onClick={() => UserSkillUpgrade(shadowFish.id, () => {
                                             FetchUserSkills(enrichUserSkills, defaultFailedCallback).then();
                                             expendGold(shadowFish.upgrade_required_gold);
@@ -228,7 +228,7 @@ function UserSkills({userLevel, fishList, expendGold}) {
                             <Text textAlign='center' maxW='150px' fontSize={12}>{crazyFish.desc}</Text>
                             <HStack>
                                 <Button maxW='60px' size='xs' colorScheme='blue'
-                                        isDisabled={crazyFish.upgrade_required_level > userLevel}
+                                        isDisabled={crazyFish.upgrade_required_level > userLevel || crazyFish.upgrade_required_level < 0}
                                         onClick={() => UserSkillUpgrade(crazyFish.id, () => {
                                             FetchUserSkills(enrichUserSkills, defaultFailedCallback).then();
                                             expendGold(crazyFish.upgrade_required_gold);
@@ -261,7 +261,7 @@ function UserSkills({userLevel, fishList, expendGold}) {
                             <Text textAlign='center' maxW='150px' fontSize={12}>{refineFish.desc}</Text>
                             <HStack>
                                 <Button maxW='60px' size='xs' colorScheme='blue'
-                                        isDisabled={refineFish.upgrade_required_level > userLevel}
+                                        isDisabled={refineFish.upgrade_required_level > userLevel || refineFish.upgrade_required_level < 0}
                                         onClick={() => UserSkillUpgrade(refineFish.id, () => {
                                             FetchUserSkills(enrichUserSkills, defaultFailedCallback).then();
                                             expendGold(refineFish.upgrade_required_gold);

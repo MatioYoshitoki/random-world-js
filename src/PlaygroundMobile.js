@@ -378,10 +378,16 @@ function PlaygroundMobile() {
                 const newFishList = [...fishList];
                 const index = newFishList.findIndex(fish => fish.id === deadFish.id);
                 const oldFish = fishList[index];
-                newFishList[index] = {
-                    ...deadFish, parking: oldFish.parking, rating: oldFish.rating, level: oldFish.level,
-                };
+                const df = {
+                    ...deadFish,
+                    parking: oldFish.parking,
+                    rating: oldFish.rating,
+                }
+                newFishList[index] = df;
                 refreshFishList(newFishList);
+                if (showFish.id === df.id) {
+                    setShowFish(df);
+                }
                 setNeedDestroyFish(null);
             }
             destroyFish(needDestroyFish)
@@ -477,7 +483,6 @@ function PlaygroundMobile() {
             FetchFishList((list) => {
                 refreshFishList(list);
                 if (list.length > 0) {
-                    console.log(list[0]);
                     setShowFish(list[0])
                 }
             }, defaultFailedCallback).then();

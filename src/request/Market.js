@@ -50,7 +50,7 @@ export const SellStop = async (fishId, callback, failedCallback) => {
 export const FetchMarkets = (page, callback, failedCallback) => {
     return api.post(MARKET_LIST_API_ENDPOINT, {
         page: page,
-        page_size: 20
+        page_size: 10
     })
         .then(response => {
             const {code, data} = response.data;

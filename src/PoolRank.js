@@ -98,44 +98,44 @@ function PoolRank({rankType}) {
                         </Td>
                     </Tr>
                 ))}
-                <Modal
-                    isOpen={isOpen}
-                    onClose={onClose}
-                    isCentered
-                    motionPreset='slideInBottom'
-                    size='xl'
-                >
-                    <ModalOverlay/>
-                    <ModalContent border={1}>
-                        {selectedFish != null && (
-                            <Card padding={5}>
-                                <CardHeader>
-                                    <Heading>
-                                        {selectedFish.name}
-                                    </Heading>
-                                </CardHeader>
-                                <CardBody>
-                                    <Tooltip label={'修为:'+selectedFish.weight} placement='left'>
-                                        <Text>境界：{getFishLevelNameByLevel(selectedFish.level)}</Text>
-                                    </Tooltip>
-                                    <Text>性格：{selectedFish.personality_name}</Text>
-                                    <Text>生命：{selectedFish.heal}/{selectedFish.max_heal}</Text>
-                                    <Text>自愈：{selectedFish.recover_speed}</Text>
-                                    <Text>攻击：{selectedFish.atk}</Text>
-                                    <Text>防御：{selectedFish.def}</Text>
-                                    <Text>修炼：{selectedFish.earn_speed}</Text>
-                                    <Text>闪避：{selectedFish.dodge}</Text>
-                                    <Text>灵气：{selectedFish.money}</Text>
-                                    <FishSkills fishSkillList={selectedFish.fish_skills} awakingRemain={selectedFish.awaking_remain}/>
-                                </CardBody>
-                                <Stack direction='row'>
-                                    <Button colorScheme='blue' onClick={closeDetail}>关闭</Button>
-                                </Stack>
-                            </Card>
-                        )}
-                    </ModalContent>
-                </Modal>
             </Table>
+            <Modal
+                isOpen={isOpen}
+                onClose={onClose}
+                isCentered
+                motionPreset='slideInBottom'
+                size='xl'
+            >
+                <ModalOverlay/>
+                <ModalContent border={1}>
+                    {selectedFish != null && (
+                        <Card padding={5}>
+                            <CardHeader>
+                                <Heading>
+                                    {selectedFish.name}
+                                </Heading>
+                            </CardHeader>
+                            <CardBody>
+                                <Tooltip label={'修为:'+selectedFish.weight} placement='left'>
+                                    <Text>境界：{getFishLevelNameByLevel(selectedFish.level)}</Text>
+                                </Tooltip>
+                                <Text>性格：{selectedFish.personality_name}</Text>
+                                <Text>生命：{selectedFish.heal}/{selectedFish.max_heal}</Text>
+                                <Text>自愈：{selectedFish.recover_speed}</Text>
+                                <Text>攻击：{selectedFish.atk}</Text>
+                                <Text>防御：{selectedFish.def}</Text>
+                                <Text>修炼：{selectedFish.earn_speed}</Text>
+                                <Text>闪避：{selectedFish.dodge}</Text>
+                                <Text>灵气：{selectedFish.money}</Text>
+                                <FishSkills fishSkillList={selectedFish.fish_skills} awakingRemain={selectedFish.awaking_remain}/>
+                            </CardBody>
+                            <Stack direction='row'>
+                                <Button colorScheme='blue' onClick={closeDetail}>关闭</Button>
+                            </Stack>
+                        </Card>
+                    )}
+                </ModalContent>
+            </Modal>
         </TableContainer>
     );
 }
