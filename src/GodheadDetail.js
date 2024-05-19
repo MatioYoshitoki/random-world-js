@@ -18,7 +18,7 @@ import {getFishLevelNameByLevel} from "./style/TextDisplayUtils";
 
 function GodheadDetail({godhead}) {
     const {isOpen, onOpen, onClose} = useDisclosure()
-    let desc = '一枚'+getFishLevelNameByLevel(godhead.level)+'神格，击败强敌'+godhead.fish_name+'后得到的战利品。';
+    let desc = '一枚'+getFishLevelNameByLevel(godhead.level)+'神格，击败强敌'+godhead.fish_name+'后得到的战利品，';
     if (godhead.master_name !== '') {
         desc += '想必'+godhead.master_name+'此刻一定悲痛欲绝。';
     } else {
