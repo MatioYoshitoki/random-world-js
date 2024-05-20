@@ -19,9 +19,9 @@ function BehaviorDetails({behavior}) {
         });
         const option = {
             legend: {
-                // left: 'left',
-                // top: 'bottom',
-                show: false,
+                left: 'center',
+                top: 'bottom',
+                // show: false,
                 data: [
                     '攻击',
                     '休整',
@@ -43,7 +43,7 @@ function BehaviorDetails({behavior}) {
                     },
                     label: {
                         show: true,
-                        formatter: '{b} {d}%'
+                        formatter: '{d}%'
                     },
                     data: [
                         { value: behavior[0], name: '攻击' },
