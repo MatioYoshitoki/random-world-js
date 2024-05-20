@@ -19,12 +19,12 @@ function Godhead({godheadInfo}) {
         <VStack>
             <HStack>
                 {Array.isArray(firstLine) && firstLine.map(info => (
-                    <GodheadDetail godhead={info}/>
+                    <GodheadDetail key={info.id} godhead={info}/>
                 ))}
             </HStack>
             <HStack>
                 {Array.isArray(secondLine) && secondLine.map(info => (
-                    <GodheadDetail godhead={info}/>
+                    <GodheadDetail key={info.id} godhead={info}/>
                 ))}
             </HStack>
         </VStack>

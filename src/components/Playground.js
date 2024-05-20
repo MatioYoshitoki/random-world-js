@@ -32,7 +32,7 @@ import {
     NumberInputStepper,
     NumberIncrementStepper,
     Tooltip,
-    Progress, Tabs, TabList, Tab, TabPanels, TabPanel, Image, useToast, Box, Flex,
+    Progress, Tabs, TabList, Tab, TabPanels, TabPanel, Image, useToast, Box, Flex, VStack,
 } from '@chakra-ui/react'
 import PropList from "./Props";
 import PoolRank from "./PoolRank";
@@ -67,6 +67,7 @@ import {GetGrowthRequireMoney} from "../pkg/FishUtils";
 import FishSkills from "./FishSkills";
 import FishDeadRecordsTrigger from "./FishDeadRecordsTrigger";
 import BehaviorDetails from "./BehaviorDetails";
+import GrowthDetails from "./GrowthDetails";
 
 let socket = null;
 
@@ -531,21 +532,28 @@ function Playground() {
                                         </Tooltip>
                                     </CardHeader>
                                     <CardBody mt={-5}>
-                                        <Text>境界：{getFishLevelNameByLevel(fishMap[fishParking.parking].level)}</Text>
-                                        <Flex>
-                                            <Text>性格</Text>
-                                            <BehaviorDetails behavior={fishMap[fishParking.parking].behavior}/>
-                                            <Text>：{fishMap[fishParking.parking].personality_name}</Text>
-                                        </Flex>
-                                        <Text>自愈：{fishMap[fishParking.parking].recover_speed}</Text>
-                                        <Text>攻击：{fishMap[fishParking.parking].atk}</Text>
-                                        <Text>防御：{fishMap[fishParking.parking].def}</Text>
-                                        <Text>修炼：{fishMap[fishParking.parking].earn_speed}</Text>
-                                        <Text>闪避：{fishMap[fishParking.parking].dodge}</Text>
-                                        <Tooltip label={'主动攻击: '+fishMap[fishParking.parking].fish_statistics.proactive_attack_count + '\t反击：'+fishMap[fishParking.parking].fish_statistics.counter_attack_count} placement='left'>
-                                            <Text width='30%'>击杀数：{fishMap[fishParking.parking].fish_statistics.kills}</Text>
-                                        </Tooltip>
-                                        <FishSkills fishSkillList={fishMap[fishParking.parking].fish_skills} awakingRemain={fishMap[fishParking.parking].awaking_remain}/>
+                                        <HStack>
+                                            <VStack alignItems='start'>
+                                                <Text>境界：{getFishLevelNameByLevel(fishMap[fishParking.parking].level)}</Text>
+                                                <Flex>
+                                                    <Text>性格</Text>
+                                                    <BehaviorDetails behavior={fishMap[fishParking.parking].behavior}/>
+                                                    <Text>：{fishMap[fishParking.parking].personality_name}</Text>
+                                                </Flex>
+                                                <Text>自愈：{fishMap[fishParking.parking].recover_speed}</Text>
+                                                <Text>攻击：{fishMap[fishParking.parking].atk}</Text>
+                                                <Text>防御：{fishMap[fishParking.parking].def}</Text>
+                                                <Text>修炼：{fishMap[fishParking.parking].earn_speed}</Text>
+                                                <Text>闪避：{fishMap[fishParking.parking].dodge}</Text>
+                                                <Tooltip label={'主动攻击: '+fishMap[fishParking.parking].fish_statistics.proactive_attack_count + '\t反击：'+fishMap[fishParking.parking].fish_statistics.counter_attack_count} placement='left'>
+                                                    <Text>击杀数：{fishMap[fishParking.parking].fish_statistics.kills}</Text>
+                                                </Tooltip>
+                                                <FishSkills fishSkillList={fishMap[fishParking.parking].fish_skills} awakingRemain={fishMap[fishParking.parking].awaking_remain}/>
+                                            </VStack>
+                                            <VStack>
+                                                <GrowthDetails level={fishMap[fishParking.parking].level} growthCountDetail={fishMap[fishParking.parking].fish_statistics.growth_count_detail} growthDetail={fishMap[fishParking.parking].fish_statistics.growth_detail}/>
+                                            </VStack>
+                                        </HStack>
                                     </CardBody>
                                     {renderActionButtons(fishMap[fishParking.parking])}
                                 </Card>
