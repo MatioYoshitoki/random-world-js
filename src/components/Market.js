@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import './Login.css'
+import '../Login.css'
 import ReactPager from 'react-pager';
 import {
     Table,
@@ -22,11 +22,11 @@ import {
     Card,
     useDisclosure, useToast,
 } from '@chakra-ui/react'
-import {Buy, FetchMarketDetail, FetchMarkets} from "./request/Market";
-import {FormatTime} from "./style/TimeDisplayUtil";
-import {FailedToast, SuccessToast} from "./style/ShowToast";
+import {Buy, FetchMarketDetail, FetchMarkets} from "../request/Market";
+import {FormatTime} from "../style/TimeDisplayUtil";
+import {FailedToast, SuccessToast} from "../style/ShowToast";
 import FishSkills from "./FishSkills";
-import {getFishLevelNameByLevel} from "./style/TextDisplayUtils";
+import {getFishLevelNameByLevel} from "../style/TextDisplayUtils";
 
 function MarketList() {
     const [markets, setMarkets] = useState([]);

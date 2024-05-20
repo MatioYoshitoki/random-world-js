@@ -1,4 +1,4 @@
-import './Login.css'
+import '../Login.css'
 import {
     Popover,
     PopoverTrigger,
@@ -12,8 +12,8 @@ import {
     Image,
     PopoverFooter, Button,
 } from '@chakra-ui/react'
-import {GetGodheadIcon} from "./style/GodheadIconUtil";
-import {getFishLevelNameByLevel} from "./style/TextDisplayUtils";
+import {GetGodheadIcon} from "../style/GodheadIconUtil";
+import {getFishLevelNameByLevel} from "../style/TextDisplayUtils";
 
 
 function GodheadDetail({godhead}) {

@@ -1,7 +1,7 @@
 import {Box, ListItem, Text, Tooltip, UnorderedList} from "@chakra-ui/react";
-import {GetFishSkillColor} from "./style/ColorUtil";
+import {GetFishSkillColor} from "../style/ColorUtil";
 import React from "react";
-import {getFishSkillNameByLevel} from "./style/TextDisplayUtils";
+import {getFishSkillNameByLevel} from "../style/TextDisplayUtils";
 
 function FishSkills({fishSkillList, awakingRemain}) {
 

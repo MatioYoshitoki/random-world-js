@@ -1,8 +1,8 @@
 import {Image, Stack} from "@chakra-ui/react";
-import fishAliveIcon from './assets/fish_status/fish_alive.svg';
-import fishSleepIcon from './assets/fish_status/fish_sleep.svg';
-import fishUpSellIcon from './assets/fish_status/fish_up_sell.svg';
-import fishDeadIcon from './assets/fish_status/fish_dead.svg';
+import fishAliveIcon from '../assets/fish_status/fish_alive.svg';
+import fishSleepIcon from '../assets/fish_status/fish_sleep.svg';
+import fishUpSellIcon from '../assets/fish_status/fish_up_sell.svg';
+import fishDeadIcon from '../assets/fish_status/fish_dead.svg';
 
 
 function FishStatusIcon({status, boxSize}) {

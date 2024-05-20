@@ -4,7 +4,7 @@ import './Market.css'
 import {v4 as uuidv4} from 'uuid'; // 引入 uuid 库
 import {
     BASE_WS_ENDPOINT,
-} from './config';
+} from '../config';
 import Market from "./Market"; // 导入配置文件
 import {
     Stack,
@@ -38,39 +38,40 @@ import {
     Box, IconButton, Image, TabList, Tab, TabPanels, TabPanel, Tabs, useToast, Flex, Spacer,
 } from '@chakra-ui/react'
 import PropList from "./Props";
-import {DecodeBase64} from "./Base64.js";
-import {SellStart, SellStop} from "./request/Market";
+import {DecodeBase64} from "../Base64.js";
+import {SellStart, SellStop} from "../request/Market";
 import {
     AliveFish, CreateFish, FetchFishList, FetchFishParkingList, PullFish, RefineFish, SleepFish
-} from "./request/Fish";
-import {Configs, ExpandFishParking, FetchUserAsset, FetchUserBaseInfo} from "./request/User";
+} from "../request/Fish";
+import {Configs, ExpandFishParking, FetchUserAsset, FetchUserBaseInfo} from "../request/User";
 import {
     GetFishColorByRating,
     GetFishColorByRatingMobile,
     GetFishSkillColor,
     GetHpProgressColor,
     GetParkingStatusColorMobile
-} from "./style/ColorUtil";
+} from "../style/ColorUtil";
 import UserBaseInfo from "./UserBaseInfo";
 import FishStatusIcon from "./FishStatusIcon";
-import {FishCardClassNameByStatus, FishEffectIconByEffectType} from "./style/StyleUtil";
+import {FishCardClassNameByStatus, FishEffectIconByEffectType} from "../style/StyleUtil";
 
-import buildingIcon from './assets/mobile_button_icon/building.svg';
-import createIcon from './assets/mobile_button_icon/create.svg';
-import marketIcon from './assets/mobile_button_icon/market.svg';
-import skillsIcon from './assets/mobile_button_icon/skills.svg';
-import poolRankIcon from './assets/mobile_button_icon/pool_rank.svg';
-import propsIcon from './assets/mobile_button_icon/props.svg';
+import buildingIcon from '../assets/mobile_button_icon/building.svg';
+import createIcon from '../assets/mobile_button_icon/create.svg';
+import marketIcon from '../assets/mobile_button_icon/market.svg';
+import skillsIcon from '../assets/mobile_button_icon/skills.svg';
+import poolRankIcon from '../assets/mobile_button_icon/pool_rank.svg';
+import propsIcon from '../assets/mobile_button_icon/props.svg';
 import PoolRankMobile from "./PoolRankMobile";
 import UserLevelRank from "./UserLevelRank";
-import {FailedToast, SuccessToast} from "./style/ShowToast";
+import {FailedToast, SuccessToast} from "../style/ShowToast";
 import UserSkillsMobile from "./UserSkillsMobile";
-import ProtectCountIcon from "./assets/fish/protect_count.svg";
+import ProtectCountIcon from "../assets/fish/protect_count.svg";
 import Godhead from "./Godhead";
-import {getFishLevelNameByLevel} from "./style/TextDisplayUtils";
-import {GetGrowthRequireMoney} from "./pkg/FishUtils";
+import {getFishLevelNameByLevel} from "../style/TextDisplayUtils";
+import {GetGrowthRequireMoney} from "../pkg/FishUtils";
 import FishSkills from "./FishSkills";
 import FishDeadRecordsTrigger from "./FishDeadRecordsTrigger";
+import BehaviorDetails from "./BehaviorDetails";
 
 let socket = null;
 
@@ -553,7 +554,11 @@ function PlaygroundMobile() {
                             mt={1}/>
                         <Text fontSize={10}>灵气：{showFish.money}/{GetGrowthRequireMoney(showFish.level)}</Text>
                         <Text fontSize={13}>境界：{getFishLevelNameByLevel(showFish.level)}</Text>
-                        <Text fontSize={13}>性格：{showFish.personality_name}</Text>
+                        <Flex>
+                            <Text fontSize={13}>性格</Text>
+                            <BehaviorDetails behavior={showFish.behavior}/>
+                            <Text fontSize={13}>：{showFish.personality_name}</Text>
+                        </Flex>
                         <Text fontSize={13}>自愈：{showFish.recover_speed}</Text>
                         <Text fontSize={13}>攻击：{showFish.atk}</Text>
                         <Text fontSize={13}>防御：{showFish.def}</Text>

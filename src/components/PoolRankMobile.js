@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import './Login.css'
+import '../Login.css'
 import ReactPager from 'react-pager';
 import {
     Button,
@@ -23,9 +23,9 @@ import {
     Link,
     useToast,
 } from '@chakra-ui/react'
-import {FetchPoolRanks} from "./request/Fish";
-import {FailedToast} from "./style/ShowToast";
-import {getFishLevelNameByLevel} from "./style/TextDisplayUtils";
+import {FetchPoolRanks} from "../request/Fish";
+import {FailedToast} from "../style/ShowToast";
+import {getFishLevelNameByLevel} from "../style/TextDisplayUtils";
 import FishSkills from "./FishSkills";
 
 function PoolRankMobile({rankType}) {

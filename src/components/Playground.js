@@ -4,7 +4,7 @@ import './Market.css'
 import {v4 as uuidv4} from 'uuid'; // 引入 uuid 库
 import {
     BASE_WS_ENDPOINT,
-} from './config';
+} from '../config';
 import Market from "./Market"; // 导入配置文件
 import {
     Stack,
@@ -32,13 +32,13 @@ import {
     NumberInputStepper,
     NumberIncrementStepper,
     Tooltip,
-    Progress, Tabs, TabList, Tab, TabPanels, TabPanel, Flex, Spacer, Image, useToast, VStack, Badge, Box, SimpleGrid,
+    Progress, Tabs, TabList, Tab, TabPanels, TabPanel, Image, useToast, Box, Flex,
 } from '@chakra-ui/react'
 import PropList from "./Props";
 import PoolRank from "./PoolRank";
 import {AddIcon} from "@chakra-ui/icons";
-import {DecodeBase64} from "./Base64.js";
-import {SellStart, SellStop} from "./request/Market";
+import {DecodeBase64} from "../Base64.js";
+import {SellStart, SellStop} from "../request/Market";
 import {
     AliveFish,
     CreateFish,
@@ -47,25 +47,26 @@ import {
     PullFish,
     RefineFish,
     SleepFish
-} from "./request/Fish";
-import {Configs, ExpandFishParking, FetchUserAsset, FetchUserBaseInfo} from "./request/User";
+} from "../request/Fish";
+import {Configs, ExpandFishParking, FetchUserAsset, FetchUserBaseInfo} from "../request/User";
 import {
     GetFishColorByRating,
     GetHpProgressColor,
     GetParkingStatusColor
-} from "./style/ColorUtil";
+} from "../style/ColorUtil";
 import UserBaseInfo from "./UserBaseInfo";
 import FishStatusIcon from "./FishStatusIcon";
-import {FishCardClassNameByStatus, FishEffectIconByEffectType} from "./style/StyleUtil";
+import {FishCardClassNameByStatus, FishEffectIconByEffectType} from "../style/StyleUtil";
 import UserLevelRank from "./UserLevelRank";
 import UserSkills from "./UserSkills";
-import {FailedToast, SuccessToast} from "./style/ShowToast";
-import ProtectCountIcon from "./assets/fish/protect_count.svg";
+import {FailedToast, SuccessToast} from "../style/ShowToast";
+import ProtectCountIcon from "../assets/fish/protect_count.svg";
 import Godhead from "./Godhead";
-import {getFishLevelNameByLevel} from "./style/TextDisplayUtils";
-import {GetGrowthRequireMoney} from "./pkg/FishUtils";
+import {getFishLevelNameByLevel} from "../style/TextDisplayUtils";
+import {GetGrowthRequireMoney} from "../pkg/FishUtils";
 import FishSkills from "./FishSkills";
 import FishDeadRecordsTrigger from "./FishDeadRecordsTrigger";
+import BehaviorDetails from "./BehaviorDetails";
 
 let socket = null;
 
@@ -531,7 +532,11 @@ function Playground() {
                                     </CardHeader>
                                     <CardBody mt={-5}>
                                         <Text>境界：{getFishLevelNameByLevel(fishMap[fishParking.parking].level)}</Text>
-                                        <Text>性格：{fishMap[fishParking.parking].personality_name}</Text>
+                                        <Flex>
+                                            <Text>性格</Text>
+                                            <BehaviorDetails behavior={fishMap[fishParking.parking].behavior}/>
+                                            <Text>：{fishMap[fishParking.parking].personality_name}</Text>
+                                        </Flex>
                                         <Text>自愈：{fishMap[fishParking.parking].recover_speed}</Text>
                                         <Text>攻击：{fishMap[fishParking.parking].atk}</Text>
                                         <Text>防御：{fishMap[fishParking.parking].def}</Text>

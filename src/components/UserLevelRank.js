@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import './Login.css'
+import '../Login.css'
 import ReactPager from 'react-pager';
 import {Table, TableCaption, Tr, Th, Thead, Td, TableContainer, useToast} from '@chakra-ui/react'
-import {FetchUserLevelRanks} from "./request/User";
-import {FailedToast} from "./style/ShowToast";
+import {FetchUserLevelRanks} from "../request/User";
+import {FailedToast} from "../style/ShowToast";
 
 function UserLevelRank() {
     const [userLevelRanks, setUserLevelRanks] = useState([]);

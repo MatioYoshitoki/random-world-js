@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import './Login.css'
+import '../Login.css'
 import {Box, VStack, HStack, Button, Text, Image, Badge, Heading, useToast,} from '@chakra-ui/react'
 import {
     FetchUserSkills,
@@ -8,14 +8,14 @@ import {
     UserHealFish,
     UserShadowFish,
     UserSkillUpgrade
-} from "./request/User";
-import CrazyFish from "./assets/user_skills/crazy_fish.svg";
-import FeedFish from "./assets/user_skills/feed_fish.svg";
-import HealFish from "./assets/user_skills/heal_fish.svg";
-import RefineFish from "./assets/user_skills/refine_fish.svg";
-import ShadowFish from "./assets/user_skills/shadow_fish.svg";
+} from "../request/User";
+import CrazyFish from "../assets/user_skills/crazy_fish.svg";
+import FeedFish from "../assets/user_skills/feed_fish.svg";
+import HealFish from "../assets/user_skills/heal_fish.svg";
+import RefineFish from "../assets/user_skills/refine_fish.svg";
+import ShadowFish from "../assets/user_skills/shadow_fish.svg";
 import SkillTargetSelector from "./SkillTargetSelector";
-import {FailedToast, SuccessToast} from "./style/ShowToast";
+import {FailedToast, SuccessToast} from "../style/ShowToast";
 
 function UserSkills({userLevel, fishList, expendGold}) {
     const [userSkills, setUserSkills] = useState([]);

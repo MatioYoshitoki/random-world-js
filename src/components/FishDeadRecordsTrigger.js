@@ -4,8 +4,8 @@ import {
     IconButton,
     Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure
 } from "@chakra-ui/react";
-import FishDeadRecordIcon from "./assets/fish/dead_records.svg";
-import {FetchFishDeadRecords} from "./request/Fish";
+import FishDeadRecordIcon from "../assets/fish/dead_records.svg";
+import {FetchFishDeadRecords} from "../request/Fish";
 import {useState} from "react";
 import FishDeadRecords from "./FishDeadRecords";
 

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import './Login.css'
+import '../Login.css'
 import ReactPager from 'react-pager';
 import {
     Button,
@@ -12,8 +12,8 @@ import {
     Tbody,
     TableContainer, useToast,
 } from '@chakra-ui/react'
-import {EatProp, FetchProps} from "./request/User";
-import {FailedToast} from "./style/ShowToast";
+import {EatProp, FetchProps} from "../request/User";
+import {FailedToast} from "../style/ShowToast";
 
 function PropList({incrExp}) {
     const [props, setProps] = useState([]);
