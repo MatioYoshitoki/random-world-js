@@ -14,13 +14,16 @@ import {
 } from '@chakra-ui/react'
 import {GetGodheadIcon} from "../style/GodheadIconUtil";
 import {getFishLevelNameByLevel} from "../style/TextDisplayUtils";
+import Stage0 from "../assets/godhead_level_icon/stage_0.svg";
 
 
 function GodheadDetail({godhead}) {
     const {isOpen, onOpen, onClose} = useDisclosure()
     let desc = '一枚'+getFishLevelNameByLevel(godhead.level)+'神格，击败强敌'+godhead.fish_name+'后得到的战利品，';
-    if (godhead.master_name !== '') {
+    let icon = Stage0;
+    if (godhead.master_name && godhead.master_name !== '') {
         desc += '想必'+godhead.master_name+'此刻一定悲痛欲绝。';
+        icon = GetGodheadIcon(godhead.level)
     } else {
         desc += '无主的鱼，神格的光芒似乎也更加黯淡。';
     }
@@ -28,7 +31,7 @@ function GodheadDetail({godhead}) {
         <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement='bottom-end'>
             <PopoverTrigger>
                 <IconButton variant='ghost' isRound size='xs' aria-label={godhead.id}>
-                    <Image maxW='15px' src={GetGodheadIcon(godhead.level)}/>
+                    <Image maxW='15px' src={icon}/>
                 </IconButton>
             </PopoverTrigger>
             <PopoverContent>
