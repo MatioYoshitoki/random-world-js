@@ -123,6 +123,11 @@ function Playground() {
 
     const refreshFishList = (fishes) => {
         if (fishes != null) {
+            fishes.forEach(item => {
+                if (item.fish.status === null || item.fish.status === undefined) {
+                    item.fish.status = 0;
+                }
+            })
             setFishList(fishes);
         }
     }
@@ -304,11 +309,12 @@ function Playground() {
         // console.log('refresh fish map: ' + fishList);
         fishList.forEach(item => {
             newFishMap[item.parking] = item;
-            if (Array.isArray(item.effects)) {
+            if (Array.isArray(item.fish.effects)) {
                 let idx = 0
                 newParkingEffects[item.parking] = Array.of();
                 const nowMs = new Date().getTime()
-                for (let effect of item.effects) {
+                for (let effect of item.fish.effects) {
+                    console.log(effect);
                     if (Math.round((effect.effect_expire_ms - nowMs) / 1000) > 0) {
                         newParkingEffects[item.parking][idx] = {
                             ...effect

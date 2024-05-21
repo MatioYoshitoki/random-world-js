@@ -21,11 +21,11 @@ function SkillTargetSelector({fishList, targetStatus, callback, isDisabled}) {
                 <PopoverCloseButton />
                 <PopoverBody>
                    <VStack spacing={2}>
-                       {Array.isArray(fishList) && fishList.filter(fish => fish.status === targetStatus).map(fish => (
-                           <Button key={fish.id} colorScheme='teal' onClick={() => {
-                               callback(fish.id);
+                       {Array.isArray(fishList) && fishList.filter(fish => fish.fish.status === targetStatus).map(fish => (
+                           <Button key={fish.fish.id} colorScheme='teal' onClick={() => {
+                               callback(fish.fish.id);
                                onClose();
-                           }}>{fish.name}</Button>
+                           }}>{fish.fish.name}</Button>
                        ))}
                    </VStack>
                 </PopoverBody>
