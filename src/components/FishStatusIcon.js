@@ -25,6 +25,8 @@ function fishStatusIconUrl(status) {
         return fishUpSellIcon;
     } else if (status === 3) {
         return fishDeadIcon;
+    } else {
+        return fishAliveIcon;
     }
 }
 

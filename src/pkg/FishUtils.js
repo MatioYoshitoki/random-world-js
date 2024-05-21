@@ -13,3 +13,18 @@ export function GetGrowthRequireMoney(currentLevel) {
     // 将两部分费用相加，并返回结果
     return baseWeight + Math.round(extraCost); // 根据需要决定是否要进行四舍五入
 }
+
+const personalityNameMap = {
+    0: "大暑",
+    1: "小暑",
+    2: "小满",
+    3: "夏至",
+    4: "芒种",
+    5: "立夏",
+}
+
+export function Position(personality) {
+    const m1 = personality % 36;
+    const t3 = m1 % 6;
+    return personalityNameMap[t3];
+}

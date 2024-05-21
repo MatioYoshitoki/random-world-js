@@ -31,11 +31,7 @@ import {
     NumberInputField,
     NumberInputStepper,
     NumberIncrementStepper,
-    Tooltip,
-    UnorderedList,
-    ListItem,
-    Progress,
-    Box, IconButton, Image, TabList, Tab, TabPanels, TabPanel, Tabs, useToast, Flex, Spacer,
+    Progress, IconButton, Image, TabList, Tab, TabPanels, TabPanel, Tabs, useToast, Flex, Spacer, VStack,
 } from '@chakra-ui/react'
 import PropList from "./Props";
 import {DecodeBase64} from "../Base64.js";
@@ -47,13 +43,12 @@ import {Configs, ExpandFishParking, FetchUserAsset, FetchUserBaseInfo} from "../
 import {
     GetFishColorByRating,
     GetFishColorByRatingMobile,
-    GetFishSkillColor,
     GetHpProgressColor,
     GetParkingStatusColorMobile
 } from "../style/ColorUtil";
 import UserBaseInfo from "./UserBaseInfo";
 import FishStatusIcon from "./FishStatusIcon";
-import {FishCardClassNameByStatus, FishEffectIconByEffectType} from "../style/StyleUtil";
+import {FishCardClassNameByStatus} from "../style/StyleUtil";
 
 import buildingIcon from '../assets/mobile_button_icon/building.svg';
 import createIcon from '../assets/mobile_button_icon/create.svg';
@@ -65,13 +60,8 @@ import PoolRankMobile from "./PoolRankMobile";
 import UserLevelRank from "./UserLevelRank";
 import {FailedToast, SuccessToast} from "../style/ShowToast";
 import UserSkillsMobile from "./UserSkillsMobile";
-import ProtectCountIcon from "../assets/fish/protect_count.svg";
-import Godhead from "./Godhead";
-import {getFishLevelNameByLevel} from "../style/TextDisplayUtils";
-import {GetGrowthRequireMoney} from "../pkg/FishUtils";
-import FishSkills from "./FishSkills";
-import FishDeadRecordsTrigger from "./FishDeadRecordsTrigger";
-import BehaviorDetails from "./BehaviorDetails";
+import FishHeaderMobile from "./FishHeaderMobile";
+import FishBaseInfoMobile from "./FishBaseInfoMobile";
 
 let socket = null;
 
@@ -181,9 +171,13 @@ function PlaygroundMobile() {
         SleepFish(fishId, defaultFailedCallback, () => {
             const newFishList = [...fishList]
             for (let i = 0; i < newFishList.length; i++) {
-                if (newFishList[i].id === fishId) {
+                if (newFishList[i].fish.id === fishId) {
                     const nf = {
-                        ...newFishList[i], status: 1,
+                        ...newFishList[i],
+                        fish: {
+                            ...newFishList[i].fish,
+                            status: 1,
+                        }
                     }
                     newFishList[i] = nf;
                     setShowFish(nf);
@@ -217,10 +211,10 @@ function PlaygroundMobile() {
     const refine = (fishId) => {
         // 发送炼化请求
         RefineFish(fishId, defaultFailedCallback, () => {
-            const newFishList = fishList.filter(fish => fish.id !== fishId);
+            const newFishList = fishList.filter(fish => fish.fish.id !== fishId);
             const newParkingList = [...fishParkingList];
             for (let fish of fishList) {
-                if (fish.id === fishId) {
+                if (fish.fish.id === fishId) {
                     for (let parking of newParkingList) {
                         if (parking.parking === fish.parking) {
                             parking.status = 1;
@@ -244,9 +238,13 @@ function PlaygroundMobile() {
         AliveFish(fishId, defaultFailedCallback, () => {
             const newFishList = [...fishList]
             for (let i = 0; i < newFishList.length; i++) {
-                if (newFishList[i].id === fishId) {
+                if (newFishList[i].fish.id === fishId) {
                     const nf = {
-                        ...newFishList[i], status: 0,
+                        ...newFishList[i],
+                        fish: {
+                            ...newFishList[i].fish,
+                            status: 0
+                        }
                     }
                     newFishList[i] = nf;
                     setShowFish(nf);
@@ -279,35 +277,23 @@ function PlaygroundMobile() {
                     <Button bg='orange.100' onClick={() => handleRefineClick(fish.id)}>炼化</Button>
                 </Stack>);
             default:
-                return null;
+                return (<Stack mt={3} direction='row' spacing={4} align='center'>
+                    <Button bg='yellow.50' onClick={() => handleSleepClick(fish.id)}>休息</Button>
+                </Stack>);
         }
     }
     const afterPull = (pullList) => {
         const newList = [...fishList];
         if (Array.isArray(pullList)) {
             pullList.forEach(newFish => {
-                const index = newList.findIndex(oldFish => oldFish.id === newFish.id);
+                const index = newList.findIndex(oldFish => oldFish.fish.id === newFish.id);
                 if (index !== -1) {
                     const newShowFish = {
                         ...fishList[index],
-                        weight: newFish.weight,
-                        level: newFish.level,
-                        max_heal: newFish.max_heal,
-                        heal: newFish.heal,
-                        recover_speed: newFish.recover_speed,
-                        atk: newFish.atk,
-                        def: newFish.def,
-                        earn_speed: newFish.earn_speed,
-                        dodge: newFish.dodge,
-                        money: newFish.money,
-                        protect_count: newFish.protect_count,
-                        awaking_remain: newFish.awaking_remain,
-                        fish_skills: newFish.fish_skills,
-                        fish_statistics: newFish.fish_statistics,
-                        effects: newFish.effects,
+                        fish: newFish
                     };
                     newList[index] = newShowFish;
-                    if (showFish !== null && newShowFish.id === showFish.id) {
+                    if (showFish !== null && newShowFish.fish.id === showFish.fish.id) {
                         setShowFish(newShowFish);
                     }
                 }
@@ -377,16 +363,16 @@ function PlaygroundMobile() {
             console.log(needDestroyFish);
             const destroyFish = (deadFish) => {
                 const newFishList = [...fishList];
-                const index = newFishList.findIndex(fish => fish.id === deadFish.id);
+                const index = newFishList.findIndex(fish => fish.fish.id === deadFish.id);
                 const oldFish = fishList[index];
                 const df = {
-                    ...deadFish,
+                    fish : deadFish,
                     parking: oldFish.parking,
                     rating: oldFish.rating,
                 }
                 newFishList[index] = df;
                 refreshFishList(newFishList);
-                if (showFish.id === df.id) {
+                if (showFish.fish.id === df.fish.id) {
                     setShowFish(df);
                 }
                 setNeedDestroyFish(null);
@@ -503,76 +489,22 @@ function PlaygroundMobile() {
             window.removeEventListener('storage', handleAccessTokenChange);
         }
     }, [])
-    return (<Box>
+    return (<VStack>
         <Grid templateColumns='repeat(24, 1fr)' alignItems='center'>
             <GridItem colSpan={24}>
                 <UserBaseInfo asset={asset} userBaseInfo={baseInfo}/>
                 {showFish != null && (<Card
-                    className={FishCardClassNameByStatus(showFish.status)}
+                    className={FishCardClassNameByStatus(showFish.fish.status)}
                     mt={2}
                     bg={GetFishColorByRating(showFish.rating)}
                     padding={3}>
-                    <CardHeader mt={-5}>
-                        <Grid templateColumns='repeat(10, 1fr)'>
-                            <GridItem colSpan={3}>
-                                <Heading>
-                                    {showFish.name}
-                                </Heading>
-                            </GridItem>
-                            <GridItem colSpan={3}>
-                                <Godhead godheadInfo={showFish.godhead}/>
-                            </GridItem>
-                            <GridItem colSpan={2}></GridItem>
-                            <GridItem colSpan={1}>
-                                {showFish.status === 3 && <FishDeadRecordsTrigger fishId={showFish.id}/>}
-                            </GridItem>
-                            <GridItem colSpan={1}>
-                                <FishStatusIcon status={showFish.status}
-                                                boxSize='50px'/>
-                            </GridItem>
-                        </Grid>
-                        <HStack>
-                            {showFish.protect_count > 0 &&
-                                <Image maxW='30px' src={ProtectCountIcon}/>
-                            }
-                            {Array.isArray(parkingEffect[showFish.parking]) && (parkingEffect[showFish.parking].map(effect => (
-                                <Image maxW='30px' src={FishEffectIconByEffectType(effect.effect_type)}/>
-                            )))}
-                        </HStack>
+                    <CardHeader>
+                        <FishHeaderMobile fish={showFish.fish} effectList={parkingEffect[showFish.parking]}/>
                     </CardHeader>
                     <CardBody mt={-8}>
-                        <Progress
-                            value={showFish.heal < 0 ? 0 : showFish.heal}
-                            max={showFish.max_heal}
-                            colorScheme={GetHpProgressColor(showFish.heal, showFish.max_heal)}
-                            isAnimated={true}/>
-                        <Text fontSize={10}>生命：{showFish.heal < 0 ? 0 : showFish.heal}/{showFish.max_heal}</Text>
-                        <Progress
-                            value={showFish.money}
-                            max={GetGrowthRequireMoney(showFish.level)}
-                            size='sm'
-                            mt={1}/>
-                        <Text fontSize={10}>灵气：{showFish.money}/{GetGrowthRequireMoney(showFish.level)}</Text>
-                        <Text fontSize={13}>境界：{getFishLevelNameByLevel(showFish.level)}</Text>
-                        <Flex>
-                            <Text fontSize={13}>性格</Text>
-                            <BehaviorDetails behavior={showFish.behavior}/>
-                            <Text fontSize={13}>：{showFish.personality_name}</Text>
-                        </Flex>
-                        <Text fontSize={13}>自愈：{showFish.recover_speed}</Text>
-                        <Text fontSize={13}>攻击：{showFish.atk}</Text>
-                        <Text fontSize={13}>防御：{showFish.def}</Text>
-                        <Text fontSize={13}>修炼：{showFish.earn_speed}</Text>
-                        <Text fontSize={13}>闪避：{showFish.dodge}</Text>
-                        {showFish.fish_statistics != null &&
-                            (<Tooltip
-                                label={'主动攻击: ' + showFish.fish_statistics.proactive_attack_count + '\t反击：' + showFish.fish_statistics.counter_attack_count}
-                                placement='left'>
-                                <Text fontSize={13}>击杀数：{showFish.fish_statistics.kills}</Text>
-                            </Tooltip>)}
-                        <FishSkills fishSkillList={showFish.fish_skills} awakingRemain={showFish.awaking_remain}/>
+                        <FishBaseInfoMobile fish={showFish.fish}/>
                     </CardBody>
-                    {renderActionButtons(showFish)}
+                    {renderActionButtons(showFish.fish)}
                 </Card>)}
                 <Grid templateRows='repeat(2, 1fr)'
                       templateColumns='repeat(3, 1fr)'
@@ -583,7 +515,7 @@ function PlaygroundMobile() {
                     {Array.isArray(fishParkingList) && fishParkingList.filter(fp => fp.status !== 0).map(fishParking => (
                         <GridItem colSpan={1} rowSpan={1} key={fishParking.parking}>
                             {fishMap[fishParking.parking] != null && (<Button
-                                    className={FishCardClassNameByStatus(fishMap[fishParking.parking].status)}
+                                    className={FishCardClassNameByStatus(fishMap[fishParking.parking].fish.status)}
                                     size='lg'
                                     height='100%'
                                     padding={1}
@@ -591,19 +523,19 @@ function PlaygroundMobile() {
                                     colorScheme={GetFishColorByRatingMobile(fishMap[fishParking.parking].rating)}>
                                     <Grid templateColumns='repeat(1, 1fr)'>
                                         <GridItem align='center'>
-                                            <FishStatusIcon status={fishMap[fishParking.parking].status}
+                                            <FishStatusIcon status={fishMap[fishParking.parking].fish.status}
                                                             boxSize='30px'/>
                                         </GridItem>
                                         <GridItem alignItems='center'>
-                                            <Text fontSize={13}>{fishMap[fishParking.parking].name}</Text>
+                                            <Text fontSize={13}>{fishMap[fishParking.parking].fish.name}</Text>
                                         </GridItem>
                                         <GridItem>
                                             <Progress
                                                 mt={1}
                                                 size='sm'
-                                                value={fishMap[fishParking.parking].heal < 0 ? 0 : fishMap[fishParking.parking].heal * 100 / fishMap[fishParking.parking].max_heal}
+                                                value={fishMap[fishParking.parking].fish.heal < 0 ? 0 : fishMap[fishParking.parking].fish.heal * 100 / fishMap[fishParking.parking].fish.max_heal}
                                                 max={100}
-                                                colorScheme={GetHpProgressColor(fishMap[fishParking.parking].heal, fishMap[fishParking.parking].max_heal)}
+                                                colorScheme={GetHpProgressColor(fishMap[fishParking.parking].fish.heal, fishMap[fishParking.parking].fish.max_heal)}
                                                 isAnimated={true}/>
                                         </GridItem>
                                     </Grid>
@@ -644,157 +576,156 @@ function PlaygroundMobile() {
                             </Button>
                         </GridItem>)}
                 </Grid>
-                <Modal
-                    isOpen={isOpen}
-                    onClose={closeTopModal}
-                    isCentered
-                    motionPreset='slideInBottom'
-                    size='6xl'
-                >
-                    <ModalOverlay/>
-                    {marketOpen && (<ModalContent>
-                        <Market/>
-                    </ModalContent>)}
-                    {userSkillsOpen && (
-                        <ModalContent>
-                            <UserSkillsMobile userLevel={asset.level} fishList={fishList} expendGold={(cost) => {
-                                const newAsset = {
-                                    ...asset
-                                };
-                                newAsset.gold = asset.gold - cost
-                                setAsset(newAsset);
-                            }}/>
-                        </ModalContent>
-                    )}
-                    {propOpen && (<ModalContent>
-                        <PropList incrExp={(exp, levelUpCount) => {
+            </GridItem>
+            <Modal
+                isOpen={isOpen}
+                onClose={closeTopModal}
+                isCentered
+                motionPreset='slideInBottom'
+            >
+                <ModalOverlay/>
+                {marketOpen && (<ModalContent>
+                    <Market/>
+                </ModalContent>)}
+                {userSkillsOpen && (
+                    <ModalContent>
+                        <UserSkillsMobile userLevel={asset.level} fishList={fishList} expendGold={(cost) => {
                             const newAsset = {
                                 ...asset
                             };
-                            newAsset.exp = asset.exp + exp
-                            if (levelUpCount !== 0) {
-                                newAsset.level = newAsset.level + levelUpCount
-                                SuccessToast( '升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！', toast);
-                            } else {
-                                SuccessToast( '增加经验' + exp + '！', toast);
-                            }
+                            newAsset.gold = asset.gold - cost
                             setAsset(newAsset);
                         }}/>
-                    </ModalContent>)}
-                    {poolRankOpen && (<ModalContent maxWidth='90%'>
-                        <Tabs variant='enclosed'>
-                            <TabList>
-                                <Tab>玩家等级榜</Tab>
-                                <Tab>🐟修为榜</Tab>
-                                <Tab>🐟击杀榜</Tab>
-                            </TabList>
-                            <TabPanels>
-                                <TabPanel>
-                                    <UserLevelRank/>
-                                </TabPanel>
-                                <TabPanel>
-                                    <PoolRankMobile rankType={0}/>
-                                </TabPanel>
-                                <TabPanel>
-                                    <PoolRankMobile rankType={1}/>
-                                </TabPanel>
-                            </TabPanels>
-                        </Tabs>
-                    </ModalContent>)}
-                    {sellFish != null && (<ModalContent>
-                        <Card padding={5}>
-                            <CardHeader>
-                                <Heading>
-                                    上架【{sellFish.name}】
-                                </Heading>
-                            </CardHeader>
-                            <CardBody>
-                                <FormControl>
-                                    <FormLabel>价格</FormLabel>
-                                    <NumberInput defaultValue={price} min={0} onChange={(e) => setPrice(e)}>
-                                        <NumberInputField/>
-                                        <NumberInputStepper>
-                                            <NumberIncrementStepper/>
-                                            <NumberDecrementStepper/>
-                                        </NumberInputStepper>
-                                    </NumberInput>
-                                    <FormHelperText>合理的价格可以让您的商品更受青睐</FormHelperText>
-                                </FormControl>
-                                <FormControl>
-                                    <FormLabel>上架时长</FormLabel>
-                                    <RadioGroup defaultValue={sellDuration} onChange={(e) => setSellDuration(e)}>
-                                        <HStack spacing='24px'>
-                                            <Radio value='half_day'>半天</Radio>
-                                            <Radio value='one_day'>一天</Radio>
-                                            <Radio value='three_day'>三天</Radio>
-                                            <Radio value='one_week'>一周</Radio>
-                                        </HStack>
-                                    </RadioGroup>
-                                    <FormHelperText>注. 手续费取决于售价与上架时长</FormHelperText>
-                                </FormControl>
-                            </CardBody>
-                            <Stack direction='row'>
-                                <Button colorScheme='yellow'
-                                        onClick={() => SellStart(sellFish, price, sellDuration, asset, setAsset, (commission) => {
-                                            SuccessToast('上架成功! 扣除手续费' + commission + '晶石', toast)
-                                            setAsset({
-                                                ...asset,
-                                                gold: asset.gold - commission
-                                            })
-                                            closeTopModal();
-                                            FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
-                                            FetchFishList(refreshFishList).then();
-                                        }, defaultFailedCallback)}>上架</Button>
-                                <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
-                            </Stack>
-                        </Card>
-                    </ModalContent>)}
-                    {downSellFish != null && (<ModalContent>
-                        <Card padding={5}>
-                            <CardHeader>
-                                <Heading>
-                                    下架【{downSellFish.name}】? 手续费将不退还。
-                                </Heading>
-                            </CardHeader>
-                            <CardBody>
-                                <Stack direction='row'>
-                                    <Button bg='blue.300' onClick={() => SellStop(downSellFish.id, () => {
-                                        SuccessToast('下架成功', toast);
+                    </ModalContent>
+                )}
+                {propOpen && (<ModalContent>
+                    <PropList incrExp={(exp, levelUpCount) => {
+                        const newAsset = {
+                            ...asset
+                        };
+                        newAsset.exp = asset.exp + exp
+                        if (levelUpCount !== 0) {
+                            newAsset.level = newAsset.level + levelUpCount
+                            SuccessToast( '升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！', toast);
+                        } else {
+                            SuccessToast( '增加经验' + exp + '！', toast);
+                        }
+                        setAsset(newAsset);
+                    }}/>
+                </ModalContent>)}
+                {poolRankOpen && (<ModalContent maxWidth='90%'>
+                    <Tabs variant='enclosed'>
+                        <TabList>
+                            <Tab>玩家等级榜</Tab>
+                            <Tab>🐟修为榜</Tab>
+                            <Tab>🐟击杀榜</Tab>
+                        </TabList>
+                        <TabPanels>
+                            <TabPanel>
+                                <UserLevelRank/>
+                            </TabPanel>
+                            <TabPanel>
+                                <PoolRankMobile rankType={0}/>
+                            </TabPanel>
+                            <TabPanel>
+                                <PoolRankMobile rankType={1}/>
+                            </TabPanel>
+                        </TabPanels>
+                    </Tabs>
+                </ModalContent>)}
+                {sellFish != null && (<ModalContent>
+                    <Card padding={5}>
+                        <CardHeader>
+                            <Heading>
+                                上架【{sellFish.name}】
+                            </Heading>
+                        </CardHeader>
+                        <CardBody>
+                            <FormControl>
+                                <FormLabel>价格</FormLabel>
+                                <NumberInput defaultValue={price} min={0} onChange={(e) => setPrice(e)}>
+                                    <NumberInputField/>
+                                    <NumberInputStepper>
+                                        <NumberIncrementStepper/>
+                                        <NumberDecrementStepper/>
+                                    </NumberInputStepper>
+                                </NumberInput>
+                                <FormHelperText>合理的价格可以让您的商品更受青睐</FormHelperText>
+                            </FormControl>
+                            <FormControl>
+                                <FormLabel>上架时长</FormLabel>
+                                <RadioGroup defaultValue={sellDuration} onChange={(e) => setSellDuration(e)}>
+                                    <HStack spacing='24px'>
+                                        <Radio value='half_day'>半天</Radio>
+                                        <Radio value='one_day'>一天</Radio>
+                                        <Radio value='three_day'>三天</Radio>
+                                        <Radio value='one_week'>一周</Radio>
+                                    </HStack>
+                                </RadioGroup>
+                                <FormHelperText>注. 手续费取决于售价与上架时长</FormHelperText>
+                            </FormControl>
+                        </CardBody>
+                        <Stack direction='row'>
+                            <Button colorScheme='yellow'
+                                    onClick={() => SellStart(sellFish, price, sellDuration, asset, setAsset, (commission) => {
+                                        SuccessToast('上架成功! 扣除手续费' + commission + '晶石', toast)
+                                        setAsset({
+                                            ...asset,
+                                            gold: asset.gold - commission
+                                        })
                                         closeTopModal();
                                         FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
                                         FetchFishList(refreshFishList).then();
-                                    }, defaultFailedCallback)}>下架</Button>
-                                    <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
-                                </Stack>
-                            </CardBody>
-                        </Card>
-                    </ModalContent>)}
-                    {refineFishId !== 0 && (<ModalContent border={1}>
-                        <Card padding={2}>
-                            <CardHeader>
-                                <Heading fontSize={30}>确认炼化?</Heading>
-                            </CardHeader>
-                            <CardBody>
-                                <Stack direction='row'>
-                                    <Button size='sm' colorScheme='orange'
-                                            onClick={() => refine(refineFishId)}>确认</Button>
-                                    <Button size='sm' colorScheme='blue' onClick={closeTopModal}>取消</Button>
-                                </Stack>
-                            </CardBody>
-                        </Card>
-                    </ModalContent>)}
-                </Modal>
-            </GridItem>
+                                    }, defaultFailedCallback)}>上架</Button>
+                            <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
+                        </Stack>
+                    </Card>
+                </ModalContent>)}
+                {downSellFish != null && (<ModalContent>
+                    <Card padding={5}>
+                        <CardHeader>
+                            <Heading>
+                                下架【{downSellFish.name}】? 手续费将不退还。
+                            </Heading>
+                        </CardHeader>
+                        <CardBody>
+                            <Stack direction='row'>
+                                <Button bg='blue.300' onClick={() => SellStop(downSellFish.id, () => {
+                                    SuccessToast('下架成功', toast);
+                                    closeTopModal();
+                                    FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
+                                    FetchFishList(refreshFishList).then();
+                                }, defaultFailedCallback)}>下架</Button>
+                                <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
+                            </Stack>
+                        </CardBody>
+                    </Card>
+                </ModalContent>)}
+                {refineFishId !== 0 && (<ModalContent>
+                    <Card>
+                        <CardHeader>
+                            <Heading fontSize={30}>确认炼化?</Heading>
+                        </CardHeader>
+                        <CardBody>
+                            <HStack>
+                                <Button size='sm' colorScheme='orange'
+                                        onClick={() => refine(refineFishId)}>确认</Button>
+                                <Button size='sm' colorScheme='blue' onClick={closeTopModal}>取消</Button>
+                            </HStack>
+                        </CardBody>
+                    </Card>
+                </ModalContent>)}
+            </Modal>
         </Grid>
-        <Stack className='bottom-element' direction='row' gap={4} align='center' padding={5}>
+        <HStack className='bottom-element' gap={4} align='center' padding={5}>
             <IconButton aria-label='创建' onClick={handleCreateClick} icon={<Image src={createIcon}/>}/>
             <IconButton aria-label='排行' onClick={handleOpenPoolRank} icon={<Image src={poolRankIcon}/>}/>
             <IconButton aria-label='背包' onClick={handleOpenProps} icon={<Image src={propsIcon}/>}/>
             <IconButton aria-label='交易' onClick={handleOpenMarket} icon={<Image src={marketIcon}/>}/>
             <IconButton aria-label='技能' onClick={handleOpenUserSkills} icon={<Image src={skillsIcon}/>}/>
             <IconButton aria-label='建筑' icon={<Image src={buildingIcon}/>}/>
-        </Stack>
-    </Box>);
+        </HStack>
+    </VStack>);
 }
 
 export default PlaygroundMobile;

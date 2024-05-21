@@ -28,6 +28,9 @@ import {FormatTime} from "../style/TimeDisplayUtil";
 import {FailedToast} from "../style/ShowToast";
 import {getFishLevelNameByLevel} from "../style/TextDisplayUtils";
 import FishSkills from "./FishSkills";
+import FishHeader from "./FishHeader";
+import FishBaseInfo from "./FishBaseInfo";
+import {GetFishColorByRating} from "../style/ColorUtil";
 
 function PoolRank({rankType}) {
     const [poolRanks, setPoolRanks] = useState([]);
@@ -88,9 +91,9 @@ function PoolRank({rankType}) {
                 {poolRanks.map(poolRank => (
                     <Tr key={poolRank.fish_id}>
                         <Td>{poolRank.rank}</Td>
-                        <Td>{poolRank.fish.name}</Td>
-                        <Td>{getFishLevelNameByLevel(poolRank.fish.level)}</Td>
-                        <Td>{poolRank.fish.fish_statistics && poolRank.fish.fish_statistics.kills}</Td>
+                        <Td>{poolRank.fish.fish.name}</Td>
+                        <Td>{getFishLevelNameByLevel(poolRank.fish.fish.level)}</Td>
+                        <Td>{poolRank.fish.fish.fish_statistics && poolRank.fish.fish.fish_statistics.kills}</Td>
                         <Td>{poolRank.master_name}</Td>
                         <Td>{FormatTime(poolRank.alive_time_ms)}</Td>
                         <Td>
@@ -109,25 +112,12 @@ function PoolRank({rankType}) {
                 <ModalOverlay/>
                 <ModalContent border={1}>
                     {selectedFish != null && (
-                        <Card padding={5}>
+                        <Card padding={5}  bg={GetFishColorByRating(selectedFish.rating)}>
                             <CardHeader>
-                                <Heading>
-                                    {selectedFish.name}
-                                </Heading>
+                                <FishHeader fish={selectedFish.fish}/>
                             </CardHeader>
                             <CardBody>
-                                <Tooltip label={'修为:'+selectedFish.weight} placement='left'>
-                                    <Text>境界：{getFishLevelNameByLevel(selectedFish.level)}</Text>
-                                </Tooltip>
-                                <Text>性格：{selectedFish.personality_name}</Text>
-                                <Text>生命：{selectedFish.heal}/{selectedFish.max_heal}</Text>
-                                <Text>自愈：{selectedFish.recover_speed}</Text>
-                                <Text>攻击：{selectedFish.atk}</Text>
-                                <Text>防御：{selectedFish.def}</Text>
-                                <Text>修炼：{selectedFish.earn_speed}</Text>
-                                <Text>闪避：{selectedFish.dodge}</Text>
-                                <Text>灵气：{selectedFish.money}</Text>
-                                <FishSkills fishSkillList={selectedFish.fish_skills} awakingRemain={selectedFish.awaking_remain}/>
+                                <FishBaseInfo fish={selectedFish.fish}/>
                             </CardBody>
                             <Stack direction='row'>
                                 <Button colorScheme='blue' onClick={closeDetail}>关闭</Button>

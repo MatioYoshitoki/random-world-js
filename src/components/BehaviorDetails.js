@@ -54,7 +54,7 @@ function BehaviorDetails({behavior}) {
             ]
         };
         chartInstance.setOption(option);
-    }, []);
+    }, [behavior]);
     const {isOpen, onOpen, onClose} = useDisclosure()
     return (
         <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement='bottom-end'>

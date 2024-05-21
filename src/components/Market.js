@@ -27,6 +27,9 @@ import {FormatTime} from "../style/TimeDisplayUtil";
 import {FailedToast, SuccessToast} from "../style/ShowToast";
 import FishSkills from "./FishSkills";
 import {getFishLevelNameByLevel} from "../style/TextDisplayUtils";
+import FishHeader from "./FishHeader";
+import FishBaseInfo from "./FishBaseInfo";
+import {GetFishColorByRating} from "../style/ColorUtil";
 
 function MarketList() {
     const [markets, setMarkets] = useState([]);
@@ -124,22 +127,12 @@ function MarketList() {
                 <ModalOverlay/>
                 <ModalContent>
                     {detailData != null && (
-                        <Card padding={5}>
+                        <Card padding={5} bg={GetFishColorByRating(detailData.fish.rating)}>
                             <CardHeader>
-                                <Heading>
-                                    {detailData.name}
-                                </Heading>
+                                <FishHeader fish={detailData.fish.fish}/>
                             </CardHeader>
                             <CardBody>
-                                <Text>境界：{getFishLevelNameByLevel(detailData.level)}</Text>
-                                <Text>生命：{detailData.heal}/{detailData.max_heal}</Text>
-                                <Text>自愈：{detailData.recover_speed}</Text>
-                                <Text>攻击：{detailData.atk}</Text>
-                                <Text>防御：{detailData.def}</Text>
-                                <Text>修炼：{detailData.earn_speed}</Text>
-                                <Text>闪避：{detailData.dodge}</Text>
-                                <Text>灵气：{detailData.money}</Text>
-                                <FishSkills fishSkillList={detailData.fish_skills}/>
+                                <FishBaseInfo fish={detailData.fish.fish}/>
                             </CardBody>
                             <Stack direction='row'>
                                 <Button colorScheme='orange'

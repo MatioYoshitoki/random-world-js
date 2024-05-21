@@ -4,6 +4,12 @@ export function getFishSkillNameByLevel(skillId, level) {
     return skillMap.name + '·' + skillMap.level_name[level]
 }
 
+export function getFishSkillDescByLevel(skillId, level) {
+    const fishSkillNameMap = JSON.parse(localStorage.getItem('fish_skill_name_configs'));
+    const skillMap = fishSkillNameMap[skillId]
+    return skillMap.desc_template.replace('%s', skillMap.level_rate_map[level] + '%')
+}
+
 
 export function getFishLevelNameByLevel(level) {
     const fishLevelNameMap = JSON.parse(localStorage.getItem('fish_level_name_configs'));

@@ -27,6 +27,11 @@ import {FetchPoolRanks} from "../request/Fish";
 import {FailedToast} from "../style/ShowToast";
 import {getFishLevelNameByLevel} from "../style/TextDisplayUtils";
 import FishSkills from "./FishSkills";
+import {GetFishColorByRating} from "../style/ColorUtil";
+import FishHeader from "./FishHeader";
+import FishBaseInfo from "./FishBaseInfo";
+import FishHeaderMobile from "./FishHeaderMobile";
+import FishBaseInfoMobile from "./FishBaseInfoMobile";
 
 function PoolRankMobile({rankType}) {
     const [poolRanks, setPoolRanks] = useState([]);
@@ -86,14 +91,14 @@ function PoolRankMobile({rankType}) {
                     <Tr key={poolRank.fish_id}>
                         <Td>
                             <Link fontSize={15} color='teal.500' onClick={() => handleDetail(poolRank)}>
-                                {poolRank.rank}.{poolRank.fish.name}
+                                {poolRank.rank}.{poolRank.fish.fish.name}
                             </Link>
                         </Td>
-                        {rankType === 1 && poolRank.fish.fish_statistics && (
-                            <Td fontSize={14}>{poolRank.fish.fish_statistics.kills}</Td>
+                        {rankType === 1 && poolRank.fish.fish.fish_statistics && (
+                            <Td fontSize={14}>{poolRank.fish.fish.fish_statistics.kills}</Td>
                         )}
                         {rankType === 0 && (
-                            <Td fontSize={14}>{getFishLevelNameByLevel(poolRank.fish.level)}</Td>
+                            <Td fontSize={14}>{getFishLevelNameByLevel(poolRank.fish.fish.level)}</Td>
                         )}
                         <Td fontSize={14}>{poolRank.master_name}</Td>
                     </Tr>
@@ -108,26 +113,12 @@ function PoolRankMobile({rankType}) {
                     <ModalOverlay/>
                     <ModalContent border={1}>
                         {selectedFish != null && (
-                            <Card padding={5}>
+                            <Card padding={5}  bg={GetFishColorByRating(selectedFish.rating)}>
                                 <CardHeader>
-                                    <Heading>
-                                        {selectedFish.name}
-                                    </Heading>
+                                    <FishHeaderMobile fish={selectedFish.fish}/>
                                 </CardHeader>
                                 <CardBody>
-                                    <Text>境界：{getFishLevelNameByLevel(selectedFish.level)}</Text>
-                                    <Text>性格：{selectedFish.personality_name}</Text>
-                                    <Text>生命：{selectedFish.heal}/{selectedFish.max_heal}</Text>
-                                    <Text>自愈：{selectedFish.recover_speed}</Text>
-                                    <Text>攻击：{selectedFish.atk}</Text>
-                                    <Text>防御：{selectedFish.def}</Text>
-                                    <Text>修炼：{selectedFish.earn_speed}</Text>
-                                    <Text>闪避：{selectedFish.dodge}</Text>
-                                    <Text>灵气：{selectedFish.money}</Text>
-                                    {selectedFish.fish_statistics && (
-                                        <Text>击杀：{selectedFish.fish_statistics.kills}</Text>
-                                    )}
-                                    <FishSkills fishSkillList={selectedFish.fish_skills} awakingRemain={selectedFish.awaking_remain}/>
+                                    <FishBaseInfoMobile fish={selectedFish.fish}/>
                                 </CardBody>
                                 <Stack direction='row'>
                                     <Button colorScheme='blue' onClick={closeDetail}>关闭</Button>
