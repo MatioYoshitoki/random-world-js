@@ -99,7 +99,6 @@ function UserSkills({userLevel, fishList, expendGold}) {
     }, [userSkills])
     const enrichUserSkills = (skills) => {
         if (skills !== undefined) {
-            console.log(skills);
             setUserSkills(skills);
         }
     };

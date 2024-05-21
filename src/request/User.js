@@ -139,7 +139,6 @@ export const FetchUserLevelRanks = (page, callback, failedCallback) => {
 
 
 export const FetchUserSkills = (callback, failedCallback) => {
-    console.log('try fetch skills')
     return api.post(USER_SKILLS_API_ENDPOINT, {})
         .then(response => {
             if (response.data.code === 0) {

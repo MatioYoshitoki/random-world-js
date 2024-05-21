@@ -286,7 +286,7 @@ function PlaygroundMobile() {
         const newList = [...fishList];
         if (Array.isArray(pullList)) {
             pullList.forEach(newFish => {
-                const index = newList.findIndex(oldFish => oldFish.fish.id === newFish.id);
+                const index = newList.findIndex(oldFish => oldFish.fish.id === newFish.fish.id);
                 if (index !== -1) {
                     const newShowFish = {
                         ...fishList[index],

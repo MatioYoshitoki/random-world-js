@@ -291,7 +291,7 @@ function Playground() {
         const newList = [...fishList];
         if (Array.isArray(pullList)) {
             pullList.forEach(newFish => {
-                const index = newList.findIndex(oldFish => oldFish.fish.id === newFish.id);
+                const index = newList.findIndex(oldFish => oldFish.fish.id === newFish.fish.id);
                 if (index !== -1) {
                     newList[index] = {
                         ...fishList[index],
@@ -314,7 +314,6 @@ function Playground() {
                 newParkingEffects[item.parking] = Array.of();
                 const nowMs = new Date().getTime()
                 for (let effect of item.fish.effects) {
-                    console.log(effect);
                     if (Math.round((effect.effect_expire_ms - nowMs) / 1000) > 0) {
                         newParkingEffects[item.parking][idx] = {
                             ...effect
@@ -366,7 +365,6 @@ function Playground() {
             };
             socket.onmessage = (event) => {
                 const message = JSON.parse(event.data);
-                console.log(message);
                 if (message.type === 'pong') {
                     return
                 }
