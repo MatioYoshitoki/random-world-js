@@ -31,7 +31,7 @@ import {
     NumberInputField,
     NumberInputStepper,
     NumberIncrementStepper,
-    Progress, IconButton, Image, TabList, Tab, TabPanels, TabPanel, Tabs, useToast, Flex, Spacer, VStack,
+    Progress, IconButton, Image, TabList, Tab, TabPanels, TabPanel, Tabs, useToast, VStack,
 } from '@chakra-ui/react'
 import PropList from "./Props";
 import {DecodeBase64} from "../Base64.js";
@@ -290,7 +290,8 @@ function PlaygroundMobile() {
                 if (index !== -1) {
                     const newShowFish = {
                         ...fishList[index],
-                        fish: newFish
+                        fish: newFish.fish,
+                        rating: newFish.rating
                     };
                     newList[index] = newShowFish;
                     if (showFish !== null && newShowFish.fish.id === showFish.fish.id) {

@@ -290,12 +290,12 @@ function Playground() {
                 if (index !== -1) {
                     newList[index] = {
                         ...fishList[index],
-                        fish: newFish,
+                        fish: newFish.fish,
+                        rating: newFish.rating,
                     };
                 }
             });
         }
-        console.log(newList);
         refreshFishList(newList);
     }
     useEffect(() => {
