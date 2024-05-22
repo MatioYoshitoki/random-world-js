@@ -1,3 +1,4 @@
+import Stage0 from '../assets/godhead_level_icon/stage_0.svg';
 import Stage1 from '../assets/godhead_level_icon/stage_1.svg';
 import Stage2 from '../assets/godhead_level_icon/stage_2.svg';
 import Stage3 from '../assets/godhead_level_icon/stage_3.svg';
@@ -108,8 +109,11 @@ const levelIconMap = {
 }
 
 export function GetGodheadIcon(level) {
-    if (level <= 96) {
-        return levelIconMap[level]
+    if (level <= 96 && level >= 27) {
+        return levelIconMap[level];
     }
-    return levelIconMap[96]
+    if (level < 27) {
+        return Stage0;
+    }
+    return levelIconMap[96];
 }

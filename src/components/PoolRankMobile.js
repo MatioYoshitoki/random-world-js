@@ -8,9 +8,7 @@ import {
     ModalContent,
     Modal,
     CardHeader,
-    Heading,
     CardBody,
-    Text,
     Card,
     Table,
     TableCaption,
@@ -26,10 +24,7 @@ import {
 import {FetchPoolRanks} from "../request/Fish";
 import {FailedToast} from "../style/ShowToast";
 import {getFishLevelNameByLevel} from "../style/TextDisplayUtils";
-import FishSkills from "./FishSkills";
 import {GetFishColorByRating} from "../style/ColorUtil";
-import FishHeader from "./FishHeader";
-import FishBaseInfo from "./FishBaseInfo";
 import FishHeaderMobile from "./FishHeaderMobile";
 import FishBaseInfoMobile from "./FishBaseInfoMobile";
 

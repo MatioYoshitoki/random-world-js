@@ -20,7 +20,7 @@ function FishHeaderMobile({fish, effectList}) {
                     </Heading>
                 </GridItem>
                 <GridItem colSpan={3}>
-                    <Godhead godheadInfo={fish.godhead}/>
+                    <Godhead godheadInfo={fish.godhead} fishId={fish.id} masterUid={fish.master_uid}/>
                 </GridItem>
                 <GridItem colSpan={2}></GridItem>
                 <GridItem colSpan={1}>

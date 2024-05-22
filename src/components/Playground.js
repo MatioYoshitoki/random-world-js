@@ -330,11 +330,10 @@ function Playground() {
 
     useEffect(() => {
         if (needDestroyFish != null) {
-            console.log(needDestroyFish);
             const destroyFish = (deadFish) => {
                 const newFishList = [...fishList];
-                const index = newFishList.findIndex(fish => fish.id === deadFish.id);
-                const oldFish = fishList[index];
+                const index = newFishList.findIndex(fish => fish.fish.id === deadFish.id);
+                const oldFish = newFishList[index];
                 newFishList[index] = {
                     ...deadFish,
                     parking: oldFish.parking,
@@ -543,9 +542,8 @@ function Playground() {
                 <Modal
                     isOpen={isOpen}
                     onClose={closeTopModal}
+                    size={'4xl'}
                     isCentered
-                    motionPreset='slideInBottom'
-                    size='6xl'
                 >
                     <ModalOverlay/>
                     {marketOpen && (

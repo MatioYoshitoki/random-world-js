@@ -15,6 +15,7 @@ function App() {
                     <Route path="/" element={<Login/>}/>
                     {isMobile && <Route path="/playground" element={<PlaygroundMobile/>}/>}
                     {isBrowser && <Route path="/playground" element={<Playground/>}/>}
+                    {isTablet && <Route path="/playground" element={<Playground/>}/>}
                 </Routes>
             </Router>
         </ChakraProvider>

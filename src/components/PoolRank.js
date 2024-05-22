@@ -8,9 +8,7 @@ import {
     ModalContent,
     Modal,
     CardHeader,
-    Heading,
     CardBody,
-    Text,
     Card,
     Table,
     TableCaption,
@@ -19,7 +17,6 @@ import {
     Thead,
     Td,
     useDisclosure,
-    Tooltip,
     TableContainer,
     useToast,
 } from '@chakra-ui/react'
@@ -27,7 +24,6 @@ import {FetchPoolRanks} from "../request/Fish";
 import {FormatTime} from "../style/TimeDisplayUtil";
 import {FailedToast} from "../style/ShowToast";
 import {getFishLevelNameByLevel} from "../style/TextDisplayUtils";
-import FishSkills from "./FishSkills";
 import FishHeader from "./FishHeader";
 import FishBaseInfo from "./FishBaseInfo";
 import {GetFishColorByRating} from "../style/ColorUtil";

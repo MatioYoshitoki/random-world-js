@@ -1,7 +1,7 @@
 import {HStack, VStack} from "@chakra-ui/react";
 import GodheadDetail from "./GodheadDetail";
 
-function Godhead({godheadInfo}) {
+function Godhead({fishId, masterUid, godheadInfo}) {
     let firstLine = []
     const secondLine = []
     if (godheadInfo && godheadInfo.length > 3) {
@@ -19,12 +19,12 @@ function Godhead({godheadInfo}) {
         <VStack>
             <HStack>
                 {Array.isArray(firstLine) && firstLine.map(info => (
-                    <GodheadDetail key={info.id} godhead={info}/>
+                    <GodheadDetail key={info.id} godhead={info} fishId={fishId} masterUid={masterUid}/>
                 ))}
             </HStack>
             <HStack>
                 {Array.isArray(secondLine) && secondLine.map(info => (
-                    <GodheadDetail key={info.id} godhead={info}/>
+                    <GodheadDetail key={info.id} godhead={info} fishId={fishId} masterUid={masterUid}/>
                 ))}
             </HStack>
         </VStack>

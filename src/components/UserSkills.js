@@ -128,7 +128,6 @@ function UserSkills({userLevel, fishList, expendGold}) {
                                         }, defaultFailedCallback)}>升级</Button>
                                 <SkillTargetSelector fishList={fishList} isDisabled={feedFish.level <= 0 || feedFishCD > 0}
                                                      targetStatus={1} callback={(fishId) => {
-                                    console.log('heal fish:' + fishId);
                                     UserFeedFish(fishId, (coldDownAtMs, cost) => {
                                         setColdDownSecond(coldDownAtMs, setFeedFishCD);
                                         expendGold(cost);

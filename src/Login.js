@@ -11,7 +11,7 @@ function Login() {
     const [account, setAccount] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
-    const toast = useToast()
+    const toast = useToast();
     useEffect(() => {
         // 检查本地缓存中是否存在 access_token
         const accessToken = localStorage.getItem('access_token');

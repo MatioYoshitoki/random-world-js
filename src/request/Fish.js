@@ -1,6 +1,6 @@
 import {
     FISH_ALIVE_API_ENDPOINT,
-    FISH_CREATE_API_ENDPOINT, FISH_DEAD_RECORDS_API_ENDPOINT,
+    FISH_CREATE_API_ENDPOINT, FISH_DEAD_RECORDS_API_ENDPOINT, FISH_GODHEAD_DIVESTITURE_API_ENDPOINT,
     FISH_LIST_API_ENDPOINT,
     FISH_PARKING_LIST_API_ENDPOINT,
     FISH_POOL_RANK_API_ENDPOINT,
@@ -156,7 +156,6 @@ export const FetchPoolRanks = (rankType, page, failedCallback, callback) => {
         })
 };
 
-
 export const FetchFishDeadRecords = (fishId, callback) => {
     return api.post(FISH_DEAD_RECORDS_API_ENDPOINT, {
         fish_id: fishId
@@ -172,6 +171,26 @@ export const FetchFishDeadRecords = (fishId, callback) => {
         .catch(error => {
             if (error.response) {
                 console.log(error.response.message);
+            }
+        })
+};
+
+
+export const DivestitureFishGodhead = (fishId, godheadId, failedCallback, callback) => {
+    return api.post(FISH_GODHEAD_DIVESTITURE_API_ENDPOINT, {
+        fish_id: fishId,
+        godhead_id: godheadId
+    })
+        .then(response => {
+            if (response.data.code === 0) {
+                callback();
+            } else {
+                failedCallback(response.data.message);
+            }
+        })
+        .catch(error => {
+            if (error.response) {
+                failedCallback(error.response.message);
             }
         })
 };
