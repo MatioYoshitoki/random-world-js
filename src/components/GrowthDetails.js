@@ -49,11 +49,11 @@ function GrowthDetails({fish}) {
             },
             radar: {
                 indicator: [
-                    {name: '攻击', max: 499 + 540 * (level - 1)},
-                    {name: '防御', max: 269 + 240 * (level - 1)},
-                    {name: '生命', max: 14999 + 3000 * (level - 1)},
-                    {name: '自愈', max: 100 + 50 * (level - 1)},
-                    {name: '修炼', max: 79 + 220 * (level - 1)}
+                    {name: '攻击', max: 499 + 540 * (level - 1) / 5},
+                    {name: '防御', max: 269 + 240 * (level - 1) / 5},
+                    {name: '生命', max: 14999 + 3000 * (level - 1) / 5},
+                    {name: '自愈', max: 100 + 50 * (level - 1) / 5},
+                    {name: '修炼', max: 79 + 220 * (level - 1) / 5}
                 ],
                 radius: 70,
                 center: ['50%', '50%'],

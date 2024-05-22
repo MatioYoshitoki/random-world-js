@@ -12,7 +12,7 @@ function UserGodhead({godheadInfo}) {
         setGodheadList(newGodheadList);
     }
     return (
-        <HStack>
+        <HStack gap={0}>
             {Array.isArray(godheadList) && godheadList.map(info => (
                 <UserGodheadDetail key={info.id} godhead={info} loseGodhead={loseGodhead}/>
             ))}
