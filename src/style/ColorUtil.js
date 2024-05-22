@@ -38,7 +38,7 @@ export function GetFishColorByRatingMobile(rating) {
         return 'purple';
     } else if (rating < 8000) {
         return 'yellow';
-    } else if (rating <= 10000) {
+    } else {
         return 'orange';
     }
 }
