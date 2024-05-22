@@ -1,5 +1,5 @@
 import {Box, Grid, GridItem, Heading, HStack, Image, Progress, Text, VStack} from "@chakra-ui/react";
-import Godhead from "./Godhead";
+import FishGodhead from "./FishGodhead";
 import FishDeadRecordsTrigger from "./FishDeadRecordsTrigger";
 import FishStatusIcon from "./FishStatusIcon";
 import ProtectCountIcon from "../assets/fish/protect_count.svg";
@@ -20,7 +20,7 @@ function FishHeaderMobile({fish, effectList}) {
                     </Heading>
                 </GridItem>
                 <GridItem colSpan={3}>
-                    <Godhead godheadInfo={fish.godhead} fishId={fish.id} masterUid={fish.master_uid}/>
+                    <FishGodhead godheadInfo={fish.godhead} fishId={fish.id} masterUid={fish.master_uid}/>
                 </GridItem>
                 <GridItem colSpan={2}></GridItem>
                 <GridItem colSpan={1}>

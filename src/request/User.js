@@ -1,10 +1,16 @@
 import {
     CONFIGS_API_ENDPOINT,
+    FISH_GODHEAD_DIVESTITURE_API_ENDPOINT,
     USER_ASSET_API_ENDPOINT,
     USER_BASE_INFO_API_ENDPOINT,
     USER_CRAZY_FISH_API_ENDPOINT,
+    USER_DESTROY_GODHEAD_API_ENDPOINT,
     USER_EAT_API_ENDPOINT,
-    USER_EXPAND_PARKING_API_ENDPOINT, USER_FEED_FISH_API_ENDPOINT, USER_HEAL_FISH_API_ENDPOINT,
+    USER_EMBED_GODHEAD_API_ENDPOINT,
+    USER_EXPAND_PARKING_API_ENDPOINT,
+    USER_FEED_FISH_API_ENDPOINT,
+    USER_GODHEAD_LIST_API_ENDPOINT,
+    USER_HEAL_FISH_API_ENDPOINT,
     USER_PROPS_API_ENDPOINT,
     USER_RANK_API_ENDPOINT,
     USER_SHADOW_FISH_API_ENDPOINT,
@@ -254,6 +260,60 @@ export const UserHealFish = (fishId, callback, failedCallback) => {
             if (response.data.code === 0) {
                 const {heal_skill_cold_down_at_ms, cost} = response.data.data;
                 callback(heal_skill_cold_down_at_ms, cost);
+            } else {
+                failedCallback(response.data.message);
+            }
+        })
+        .catch(error => {
+            if (error.response) {
+                failedCallback(error.response.message);
+            }
+        })
+};
+
+
+export const DestroyGodhead = (godheadId, failedCallback, callback) => {
+    return api.post(USER_DESTROY_GODHEAD_API_ENDPOINT, {
+        godhead_id: godheadId
+    })
+        .then(response => {
+            if (response.data.code === 0) {
+                callback();
+            } else {
+                failedCallback(response.data.message);
+            }
+        })
+        .catch(error => {
+            if (error.response) {
+                failedCallback(error.response.message);
+            }
+        })
+};
+
+
+export const FetchGodheadList = (failedCallback, callback) => {
+    return api.post(USER_GODHEAD_LIST_API_ENDPOINT, {})
+        .then(response => {
+            if (response.data.code === 0) {
+                callback(response.data.list);
+            } else {
+                failedCallback(response.data.message);
+            }
+        })
+        .catch(error => {
+            if (error.response) {
+                failedCallback(error.response.message);
+            }
+        })
+};
+
+export const EmbedGodhead = (propId, failedCallback, callback) => {
+    return api.post(USER_EMBED_GODHEAD_API_ENDPOINT, {
+        prop_id: propId
+    })
+        .then(response => {
+            if (response.data.code === 0) {
+                callback();
             } else {
                 failedCallback(response.data.message);
             }
