@@ -14,7 +14,7 @@ function FishHeaderMobile({fish, effectList}) {
     return (
         <Box>
             <Grid templateColumns='repeat(10, 1fr)'>
-                <GridItem colSpan={3}>
+                <GridItem colSpan={4}>
                     <Heading>
                         {fish.name}
                     </Heading>
@@ -22,7 +22,7 @@ function FishHeaderMobile({fish, effectList}) {
                 <GridItem colSpan={3}>
                     <FishGodhead godheadInfo={fish.godhead} fishId={fish.id} masterUid={fish.master_uid}/>
                 </GridItem>
-                <GridItem colSpan={2}></GridItem>
+                <GridItem colSpan={1}></GridItem>
                 <GridItem colSpan={1}>
                     {fish.status === 3 && <FishDeadRecordsTrigger fishId={fish.id}/>}
                 </GridItem>

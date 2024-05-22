@@ -40,13 +40,13 @@ function BagItem({prop, buttonText}) {
                         {prop.propRemark}
                     </AlertDialogBody>
                     <AlertDialogFooter>
-                        <Button ml={3} onClick={() => {
+                        <Button colorScheme='blue' ml={3} onClick={() => {
                             prop.useFunc(prop);
                             onClose();
                         }}>
                             {buttonText}
                         </Button>
-                        <Button colorScheme='red' ref={cancelRef} onClick={onClose}>
+                        <Button ref={cancelRef} onClick={onClose}>
                             关闭
                         </Button>
                     </AlertDialogFooter>

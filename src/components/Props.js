@@ -6,7 +6,7 @@ import {
 import ExpPropList from "./ExpProps";
 import GodheadPropList from "./GodheadProps";
 
-function PropList({incrExp}) {
+function PropList({columns, incrExp}) {
     return (<Tabs variant='enclosed'>
             <TabList>
                 <Tab>灵气丹</Tab>
@@ -14,10 +14,10 @@ function PropList({incrExp}) {
             </TabList>
             <TabPanels>
                 <TabPanel>
-                    <ExpPropList incrExp={incrExp}/>
+                    <ExpPropList columns={columns} incrExp={incrExp}/>
                 </TabPanel>
                 <TabPanel>
-                    <GodheadPropList />
+                    <GodheadPropList columns={columns} />
                 </TabPanel>
             </TabPanels>
         </Tabs>

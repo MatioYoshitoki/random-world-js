@@ -7,7 +7,7 @@ import {FailedToast} from "../style/ShowToast";
 import Bag from "./Bag";
 import PropIcon from "../assets/user_skills/refine_fish.svg";
 
-function ExpPropList({incrExp}) {
+function ExpPropList({columns, incrExp}) {
     const [props, setProps] = useState([]);
     const [propList, setPropList] = useState([])
     const [currentPage, setCurrentPage] = useState(0);
@@ -57,7 +57,7 @@ function ExpPropList({incrExp}) {
 
     return (
         <VStack>
-            <Bag propList={propList} buttonText='使用'/>
+            <Bag columns={columns} propList={propList} buttonText='使用'/>
             <ReactPager
                 total={totalPages}
                 current={currentPage}

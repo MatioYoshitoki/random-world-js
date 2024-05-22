@@ -9,7 +9,7 @@ import {FailedToast} from "../style/ShowToast";
 import {GetGodheadIcon} from "../style/GodheadIconUtil";
 import Bag from "./Bag";
 
-function GodheadPropList() {
+function GodheadPropList({columns}) {
     const [props, setProps] = useState([]);
     const [propList, setPropList] = useState([])
     const [currentPage, setCurrentPage] = useState(0);
@@ -52,7 +52,7 @@ function GodheadPropList() {
 
     return (
         <VStack>
-            <Bag propList={propList} buttonText='佩戴'/>
+            <Bag columns={columns} propList={propList} buttonText='佩戴'/>
             <ReactPager
                 total={totalPages}
                 current={currentPage}

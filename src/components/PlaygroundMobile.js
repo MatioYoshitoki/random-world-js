@@ -600,7 +600,7 @@ function PlaygroundMobile() {
                     </ModalContent>
                 )}
                 {propOpen && (<ModalContent>
-                    <PropList incrExp={(exp, levelUpCount) => {
+                    <PropList columns={4} incrExp={(exp, levelUpCount) => {
                         const newAsset = {
                             ...asset
                         };

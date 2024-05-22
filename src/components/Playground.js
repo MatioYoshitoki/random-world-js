@@ -564,7 +564,7 @@ function Playground() {
                     )}
                     {propOpen && (
                         <ModalContent>
-                            <PropList incrExp={(exp, levelUpCount) => {
+                            <PropList columns={10} incrExp={(exp, levelUpCount) => {
                                 const newAsset = {
                                     ...asset
                                 };

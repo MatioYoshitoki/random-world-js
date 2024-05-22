@@ -3,9 +3,12 @@ import FishGodheadDetail from "./FishGodheadDetail";
 import {useEffect, useState} from "react";
 
 function FishGodhead({fishId, masterUid, godheadInfo}) {
-    const [godheadList, setGodheadList] = useState(godheadInfo)
+    const [godheadList, setGodheadList] = useState([])
     const [firstLine, setFirstLine] = useState([])
     const [secondLine, setSecondLine] = useState([])
+    useEffect(() => {
+        setGodheadList(godheadInfo);
+    }, [godheadInfo]);
     useEffect(() => {
         if (godheadList && godheadList.length > 3) {
             const newFirstLine = []
