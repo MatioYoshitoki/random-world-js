@@ -12,7 +12,7 @@ import {
     Tbody,
     TableContainer, useToast, Image, VStack,
 } from '@chakra-ui/react'
-import {EatProp, FetchProps} from "../request/User";
+import {EatProp, EmbedGodhead, FetchProps} from "../request/User";
 import {FailedToast} from "../style/ShowToast";
 import {GetGodheadIcon} from "../style/GodheadIconUtil";
 import Bag from "./Bag";
@@ -41,7 +41,9 @@ function GodheadPropList({}) {
         return GetGodheadIcon(prop.extra.level);
     }
     const useFunc = (prop) => {
-        console.log(prop);
+        EmbedGodhead(prop.propId, defaultFailedCallback, () => {
+            window.location.reload();
+        }).then();
     };
     useEffect(() => {
         const propL = props.map(prop => {
