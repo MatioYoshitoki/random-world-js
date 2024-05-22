@@ -11,11 +11,12 @@ import {
     IconButton,
     Image,
     Text,
-    useDisclosure, VStack,
+    useDisclosure,
+    VStack,
 } from "@chakra-ui/react";
 import React from "react";
 
-function BagItem({prop}) {
+function BagItem({prop, buttonText}) {
     const {isOpen, onOpen, onClose} = useDisclosure()
     const cancelRef = React.useRef()
     return (
@@ -39,14 +40,14 @@ function BagItem({prop}) {
                         {prop.propRemark}
                     </AlertDialogBody>
                     <AlertDialogFooter>
-                        <Button ref={cancelRef} onClick={onClose}>
-                            关闭
-                        </Button>
-                        <Button colorScheme='red' ml={3} onClick={() => {
-                            prop.useFunc(prop).then();
+                        <Button ml={3} onClick={() => {
+                            prop.useFunc(prop);
                             onClose();
                         }}>
-                            使用
+                            {buttonText}
+                        </Button>
+                        <Button colorScheme='red' ref={cancelRef} onClick={onClose}>
+                            关闭
                         </Button>
                     </AlertDialogFooter>
                 </AlertDialogContent>

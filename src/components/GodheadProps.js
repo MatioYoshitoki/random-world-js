@@ -58,7 +58,7 @@ function GodheadPropList({}) {
 
     return (
         <VStack>
-            <Bag propList={propList}/>
+            <Bag propList={propList} buttonText='佩戴'/>
             <ReactPager
                 total={totalPages}
                 current={currentPage}

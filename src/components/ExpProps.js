@@ -57,7 +57,7 @@ function ExpPropList({incrExp}) {
 
     return (
         <VStack>
-            <Bag propList={propList}/>
+            <Bag propList={propList} buttonText='使用'/>
             <ReactPager
                 total={totalPages}
                 current={currentPage}
