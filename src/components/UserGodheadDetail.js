@@ -15,7 +15,6 @@ import {
 import {GetGodheadIcon} from "../style/GodheadIconUtil";
 import {getFishLevelNameByLevel} from "../style/TextDisplayUtils";
 import Stage0 from "../assets/godhead_level_icon/stage_0.svg";
-import {DivestitureFishGodhead} from "../request/Fish";
 import {FailedToast, SuccessToast} from "../style/ShowToast";
 import {DestroyGodhead} from "../request/User";
 

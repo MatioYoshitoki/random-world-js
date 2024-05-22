@@ -2,22 +2,14 @@ import React, {useState, useEffect} from 'react';
 import '../Login.css'
 import ReactPager from 'react-pager';
 import {
-    Button,
-    Table,
-    TableCaption,
-    Tr,
-    Th,
-    Thead,
-    Td,
-    Tbody,
-    TableContainer, useToast, Image, VStack,
+    useToast, VStack,
 } from '@chakra-ui/react'
-import {EatProp, EmbedGodhead, FetchProps} from "../request/User";
+import {EmbedGodhead, FetchProps} from "../request/User";
 import {FailedToast} from "../style/ShowToast";
 import {GetGodheadIcon} from "../style/GodheadIconUtil";
 import Bag from "./Bag";
 
-function GodheadPropList({}) {
+function GodheadPropList() {
     const [props, setProps] = useState([]);
     const [propList, setPropList] = useState([])
     const [currentPage, setCurrentPage] = useState(0);
@@ -42,7 +34,7 @@ function GodheadPropList({}) {
     }
     const useFunc = (prop) => {
         EmbedGodhead(prop.propId, defaultFailedCallback, () => {
-            window.location.reload();
+           window.location.reload();
         }).then();
     };
     useEffect(() => {

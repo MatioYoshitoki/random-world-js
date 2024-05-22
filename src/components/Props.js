@@ -17,7 +17,7 @@ function PropList({incrExp}) {
                     <ExpPropList incrExp={incrExp}/>
                 </TabPanel>
                 <TabPanel>
-                    <GodheadPropList/>
+                    <GodheadPropList />
                 </TabPanel>
             </TabPanels>
         </Tabs>

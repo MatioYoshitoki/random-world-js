@@ -274,7 +274,7 @@ export const UserHealFish = (fishId, callback, failedCallback) => {
 
 export const DestroyGodhead = (godheadId, failedCallback, callback) => {
     return api.post(USER_DESTROY_GODHEAD_API_ENDPOINT, {
-        godhead_id: godheadId
+        godhead_id: godheadId.toString()
     })
         .then(response => {
             if (response.data.code === 0) {
@@ -295,7 +295,8 @@ export const FetchGodheadList = (failedCallback, callback) => {
     return api.post(USER_GODHEAD_LIST_API_ENDPOINT, {})
         .then(response => {
             if (response.data.code === 0) {
-                callback(response.data.list);
+                console.log(response);
+                callback(response.data.data.list);
             } else {
                 failedCallback(response.data.message);
             }
