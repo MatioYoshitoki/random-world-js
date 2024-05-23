@@ -40,7 +40,7 @@ function BagItem({prop, buttonText}) {
                         {prop.propRemark}
                     </AlertDialogBody>
                     <AlertDialogFooter>
-                        <Button colorScheme='whatsapp' ml={3} onClick={() => {
+                        <Button colorScheme='whatsapp' onClick={() => {
                             prop.useFunc(prop);
                             onClose();
                         }}>

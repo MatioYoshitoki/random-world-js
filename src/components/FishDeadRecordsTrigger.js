@@ -1,12 +1,19 @@
-import React from "react";
+import React, {useState} from "react";
 import {
     Button,
     IconButton,
-    Image, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure
+    Image,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    useDisclosure
 } from "@chakra-ui/react";
 import FishDeadRecordIcon from "../assets/fish/dead_records.svg";
 import {FetchFishDeadRecords} from "../request/Fish";
-import {useState} from "react";
 import FishDeadRecords from "./FishDeadRecords";
 
 function FishDeadRecordsTrigger({fishId}) {

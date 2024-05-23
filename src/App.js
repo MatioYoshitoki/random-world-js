@@ -1,10 +1,10 @@
 // import logo from './logo.svg';
 import './App.css';
-import {Routes, Route, HashRouter as Router} from 'react-router-dom';
+import {HashRouter as Router, Route, Routes} from 'react-router-dom';
 import Login from './Login';
 import Playground from "./components/Playground";
 import {ChakraProvider} from '@chakra-ui/react';
-import {isMobile, isTablet, isBrowser} from 'react-device-detect';
+import {isBrowser, isMobile, isTablet} from 'react-device-detect';
 import PlaygroundMobile from "./components/PlaygroundMobile";
 
 function App() {

@@ -23,6 +23,7 @@ function FishGodhead({fishId, masterUid, godheadInfo}) {
             setSecondLine(newSecondLine);
         } else {
             setFirstLine(godheadList);
+            setSecondLine([]);
         }
     }, [godheadList]);
     const loseGodhead = (godheadId) => {

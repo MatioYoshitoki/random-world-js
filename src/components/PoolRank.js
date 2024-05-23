@@ -1,23 +1,24 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import '../Login.css'
 import ReactPager from 'react-pager';
 import {
     Button,
-    Stack,
-    ModalOverlay,
-    ModalContent,
-    Modal,
-    CardHeader,
-    CardBody,
     Card,
+    CardBody,
+    CardHeader,
+    Link,
+    Modal,
+    ModalContent,
+    ModalOverlay,
+    Stack,
     Table,
     TableCaption,
-    Tr,
+    TableContainer,
+    Td,
     Th,
     Thead,
-    Td,
+    Tr,
     useDisclosure,
-    TableContainer,
     useToast,
 } from '@chakra-ui/react'
 import {FetchPoolRanks} from "../request/Fish";
@@ -87,14 +88,15 @@ function PoolRank({rankType}) {
                 {poolRanks.map(poolRank => (
                     <Tr key={poolRank.fish_id}>
                         <Td>{poolRank.rank}</Td>
-                        <Td>{poolRank.fish.fish.name}</Td>
+                        <Td>
+                            <Link color='teal.500' onClick={() => handleDetail(poolRank)}>
+                                {poolRank.fish.fish.name}
+                            </Link>
+                        </Td>
                         <Td>{getFishLevelNameByLevel(poolRank.fish.fish.level)}</Td>
                         <Td>{poolRank.fish.fish.fish_statistics && poolRank.fish.fish.fish_statistics.kills}</Td>
                         <Td>{poolRank.master_name}</Td>
                         <Td>{FormatTime(poolRank.alive_time_ms)}</Td>
-                        <Td>
-                            <Button colorScheme='teal' size='xs' onClick={() => handleDetail(poolRank)}>详情</Button>
-                        </Td>
                     </Tr>
                 ))}
             </Table>

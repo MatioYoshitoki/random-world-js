@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import '../Login.css'
-import {Box, VStack, HStack, Button, Text, Image, Badge, Heading, useToast,} from '@chakra-ui/react'
+import {Badge, Box, Button, HStack, Image, Skeleton, Text, useToast, VStack,} from '@chakra-ui/react'
 import {
     FetchUserSkills,
     UserCrazyFish,
@@ -19,19 +19,21 @@ import {FailedToast, SuccessToast} from "../style/ShowToast";
 
 function UserSkillsMobile({userLevel, fishList, expendGold}) {
     const [userSkills, setUserSkills] = useState([]);
-    const [healFish, setHealFish] = useState({})
-    const [feedFish, setFeedFish] = useState({})
-    const [shadowFish, setShadowFish] = useState({})
-    const [crazyFish, setCrazyFish] = useState({})
-    const [refineFish, setRefineFish] = useState({})
+    const [healFish, setHealFish] = useState({});
+    const [feedFish, setFeedFish] = useState({});
+    const [shadowFish, setShadowFish] = useState({});
+    const [crazyFish, setCrazyFish] = useState({});
+    const [refineFish, setRefineFish] = useState({});
+    const [loading, setLoading] = useState(true);
 
-    const [healFishCD, setHealFishCD] = useState(0)
-    const [feedFishCD, setFeedFishCD] = useState(0)
-    const [shadowFishCD, setShadowFishCD] = useState(0)
-    const [crazyFishCD, setCrazyFishCD] = useState(0)
 
-    const [coldDownTriger, setColdDownTriger] = useState(false)
-    const toast = useToast()
+    const [healFishCD, setHealFishCD] = useState(0);
+    const [feedFishCD, setFeedFishCD] = useState(0);
+    const [shadowFishCD, setShadowFishCD] = useState(0);
+    const [crazyFishCD, setCrazyFishCD] = useState(0);
+
+    const [coldDownTriger, setColdDownTriger] = useState(false);
+    const toast = useToast();
     const setColdDownSecond = (coldDownAtMs, callback) => {
         if (coldDownAtMs === 0) {
             callback(0);
@@ -74,7 +76,6 @@ function UserSkillsMobile({userLevel, fishList, expendGold}) {
 
     useEffect(() => {
         for (let skill of userSkills) {
-            console.log(skill);
             switch (skill.id) {
                 case 1:
                     setFeedFish(skill);
@@ -100,17 +101,15 @@ function UserSkillsMobile({userLevel, fishList, expendGold}) {
     }, [userSkills])
     const enrichUserSkills = (skills) => {
         if (skills !== undefined) {
-            console.log(skills);
             setUserSkills(skills);
         }
     };
     useEffect(() => {
-        FetchUserSkills(enrichUserSkills, defaultFailedCallback).then();
+        FetchUserSkills(enrichUserSkills, defaultFailedCallback).then(() => setLoading(false));
     }, []);
 
     return (
-        <VStack>
-            <Heading>技能</Heading>
+        <Skeleton isLoaded={!loading}>
             <VStack>
                 <HStack>
                     <Box>
@@ -130,7 +129,6 @@ function UserSkillsMobile({userLevel, fishList, expendGold}) {
                                         }, defaultFailedCallback)}>升级</Button>
                                 <SkillTargetSelector fishList={fishList} isDisabled={feedFish.level <= 0 || feedFishCD > 0}
                                                      targetStatus={1} callback={(fishId) => {
-                                    console.log('heal fish:' + fishId);
                                     UserFeedFish(fishId, (coldDownAtMs, cost) => {
                                         setColdDownSecond(coldDownAtMs, setFeedFishCD);
                                         expendGold(cost);
@@ -285,7 +283,7 @@ function UserSkillsMobile({userLevel, fishList, expendGold}) {
                     </Box>
                 </HStack>
             </VStack>
-        </VStack>
+        </Skeleton>
     );
 }
 

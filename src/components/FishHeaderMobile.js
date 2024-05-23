@@ -1,4 +1,4 @@
-import {Box, Grid, GridItem, Heading, HStack, Image, Progress, Text, VStack} from "@chakra-ui/react";
+import {Box, Grid, GridItem, Heading, HStack, Image, Progress, Text} from "@chakra-ui/react";
 import FishGodhead from "./FishGodhead";
 import FishDeadRecordsTrigger from "./FishDeadRecordsTrigger";
 import FishStatusIcon from "./FishStatusIcon";
@@ -10,7 +10,6 @@ import {GetGrowthRequireMoney} from "../pkg/FishUtils";
 
 function FishHeaderMobile({fish, effectList}) {
     const hpColor = GetHpProgressColor(fish.heal, fish.max_heal)
-    console.log(hpColor);
     return (
         <Box>
             <Grid templateColumns='repeat(10, 1fr)'>

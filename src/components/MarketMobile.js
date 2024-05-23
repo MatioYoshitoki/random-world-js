@@ -32,7 +32,7 @@ import FishHeader from "./FishHeader";
 import FishBaseInfo from "./FishBaseInfo";
 import {GetFishColorByRating} from "../style/ColorUtil";
 
-function MarketList() {
+function MarketMobileList() {
     const [markets, setMarkets] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
@@ -107,8 +107,8 @@ function MarketList() {
                                         {market.fish_name}
                                     </Link>
                                 </Td>
-                                <Td>{market.price}</Td>
-                                <Td>{FormatTime(market.sell_time_remain)}</Td>
+                                <Td fontSize={14}>{market.price}</Td>
+                                <Td fontSize={14}>{FormatTime(market.sell_time_remain)}</Td>
                             </Tr>
                         ))}
                     </Tbody>
@@ -173,4 +173,4 @@ function MarketList() {
     );
 }
 
-export default MarketList;
+export default MarketMobileList;

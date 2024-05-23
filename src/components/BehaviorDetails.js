@@ -3,13 +3,16 @@ import {useEffect, useRef} from "react";
 import {
     Box,
     Popover,
-    PopoverArrow, PopoverBody,
+    PopoverArrow,
+    PopoverBody,
     PopoverCloseButton,
     PopoverContent,
     PopoverHeader,
-    PopoverTrigger, useDisclosure
+    PopoverTrigger,
+    useDisclosure
 } from "@chakra-ui/react";
 import {QuestionOutlineIcon} from "@chakra-ui/icons";
+
 function BehaviorDetails({behavior}) {
     const chartRef = useRef(null);
     useEffect(() => {
