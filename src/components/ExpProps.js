@@ -40,7 +40,7 @@ function ExpPropList({columns, incrExp}) {
         return PropIcon;
     }
     const getRemark = (prop) => {
-        return prop.prop_name + '炼化而成的灵气丹，使用后增加' + prop.extra.experience + '灵气';
+        return prop.prop_name + '使用后增加' + prop.extra.experience + '灵气';
     }
     useEffect(() => {
         const propL = props.map(prop => {
