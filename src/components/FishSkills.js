@@ -1,18 +1,5 @@
-import {
-    Badge,
-    Box, HStack,
-    Link,
-    ListItem,
-    Popover, PopoverArrow, PopoverBody, PopoverCloseButton,
-    PopoverContent, PopoverHeader,
-    PopoverTrigger,
-    Text,
-    Tooltip,
-    UnorderedList, useDisclosure, VStack
-} from "@chakra-ui/react";
-import {GetFishSkillColor} from "../style/ColorUtil";
+import {Box, ListItem, Text, UnorderedList, useDisclosure} from "@chakra-ui/react";
 import React from "react";
-import {getFishSkillDescByLevel, getFishSkillNameByLevel} from "../style/TextDisplayUtils";
 import FishSkillDetail from "./FishSkillsDetails";
 
 function FishSkills({fishSkillList, awakingRemain, fontSize}) {

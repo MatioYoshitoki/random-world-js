@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import '../Login.css'
-import {Box, VStack, HStack, Button, Text, Image, Badge, Heading, useToast, Skeleton,} from '@chakra-ui/react'
+import {Badge, Box, Button, HStack, Image, Skeleton, Text, useToast, VStack,} from '@chakra-ui/react'
 import {
     FetchUserSkills,
     UserCrazyFish,

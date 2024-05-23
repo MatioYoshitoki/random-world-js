@@ -2,13 +2,18 @@ import {
     Badge,
     Flex,
     Grid,
-    GridItem, HStack,
+    GridItem,
+    HStack,
     Link,
-    Popover, PopoverArrow, PopoverBody, PopoverCloseButton,
-    PopoverContent, PopoverHeader,
+    Popover,
+    PopoverArrow,
+    PopoverBody,
+    PopoverCloseButton,
+    PopoverContent,
+    PopoverHeader,
     PopoverTrigger,
     Text,
-    Tooltip, useDisclosure,
+    useDisclosure,
     VStack
 } from "@chakra-ui/react";
 import {getFishLevelNameByLevel} from "../style/TextDisplayUtils";

@@ -16,8 +16,11 @@ import {
     GridItem,
     Heading,
     HStack,
-    Modal, ModalBody,
-    ModalContent, ModalFooter, ModalHeader,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
     ModalOverlay,
     NumberDecrementStepper,
     NumberIncrementStepper,
@@ -34,7 +37,8 @@ import {
     Tabs,
     Text,
     useDisclosure,
-    useToast, VStack,
+    useToast,
+    VStack,
 } from '@chakra-ui/react'
 import PropList from "./Props";
 import PoolRank from "./PoolRank";

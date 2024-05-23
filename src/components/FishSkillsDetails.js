@@ -1,14 +1,14 @@
 import {
-    Badge,
-    Box, Heading, HStack,
     Link,
-    ListItem,
-    Popover, PopoverArrow, PopoverBody, PopoverCloseButton,
-    PopoverContent, PopoverHeader,
+    Popover,
+    PopoverArrow,
+    PopoverBody,
+    PopoverCloseButton,
+    PopoverContent,
+    PopoverHeader,
     PopoverTrigger,
     Text,
-    Tooltip,
-    UnorderedList, useDisclosure, VStack
+    useDisclosure
 } from "@chakra-ui/react";
 import {GetFishSkillColor} from "../style/ColorUtil";
 import React from "react";

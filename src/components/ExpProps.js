@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import '../Login.css'
 import ReactPager from 'react-pager';
-import {Center, Grid, GridItem, useToast, VStack} from '@chakra-ui/react'
+import {Center, Grid, GridItem, useToast} from '@chakra-ui/react'
 import {EatProp, FetchProps} from "../request/User";
 import {FailedToast} from "../style/ShowToast";
 import Bag from "./Bag";

@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import '../Login.css'
 import ReactPager from 'react-pager';
-import {Table, TableCaption, Tr, Th, Thead, Td, TableContainer, useToast} from '@chakra-ui/react'
+import {Table, TableCaption, TableContainer, Td, Th, Thead, Tr, useToast} from '@chakra-ui/react'
 import {FetchUserLevelRanks} from "../request/User";
 import {FailedToast} from "../style/ShowToast";
 

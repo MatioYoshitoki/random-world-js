@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {api} from './BaseApi'
 import md5 from 'md5'; // 导入 md5 库
 import {AUTH_API_ENDPOINT} from './config'; // 导入配置文件
 import {useNavigate} from 'react-router-dom';
-import {Input, Stack, Heading, Button, useToast} from '@chakra-ui/react';
+import {Button, Heading, Input, Stack, useToast} from '@chakra-ui/react';
 import {FailedToast, SuccessToast} from "./style/ShowToast";
 
 

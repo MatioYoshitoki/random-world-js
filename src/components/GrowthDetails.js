@@ -1,8 +1,6 @@
 import * as echarts from 'echarts';
 import {useEffect, useRef} from "react";
-import {
-    Box
-} from "@chakra-ui/react";
+import {Box} from "@chakra-ui/react";
 
 function GrowthDetails({fish}) {
     const chartRef = useRef(null);

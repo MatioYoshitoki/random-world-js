@@ -1,8 +1,6 @@
 import React from 'react';
 import '../Login.css'
-import {
-    TabList, Tab, TabPanels, TabPanel, Tabs, ModalBody
-} from '@chakra-ui/react';
+import {Tab, TabList, TabPanel, TabPanels, Tabs} from '@chakra-ui/react';
 import ExpPropList from "./ExpProps";
 import GodheadPropList from "./GodheadProps";
 

@@ -1,4 +1,4 @@
-import {Box, Grid, GridItem, Heading, HStack, Image, Progress, Text, VStack} from "@chakra-ui/react";
+import {Box, Grid, GridItem, Heading, HStack, Image, Progress, Text} from "@chakra-ui/react";
 import FishGodhead from "./FishGodhead";
 import FishDeadRecordsTrigger from "./FishDeadRecordsTrigger";
 import FishStatusIcon from "./FishStatusIcon";
