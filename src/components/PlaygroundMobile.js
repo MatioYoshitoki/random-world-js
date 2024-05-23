@@ -31,7 +31,19 @@ import {
     NumberInputField,
     NumberInputStepper,
     NumberIncrementStepper,
-    Progress, IconButton, Image, TabList, Tab, TabPanels, TabPanel, Tabs, useToast, VStack,
+    Progress,
+    IconButton,
+    Image,
+    TabList,
+    Tab,
+    TabPanels,
+    TabPanel,
+    Tabs,
+    useToast,
+    VStack,
+    ModalHeader,
+    ModalBody,
+    ModalFooter, SimpleGrid,
 } from '@chakra-ui/react'
 import PropList from "./Props";
 import {DecodeBase64} from "../Base64.js";
@@ -62,6 +74,7 @@ import {FailedToast, SuccessToast} from "../style/ShowToast";
 import UserSkillsMobile from "./UserSkillsMobile";
 import FishHeaderMobile from "./FishHeaderMobile";
 import FishBaseInfoMobile from "./FishBaseInfoMobile";
+import MarketMobile from "./MarketMobile";
 
 let socket = null;
 
@@ -115,6 +128,11 @@ function PlaygroundMobile() {
 
     const refreshFishList = (fishes) => {
         if (fishes != null) {
+            fishes.forEach(item => {
+                if (item.fish.status === null || item.fish.status === undefined) {
+                    item.fish.status = 0;
+                }
+            })
             setFishList(fishes);
         }
     }
@@ -491,105 +509,127 @@ function PlaygroundMobile() {
         }
     }, [])
     return (<VStack>
-        <Grid templateColumns='repeat(24, 1fr)' alignItems='center'>
-            <GridItem colSpan={24}>
-                <UserBaseInfo asset={asset} userBaseInfo={baseInfo}/>
-                {showFish != null && (<Card
-                    className={FishCardClassNameByStatus(showFish.fish.status)}
-                    mt={2}
-                    bg={GetFishColorByRating(showFish.rating)}
-                    padding={3}>
-                    <CardHeader>
-                        <FishHeaderMobile fish={showFish.fish} effectList={parkingEffect[showFish.parking]}/>
-                    </CardHeader>
-                    <CardBody mt={-8}>
-                        <FishBaseInfoMobile fish={showFish.fish}/>
-                    </CardBody>
-                    {renderActionButtons(showFish.fish)}
-                </Card>)}
-                <Grid templateRows='repeat(2, 1fr)'
-                      templateColumns='repeat(3, 1fr)'
-                      gap={3}
-                      mt={-5}
-                      padding={10}
-                >
-                    {Array.isArray(fishParkingList) && fishParkingList.filter(fp => fp.status !== 0).map(fishParking => (
-                        <GridItem colSpan={1} rowSpan={1} key={fishParking.parking}>
-                            {fishMap[fishParking.parking] != null && (<Button
-                                    className={FishCardClassNameByStatus(fishMap[fishParking.parking].fish.status)}
-                                    size='lg'
-                                    height='100%'
-                                    padding={1}
-                                    onClick={() => setShowFish(fishMap[fishParking.parking])}
-                                    colorScheme={GetFishColorByRatingMobile(fishMap[fishParking.parking].rating)}>
-                                    <Grid templateColumns='repeat(1, 1fr)'>
-                                        <GridItem align='center'>
-                                            <FishStatusIcon status={fishMap[fishParking.parking].fish.status}
-                                                            boxSize='30px'/>
-                                        </GridItem>
-                                        <GridItem alignItems='center'>
-                                            <Text fontSize={13}>{fishMap[fishParking.parking].fish.name}</Text>
-                                        </GridItem>
-                                        <GridItem>
-                                            <Progress
-                                                mt={1}
-                                                size='sm'
-                                                value={fishMap[fishParking.parking].fish.heal < 0 ? 0 : fishMap[fishParking.parking].fish.heal * 100 / fishMap[fishParking.parking].fish.max_heal}
-                                                max={100}
-                                                colorScheme={GetHpProgressColor(fishMap[fishParking.parking].fish.heal, fishMap[fishParking.parking].fish.max_heal)}
-                                                isAnimated={true}/>
-                                        </GridItem>
-                                    </Grid>
-                                </Button>
-                            )}
-                            {(!Array.isArray(fishList) || fishList.findIndex(oldFish => oldFish.parking === fishParking.parking) === -1) && (
-                                <Button
-                                    size='lg'
-                                    height='100%'
-                                    isDisabled={fishParking.status === 1}
-                                    colorScheme={GetParkingStatusColorMobile(fishParking.status)}
-                                    onClick={expandParking}
-                                    padding={1}>
-                                    <Grid templateColumns='repeat(1, 1fr)'>
-                                        <GridItem align='center'>
-                                            {fishParking.status === 0 && (
-                                                <Text fontSize={40} textAlign='center'>拓</Text>)}
-                                            {fishParking.status === 1 && (
-                                                <Text fontSize={40} textAlign='center'>空</Text>)}
-                                        </GridItem>
-                                    </Grid>
-                                </Button>
-                            )}
-                        </GridItem>))}
-                    {Array.isArray(fishParkingList) && fishParkingList.findIndex(fishParking => fishParking.status === 0) !== -1 && (
-                        <GridItem colSpan={1} rowSpan={1}>
-                            <Button
-                                size='lg'
-                                height='100%'
-                                colorScheme='teal'
-                                onClick={expandParking}
+        <Modal onClose={onClose} size='full' isOpen={true} scrollBehavior='inside'>
+            <ModalContent>
+                <ModalHeader>
+                    <UserBaseInfo asset={asset} userBaseInfo={baseInfo}/>
+                </ModalHeader>
+                <ModalBody>
+                    <Grid templateColumns='repeat(24, 1fr)' alignItems='center'>
+                        <GridItem colSpan={24}>
+                            {showFish != null && (<Card
+                                className={FishCardClassNameByStatus(showFish.fish.status)}
+                                mt={2}
+                                bg={GetFishColorByRating(showFish.rating)}
                                 padding={1}>
-                                <Grid templateColumns='repeat(1, 1fr)'>
-                                    <GridItem align='center'>
-                                        <Text fontSize={40} textAlign='center'>拓</Text>
-                                    </GridItem>
-                                </Grid>
-                            </Button>
-                        </GridItem>)}
-                </Grid>
-            </GridItem>
-            <Modal
-                isOpen={isOpen}
-                onClose={closeTopModal}
-                isCentered
-                motionPreset='slideInBottom'
-            >
-                <ModalOverlay/>
-                {marketOpen && (<ModalContent>
-                    <Market/>
-                </ModalContent>)}
-                {userSkillsOpen && (
-                    <ModalContent>
+                                <CardHeader>
+                                    <FishHeaderMobile fish={showFish.fish} effectList={parkingEffect[showFish.parking]}/>
+                                </CardHeader>
+                                <CardBody mt={-8}>
+                                    <FishBaseInfoMobile fish={showFish.fish}/>
+                                </CardBody>
+                                {renderActionButtons(showFish.fish)}
+                            </Card>)}
+                            <SimpleGrid mt={2} columns={3} gap={2}>
+                                {Array.isArray(fishParkingList) && fishParkingList.filter(fp => fp.status !== 0).map(fishParking => (
+                                    <GridItem colSpan={1} rowSpan={1} key={fishParking.parking}>
+                                        {fishMap[fishParking.parking] != null && (<Button
+                                                className={FishCardClassNameByStatus(fishMap[fishParking.parking].fish.status)}
+                                                size='lg'
+                                                height='100%'
+                                                padding={1}
+                                                onClick={() => setShowFish(fishMap[fishParking.parking])}
+                                                colorScheme={GetFishColorByRatingMobile(fishMap[fishParking.parking].rating)}>
+                                                <Grid templateColumns='repeat(1, 1fr)'>
+                                                    <GridItem align='center'>
+                                                        <FishStatusIcon status={fishMap[fishParking.parking].fish.status}
+                                                                        boxSize='30px'/>
+                                                    </GridItem>
+                                                    <GridItem alignItems='center'>
+                                                        <Text fontSize={13}>{fishMap[fishParking.parking].fish.name}</Text>
+                                                    </GridItem>
+                                                    <GridItem>
+                                                        <Progress
+                                                            mt={1}
+                                                            size='sm'
+                                                            value={fishMap[fishParking.parking].fish.heal < 0 ? 0 : fishMap[fishParking.parking].fish.heal * 100 / fishMap[fishParking.parking].fish.max_heal}
+                                                            max={100}
+                                                            colorScheme={GetHpProgressColor(fishMap[fishParking.parking].fish.heal, fishMap[fishParking.parking].fish.max_heal)}
+                                                            isAnimated={true}/>
+                                                    </GridItem>
+                                                </Grid>
+                                            </Button>
+                                        )}
+                                        {(!Array.isArray(fishList) || fishList.findIndex(oldFish => oldFish.parking === fishParking.parking) === -1) && (
+                                            <Button
+                                                size='lg'
+                                                height='100%'
+                                                isDisabled={fishParking.status === 1}
+                                                colorScheme={GetParkingStatusColorMobile(fishParking.status)}
+                                                onClick={expandParking}
+                                                padding={1}>
+                                                <Grid templateColumns='repeat(1, 1fr)'>
+                                                    <GridItem align='center'>
+                                                        {fishParking.status === 0 && (
+                                                            <Text fontSize={40} textAlign='center'>拓</Text>)}
+                                                        {fishParking.status === 1 && (
+                                                            <Text fontSize={40} textAlign='center'>空</Text>)}
+                                                    </GridItem>
+                                                </Grid>
+                                            </Button>
+                                        )}
+                                    </GridItem>))}
+                                {Array.isArray(fishParkingList) && fishParkingList.findIndex(fishParking => fishParking.status === 0) !== -1 && (
+                                    <GridItem colSpan={1} rowSpan={1}>
+                                        <Button
+                                            size='lg'
+                                            height='100%'
+                                            colorScheme='teal'
+                                            onClick={expandParking}
+                                            padding={1}>
+                                            <Grid templateColumns='repeat(1, 1fr)'>
+                                                <GridItem align='center'>
+                                                    <Text fontSize={40} textAlign='center'>拓</Text>
+                                                </GridItem>
+                                            </Grid>
+                                        </Button>
+                                    </GridItem>)}
+                            </SimpleGrid>
+                        </GridItem>
+                    </Grid>
+                </ModalBody>
+                <ModalFooter>
+                    <HStack gap={4} align='center'>
+                        <IconButton aria-label='创建' onClick={handleCreateClick} icon={<Image src={createIcon}/>}/>
+                        <IconButton aria-label='排行' onClick={handleOpenPoolRank} icon={<Image src={poolRankIcon}/>}/>
+                        <IconButton aria-label='背包' onClick={handleOpenProps} icon={<Image src={propsIcon}/>}/>
+                        <IconButton aria-label='交易' onClick={handleOpenMarket} icon={<Image src={marketIcon}/>}/>
+                        <IconButton aria-label='技能' onClick={handleOpenUserSkills} icon={<Image src={skillsIcon}/>}/>
+                        <IconButton aria-label='建筑' icon={<Image src={buildingIcon}/>}/>
+                    </HStack>
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
+        <Modal
+            isOpen={isOpen}
+            onClose={closeTopModal}
+            isCentered
+        >
+            <ModalOverlay/>
+            {marketOpen && (<ModalContent>
+                <ModalHeader>
+                    交易
+                </ModalHeader>
+                <ModalBody>
+                    <MarketMobile/>
+                </ModalBody>
+            </ModalContent>)}
+            {userSkillsOpen && (
+                <ModalContent>
+                    <ModalHeader>
+                        技能
+                    </ModalHeader>
+                    <ModalBody>
                         <UserSkillsMobile userLevel={asset.level} fishList={fishList} expendGold={(cost) => {
                             const newAsset = {
                                 ...asset
@@ -597,9 +637,14 @@ function PlaygroundMobile() {
                             newAsset.gold = asset.gold - cost
                             setAsset(newAsset);
                         }}/>
-                    </ModalContent>
-                )}
-                {propOpen && (<ModalContent>
+                    </ModalBody>
+                </ModalContent>
+            )}
+            {propOpen && (<ModalContent>
+                <ModalHeader>
+                    背包
+                </ModalHeader>
+                <ModalBody>
                     <PropList columns={4} incrExp={(exp, levelUpCount) => {
                         const newAsset = {
                             ...asset
@@ -613,8 +658,13 @@ function PlaygroundMobile() {
                         }
                         setAsset(newAsset);
                     }}/>
-                </ModalContent>)}
-                {poolRankOpen && (<ModalContent maxWidth='90%'>
+                </ModalBody>
+            </ModalContent>)}
+            {poolRankOpen && (<ModalContent>
+                <ModalHeader>
+                    榜单
+                </ModalHeader>
+                <ModalBody>
                     <Tabs variant='enclosed'>
                         <TabList>
                             <Tab>玩家等级榜</Tab>
@@ -633,99 +683,81 @@ function PlaygroundMobile() {
                             </TabPanel>
                         </TabPanels>
                     </Tabs>
-                </ModalContent>)}
-                {sellFish != null && (<ModalContent>
-                    <Card padding={5}>
-                        <CardHeader>
-                            <Heading>
-                                上架【{sellFish.name}】
-                            </Heading>
-                        </CardHeader>
-                        <CardBody>
-                            <FormControl>
-                                <FormLabel>价格</FormLabel>
-                                <NumberInput defaultValue={price} min={0} onChange={(e) => setPrice(e)}>
-                                    <NumberInputField/>
-                                    <NumberInputStepper>
-                                        <NumberIncrementStepper/>
-                                        <NumberDecrementStepper/>
-                                    </NumberInputStepper>
-                                </NumberInput>
-                                <FormHelperText>合理的价格可以让您的商品更受青睐</FormHelperText>
-                            </FormControl>
-                            <FormControl>
-                                <FormLabel>上架时长</FormLabel>
-                                <RadioGroup defaultValue={sellDuration} onChange={(e) => setSellDuration(e)}>
-                                    <HStack spacing='24px'>
-                                        <Radio value='half_day'>半天</Radio>
-                                        <Radio value='one_day'>一天</Radio>
-                                        <Radio value='three_day'>三天</Radio>
-                                        <Radio value='one_week'>一周</Radio>
-                                    </HStack>
-                                </RadioGroup>
-                                <FormHelperText>注. 手续费取决于售价与上架时长</FormHelperText>
-                            </FormControl>
-                        </CardBody>
-                        <Stack direction='row'>
-                            <Button colorScheme='yellow'
-                                    onClick={() => SellStart(sellFish, price, sellDuration, asset, setAsset, (commission) => {
-                                        SuccessToast('上架成功! 扣除手续费' + commission + '晶石', toast)
-                                        setAsset({
-                                            ...asset,
-                                            gold: asset.gold - commission
-                                        })
-                                        closeTopModal();
-                                        FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
-                                        FetchFishList(refreshFishList).then();
-                                    }, defaultFailedCallback)}>上架</Button>
-                            <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
-                        </Stack>
-                    </Card>
-                </ModalContent>)}
-                {downSellFish != null && (<ModalContent>
-                    <Card padding={5}>
-                        <CardHeader>
-                            <Heading>
-                                下架【{downSellFish.name}】? 手续费将不退还。
-                            </Heading>
-                        </CardHeader>
-                        <CardBody>
-                            <Stack direction='row'>
-                                <Button bg='blue.300' onClick={() => SellStop(downSellFish.id, () => {
-                                    SuccessToast('下架成功', toast);
+                </ModalBody>
+            </ModalContent>)}
+            {sellFish != null && (<ModalContent>
+                <ModalHeader>
+                    上架【{sellFish.name}】
+                </ModalHeader>
+                <ModalBody>
+                    <FormControl>
+                        <FormLabel>价格</FormLabel>
+                        <NumberInput defaultValue={price} min={0} onChange={(e) => setPrice(e)}>
+                            <NumberInputField/>
+                            <NumberInputStepper>
+                                <NumberIncrementStepper/>
+                                <NumberDecrementStepper/>
+                            </NumberInputStepper>
+                        </NumberInput>
+                        <FormHelperText>合理的价格可以让您的商品更受青睐</FormHelperText>
+                    </FormControl>
+                    <FormControl>
+                        <FormLabel>上架时长</FormLabel>
+                        <RadioGroup gap={5} defaultValue={sellDuration} onChange={(e) => setSellDuration(e)}>
+                            <Radio value='half_day'>半天</Radio>
+                            <Radio value='one_day'>一天</Radio>
+                            <Radio value='three_day'>三天</Radio>
+                            <Radio value='one_week'>一周</Radio>
+                        </RadioGroup>
+                        <FormHelperText>注. 手续费取决于售价与上架时长</FormHelperText>
+                    </FormControl>
+                </ModalBody>
+                <ModalFooter>
+                    <HStack>
+                        <Button colorScheme='yellow'
+                                onClick={() => SellStart(sellFish, price, sellDuration, asset, setAsset, (commission) => {
+                                    SuccessToast('上架成功! 扣除手续费' + commission + '晶石', toast)
+                                    setAsset({
+                                        ...asset,
+                                        gold: asset.gold - commission
+                                    })
                                     closeTopModal();
                                     FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
                                     FetchFishList(refreshFishList).then();
-                                }, defaultFailedCallback)}>下架</Button>
-                                <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
-                            </Stack>
-                        </CardBody>
-                    </Card>
-                </ModalContent>)}
-                {refineFishId !== 0 && (<ModalContent>
-                    <Card>
-                        <CardHeader>
-                            <Heading fontSize={30}>确认炼化?</Heading>
-                        </CardHeader>
-                        <CardBody>
-                            <HStack>
-                                <Button size='sm' colorScheme='orange'
-                                        onClick={() => refine(refineFishId)}>确认</Button>
-                                <Button size='sm' colorScheme='blue' onClick={closeTopModal}>取消</Button>
-                            </HStack>
-                        </CardBody>
-                    </Card>
-                </ModalContent>)}
-            </Modal>
-        </Grid>
-        <HStack className='bottom-element' gap={4} align='center' padding={5}>
-            <IconButton aria-label='创建' onClick={handleCreateClick} icon={<Image src={createIcon}/>}/>
-            <IconButton aria-label='排行' onClick={handleOpenPoolRank} icon={<Image src={poolRankIcon}/>}/>
-            <IconButton aria-label='背包' onClick={handleOpenProps} icon={<Image src={propsIcon}/>}/>
-            <IconButton aria-label='交易' onClick={handleOpenMarket} icon={<Image src={marketIcon}/>}/>
-            <IconButton aria-label='技能' onClick={handleOpenUserSkills} icon={<Image src={skillsIcon}/>}/>
-            <IconButton aria-label='建筑' icon={<Image src={buildingIcon}/>}/>
-        </HStack>
+                                }, defaultFailedCallback)}>上架</Button>
+                        <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
+                    </HStack>
+                </ModalFooter>
+            </ModalContent>)}
+            {downSellFish != null && (<ModalContent>
+                <ModalHeader>
+                    下架【{downSellFish.name}】? 手续费将不退还。
+                </ModalHeader>
+                <ModalBody>
+                    <HStack direction='row'>
+                        <Button bg='blue.300' onClick={() => SellStop(downSellFish.id, () => {
+                            SuccessToast('下架成功', toast);
+                            closeTopModal();
+                            FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
+                            FetchFishList(refreshFishList).then();
+                        }, defaultFailedCallback)}>下架</Button>
+                        <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
+                    </HStack>
+                </ModalBody>
+            </ModalContent>)}
+            {refineFishId !== 0 && (<ModalContent>
+                <ModalHeader>
+                    确认炼化?
+                </ModalHeader>
+                <ModalBody>
+                    <HStack>
+                        <Button size='sm' colorScheme='orange'
+                                onClick={() => refine(refineFishId)}>确认</Button>
+                        <Button size='sm' colorScheme='blue' onClick={closeTopModal}>取消</Button>
+                    </HStack>
+                </ModalBody>
+            </ModalContent>)}
+        </Modal>
     </VStack>);
 }
 

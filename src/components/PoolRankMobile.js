@@ -69,7 +69,7 @@ function PoolRankMobile({rankType}) {
                     <ReactPager
                         total={totalPages}
                         current={currentPage}
-                        visiblePages={3}
+                        visiblePages={1}
                         onPageChanged={handlePageChange}
                         className="pagination" // 添加类名
                     />

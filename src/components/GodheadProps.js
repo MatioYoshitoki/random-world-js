@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react';
 import '../Login.css'
 import ReactPager from 'react-pager';
 import {
+    Center, Grid,
+    GridItem,
     useToast, VStack,
 } from '@chakra-ui/react'
 import {EmbedGodhead, FetchProps} from "../request/User";
@@ -51,16 +53,24 @@ function GodheadPropList({columns}) {
     }, [props]);
 
     return (
-        <VStack>
-            <Bag columns={columns} propList={propList} buttonText='佩戴'/>
-            <ReactPager
-                total={totalPages}
-                current={currentPage}
-                visiblePages={5}
-                onPageChanged={handlePageChange}
-                className="pagination" // 添加类名
-            />
-        </VStack>
+        <Grid templateRows='repeat(2, 1fr)'
+              templateColumns='repeat(6, 1fr)'
+              gap={10}>
+            <GridItem colSpan={6}>
+                <Bag columns={columns} propList={propList} buttonText='佩戴'/>
+            </GridItem>
+            <GridItem  colSpan={6}>
+                <Center>
+                    <ReactPager
+                        total={totalPages}
+                        current={currentPage}
+                        visiblePages={1}
+                        onPageChanged={handlePageChange}
+                        className="pagination" // 添加类名
+                    />
+                </Center>
+            </GridItem>
+        </Grid>
     );
 }
 

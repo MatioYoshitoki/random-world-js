@@ -1,27 +1,41 @@
-import {Box, ListItem, Text, Tooltip, UnorderedList} from "@chakra-ui/react";
+import {
+    Badge,
+    Box, HStack,
+    Link,
+    ListItem,
+    Popover, PopoverArrow, PopoverBody, PopoverCloseButton,
+    PopoverContent, PopoverHeader,
+    PopoverTrigger,
+    Text,
+    Tooltip,
+    UnorderedList, useDisclosure, VStack
+} from "@chakra-ui/react";
 import {GetFishSkillColor} from "../style/ColorUtil";
 import React from "react";
 import {getFishSkillDescByLevel, getFishSkillNameByLevel} from "../style/TextDisplayUtils";
+import FishSkillDetail from "./FishSkillsDetails";
 
-function FishSkills({fishSkillList, awakingRemain}) {
+function FishSkills({fishSkillList, awakingRemain, fontSize}) {
+    const {isOpen, onOpen, onClose} = useDisclosure();
+    const skillDescOpen = (fishSkill) => {
+        console.log(fishSkill);
+        onOpen();
+        console.log(isOpen);
+    }
     return (
         <Box>
-            <Text>技能{awakingRemain != null && awakingRemain !== 0 && (<>【未觉醒{awakingRemain}条】</>)}：</Text>
+            <Text fontSize={fontSize}>技能{awakingRemain != null && awakingRemain !== 0 && (<>【未觉醒{awakingRemain}条】</>)}：</Text>
             <UnorderedList>
                 {Array.isArray(fishSkillList) && fishSkillList.map(fishSkill => (
                     <ListItem key={fishSkill.skill_id}>
                         {fishSkill && (
-                            <Tooltip label={getFishSkillDescByLevel(fishSkill.skill_id, fishSkill.level)}
-                                     placement='left'>
-                                <Text fontWeight='bold'
-                                      textColor={GetFishSkillColor(fishSkill.level)}>{getFishSkillNameByLevel(fishSkill.skill_id, fishSkill.level)}</Text>
-                            </Tooltip>
+                            <FishSkillDetail fishSkill={fishSkill} fontSize={fontSize}/>
                         )}
                     </ListItem>
                 ))}
             </UnorderedList>
             {!Array.isArray(fishSkillList) &&
-                <Text>暂未觉醒技能</Text>}
+                <Text fontSize={fontSize}>暂未觉醒技能</Text>}
         </Box>
     )
 }

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import '../Login.css'
 import ReactPager from 'react-pager';
-import {useToast, VStack} from '@chakra-ui/react'
+import {Center, Grid, GridItem, useToast, VStack} from '@chakra-ui/react'
 import {EatProp, FetchProps} from "../request/User";
 import {FailedToast} from "../style/ShowToast";
 import Bag from "./Bag";
@@ -56,16 +56,24 @@ function ExpPropList({columns, incrExp}) {
     }, [props]);
 
     return (
-        <VStack>
-            <Bag columns={columns} propList={propList} buttonText='使用'/>
-            <ReactPager
-                total={totalPages}
-                current={currentPage}
-                visiblePages={5}
-                onPageChanged={handlePageChange}
-                className="pagination" // 添加类名
-            />
-        </VStack>
+        <Grid templateRows='repeat(2, 1fr)'
+              templateColumns='repeat(6, 1fr)'
+              gap={10}>
+            <GridItem colSpan={6}>
+                <Bag columns={columns} propList={propList} buttonText='使用'/>
+            </GridItem>
+            <GridItem  colSpan={6}>
+                <Center>
+                    <ReactPager
+                        total={totalPages}
+                        current={currentPage}
+                        visiblePages={1}
+                        onPageChanged={handlePageChange}
+                        className="pagination" // 添加类名
+                    />
+                </Center>
+            </GridItem>
+        </Grid>
     );
 }
 

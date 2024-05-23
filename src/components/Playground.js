@@ -16,8 +16,8 @@ import {
     GridItem,
     Heading,
     HStack,
-    Modal,
-    ModalContent,
+    Modal, ModalBody,
+    ModalContent, ModalFooter, ModalHeader,
     ModalOverlay,
     NumberDecrementStepper,
     NumberIncrementStepper,
@@ -34,7 +34,7 @@ import {
     Tabs,
     Text,
     useDisclosure,
-    useToast,
+    useToast, VStack,
 } from '@chakra-ui/react'
 import PropList from "./Props";
 import PoolRank from "./PoolRank";
@@ -548,93 +548,112 @@ function Playground() {
                     <ModalOverlay/>
                     {marketOpen && (
                         <ModalContent>
-                            <Market/>
+                            <ModalHeader>
+                                交易
+                            </ModalHeader>
+                            <ModalBody>
+                                <Market/>
+                            </ModalBody>
                         </ModalContent>
                     )}
                     {userSkillsOpen && (
                         <ModalContent>
-                            <UserSkills userLevel={asset.level} fishList={fishList} expendGold={(cost) => {
-                                const newAsset = {
-                                    ...asset
-                                };
-                                newAsset.gold = asset.gold - cost
-                                setAsset(newAsset);
-                            }}/>
+                            <ModalHeader>
+                                技能
+                            </ModalHeader>
+                            <ModalBody>
+                                <UserSkills userLevel={asset.level} fishList={fishList} expendGold={(cost) => {
+                                    const newAsset = {
+                                        ...asset
+                                    };
+                                    newAsset.gold = asset.gold - cost
+                                    setAsset(newAsset);
+                                }}/>
+                            </ModalBody>
                         </ModalContent>
                     )}
                     {propOpen && (
                         <ModalContent>
-                            <PropList columns={10} incrExp={(exp, levelUpCount) => {
-                                const newAsset = {
-                                    ...asset
-                                };
-                                newAsset.exp = asset.exp + exp
-                                if (levelUpCount !== 0) {
-                                    newAsset.level = newAsset.level + levelUpCount
-                                    SuccessToast('升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！', toast);
-                                } else {
-                                    SuccessToast('增加经验' + exp + '！', toast);
-                                }
-                                setAsset(newAsset);
-                            }}/>
+                            <ModalHeader>
+                                背包
+                            </ModalHeader>
+                            <ModalBody>
+                                <PropList columns={8} incrExp={(exp, levelUpCount) => {
+                                    const newAsset = {
+                                        ...asset
+                                    };
+                                    newAsset.exp = asset.exp + exp
+                                    if (levelUpCount !== 0) {
+                                        newAsset.level = newAsset.level + levelUpCount
+                                        SuccessToast('升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！', toast);
+                                    } else {
+                                        SuccessToast('增加经验' + exp + '！', toast);
+                                    }
+                                    setAsset(newAsset);
+                                }}/>
+                            </ModalBody>
+
                         </ModalContent>
                     )}
                     {poolRankOpen && (
                         <ModalContent>
-                            <Tabs variant='enclosed'>
-                                <TabList>
-                                    <Tab>玩家等级榜</Tab>
-                                    <Tab>🐟修为榜</Tab>
-                                    <Tab>🐟击杀榜</Tab>
-                                </TabList>
-                                <TabPanels>
-                                    <TabPanel>
-                                        <UserLevelRank/>
-                                    </TabPanel>
-                                    <TabPanel>
-                                        <PoolRank rankType={0}/>
-                                    </TabPanel>
-                                    <TabPanel>
-                                        <PoolRank rankType={1}/>
-                                    </TabPanel>
-                                </TabPanels>
-                            </Tabs>
+                            <ModalHeader>
+                                榜单
+                            </ModalHeader>
+                            <ModalBody>
+                                <Tabs variant='enclosed'>
+                                    <TabList>
+                                        <Tab>玩家等级榜</Tab>
+                                        <Tab>🐟修为榜</Tab>
+                                        <Tab>🐟击杀榜</Tab>
+                                    </TabList>
+                                    <TabPanels>
+                                        <TabPanel>
+                                            <UserLevelRank/>
+                                        </TabPanel>
+                                        <TabPanel>
+                                            <PoolRank rankType={0}/>
+                                        </TabPanel>
+                                        <TabPanel>
+                                            <PoolRank rankType={1}/>
+                                        </TabPanel>
+                                    </TabPanels>
+                                </Tabs>
+                            </ModalBody>
                         </ModalContent>
                     )}
                     {sellFish != null && (
                         <ModalContent>
-                            <Card padding={5}>
-                                <CardHeader>
-                                    <Heading>
-                                        上架【{sellFish.name}】
-                                    </Heading>
-                                </CardHeader>
-                                <CardBody>
-                                    <FormControl>
-                                        <FormLabel>价格</FormLabel>
-                                        <NumberInput defaultValue={price} min={0} onChange={(e) => setPrice(e)}>
-                                            <NumberInputField/>
-                                            <NumberInputStepper>
-                                                <NumberIncrementStepper/>
-                                                <NumberDecrementStepper/>
-                                            </NumberInputStepper>
-                                        </NumberInput>
-                                        <FormHelperText>合理的价格可以让您的商品更受青睐</FormHelperText>
-                                    </FormControl>
-                                    <FormControl>
-                                        <FormLabel>上架时长</FormLabel>
-                                        <RadioGroup defaultValue={sellDuration} onChange={(e) => setSellDuration(e)}>
-                                            <HStack spacing='24px'>
-                                                <Radio value='half_day'>半天</Radio>
-                                                <Radio value='one_day'>一天</Radio>
-                                                <Radio value='three_day'>三天</Radio>
-                                                <Radio value='one_week'>一周</Radio>
-                                            </HStack>
-                                        </RadioGroup>
-                                        <FormHelperText>注. 手续费取决于售价与上架时长</FormHelperText>
-                                    </FormControl>
-                                </CardBody>
-                                <Stack direction='row'>
+                            <ModalHeader>
+                                上架【{sellFish.name}】
+                            </ModalHeader>
+                            <ModalBody>
+                                <FormControl>
+                                    <FormLabel>价格</FormLabel>
+                                    <NumberInput defaultValue={price} min={0} onChange={(e) => setPrice(e)}>
+                                        <NumberInputField/>
+                                        <NumberInputStepper>
+                                            <NumberIncrementStepper/>
+                                            <NumberDecrementStepper/>
+                                        </NumberInputStepper>
+                                    </NumberInput>
+                                    <FormHelperText>合理的价格可以让您的商品更受青睐</FormHelperText>
+                                </FormControl>
+                                <FormControl>
+                                    <FormLabel>上架时长</FormLabel>
+                                    <RadioGroup defaultValue={sellDuration} onChange={(e) => setSellDuration(e)}>
+                                        <HStack spacing='24px'>
+                                            <Radio value='half_day'>半天</Radio>
+                                            <Radio value='one_day'>一天</Radio>
+                                            <Radio value='three_day'>三天</Radio>
+                                            <Radio value='one_week'>一周</Radio>
+                                        </HStack>
+                                    </RadioGroup>
+                                    <FormHelperText>注. 手续费取决于售价与上架时长</FormHelperText>
+                                </FormControl>
+                            </ModalBody>
+                            <ModalFooter>
+                                <HStack>
                                     <Button colorScheme='yellow'
                                             onClick={() => SellStart(sellFish, price, sellDuration, asset, (commission) => {
                                                 SuccessToast('上架成功! 扣除手续费' + commission + '晶石', toast)
@@ -646,53 +665,48 @@ function Playground() {
                                                 FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
                                                 FetchFishList(refreshFishList, defaultFailedCallback).then();
                                             }, defaultFailedCallback)}>上架</Button>
-                                    <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
-                                </Stack>
-                            </Card>
+                                    <Button onClick={closeTopModal}>取消</Button>
+                                </HStack>
+                            </ModalFooter>
                         </ModalContent>
                     )}
                     {downSellFish != null && (
                         <ModalContent>
-                            <Card padding={5}>
-                                <CardHeader>
-                                    <Heading>
-                                        下架【{downSellFish.name}】? 手续费将不退还。
-                                    </Heading>
-                                </CardHeader>
-                                <CardBody>
-                                    <Stack direction='row'>
-                                        <Button bg='blue.300' onClick={() => SellStop(downSellFish.id, () => {
-                                            SuccessToast('下架成功', toast);
-                                            closeTopModal();
-                                            FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
-                                            FetchFishList(refreshFishList, defaultFailedCallback).then();
-                                        }, defaultFailedCallback)}>下架</Button>
-                                        <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
-                                    </Stack>
-                                </CardBody>
-                            </Card>
+                            <ModalHeader>
+                                下架【{downSellFish.name}】确认
+                            </ModalHeader>
+                            <ModalBody>
+                                下架【{downSellFish.name}】? 手续费将不退还。
+                            </ModalBody>
+                            <ModalFooter>
+                                <HStack>
+                                    <Button bg='blue.300' onClick={() => SellStop(downSellFish.id, () => {
+                                        SuccessToast('下架成功', toast);
+                                        closeTopModal();
+                                        FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
+                                        FetchFishList(refreshFishList, defaultFailedCallback).then();
+                                    }, defaultFailedCallback)}>下架</Button>
+                                    <Button onClick={closeTopModal}>取消</Button>
+                                </HStack>
+                            </ModalFooter>
                         </ModalContent>
                     )}
                     {refineFishId !== 0 && (
                         <ModalContent border={1}>
-                            <Card padding={2}>
-                                <CardHeader>
-                                    <Heading fontSize={30}>确认炼化?</Heading>
-                                </CardHeader>
-                                <CardBody>
-                                    <Stack direction='row'>
-                                        <Button size='sm' colorScheme='orange'
-                                                onClick={() => refine(refineFishId)}>确认</Button>
-                                        <Button size='sm' colorScheme='blue' onClick={closeTopModal}>取消</Button>
-                                    </Stack>
-                                </CardBody>
-                            </Card>
+                            <ModalHeader>确认炼化?</ModalHeader>
+                            <ModalFooter>
+                                <HStack>
+                                    <Button size='sm' colorScheme='orange'
+                                            onClick={() => refine(refineFishId)}>确认</Button>
+                                    <Button size='sm' onClick={closeTopModal}>取消</Button>
+                                </HStack>
+                            </ModalFooter>
                         </ModalContent>
                     )}
                 </Modal>
             </GridItem>
             <GridItem colSpan={1} padding={3}>
-                <Stack mt={90}>
+                <VStack mt={90}>
                     <Button className="circle" onClick={handleCreateClick}>创建</Button>
                     <Button className="circle" onClick={handleOpenMarket}>交易</Button>
                     <Button className="circle" onClick={handleOpenPoolRank}>排行</Button>
@@ -700,7 +714,7 @@ function Playground() {
                     <Button className="circle" onClick={handleOpenUserSkills}>技能</Button>
                     <Button className="circle">建筑</Button>
                     <Button className="circle" onClick={handleLogout}>退出</Button>
-                </Stack>
+                </VStack>
             </GridItem>
         </Grid>
     );

@@ -8,7 +8,7 @@ import {
 
 
 function SkillTargetSelector({fishList, targetStatus, callback, isDisabled}) {
-    const {isOpen, onOpen, onClose} = useDisclosure()
+    const {isOpen, onOpen, onClose} = useDisclosure();
     return (
         <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement='bottom-end'>
             <PopoverTrigger>

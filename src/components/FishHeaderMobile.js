@@ -10,7 +10,6 @@ import {GetGrowthRequireMoney} from "../pkg/FishUtils";
 
 function FishHeaderMobile({fish, effectList}) {
     const hpColor = GetHpProgressColor(fish.heal, fish.max_heal)
-    console.log(hpColor);
     return (
         <Box>
             <Grid templateColumns='repeat(10, 1fr)'>

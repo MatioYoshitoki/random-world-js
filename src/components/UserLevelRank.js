@@ -30,12 +30,12 @@ function UserLevelRank() {
 
     return (
         <TableContainer>
-            <Table variant='simple' padding={5}> {/* 使用容器包裹 */}
+            <Table variant='simple' >
                 <TableCaption mb={3}>
                     <ReactPager
                         total={totalPages}
                         current={currentPage}
-                        visiblePages={5}
+                        visiblePages={1}
                         onPageChanged={handlePageChange}
                         className="pagination" // 添加类名
                     />

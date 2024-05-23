@@ -17,7 +17,7 @@ function UserBaseInfo({asset, userBaseInfo}) {
         }).then();
     }, []);
     return (
-        <Box ml='10' mt='2'>
+        <Box>
             <HStack>
                 <Text fontSize={14} fontWeight="bold">{userBaseInfo.username}</Text>
                 <UserGodhead godheadInfo={userGodheadList}/>
