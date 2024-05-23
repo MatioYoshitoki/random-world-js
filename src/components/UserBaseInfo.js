@@ -4,7 +4,7 @@ import UserGodhead from "./UserGodhead";
 import {GetUserLevelUpRequired} from "../pkg/UserUtils";
 import {GetUserCardColor} from "../style/ColorUtil";
 
-function UserBaseInfo({info}) {
+function UserBaseInfo({info, onlyShow}) {
     return (
         <Box color="gray.50" bg={GetUserCardColor(info.level)} maxW={300} align='start' borderRadius='md' padding={3}>
             <HStack>
@@ -20,7 +20,7 @@ function UserBaseInfo({info}) {
                         </Text>
                     </HStack>
                     <Stack align='start'>
-                        <UserGodhead godheadInfo={info.godhead}/>
+                        <UserGodhead godheadInfo={info.godhead} onlyShow={onlyShow}/>
                     </Stack>
                 </Box>
             </HStack>

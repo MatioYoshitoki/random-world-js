@@ -50,7 +50,7 @@ function UserClickDetails({uid, showText, fontSize}) {
             <PopoverContent>
                 <PopoverBody>
                     <Skeleton isLoaded={!loading}>
-                        <UserBaseInfo info={info}/>
+                        <UserBaseInfo info={info} onlyShow={true}/>
                     </Skeleton>
                 </PopoverBody>
             </PopoverContent>

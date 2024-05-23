@@ -474,7 +474,7 @@ function Playground() {
         <Grid templateColumns='repeat(24, 1fr)'>
             <GridItem colSpan={23}>
                 <Box ml={10} mt={3}>
-                    {userInfo && (<UserBaseInfo info={userInfo}/>)}
+                    {userInfo && (<UserBaseInfo info={userInfo} onlyShow={false}/>)}
                 </Box>
                 <Grid templateRows='repeat(2, 1fr)'
                       templateColumns='repeat(3, 1fr)'
