@@ -29,10 +29,16 @@ function ExpPropList({columns, incrExp}) {
     };
 
     const useFunc = (prop) => EatProp(prop.propId, (data) => {
-        FetchProps(currentPage, 1001, (propList, totalPage) => {
-            setProps(propList);
-            setTotalPages(totalPage);
-        }, defaultFailedCallback).then();
+        if (props.length === 1) {
+            setProps([]);
+            setPropList([]);
+        } else {
+            FetchProps(currentPage, 1001, (propList, totalPage) => {
+                setProps(propList);
+                setTotalPages(totalPage);
+            }, defaultFailedCallback).then();
+        }
+
         incrExp(data.exp, data.level_up_count);
     }, defaultFailedCallback);
 
@@ -43,6 +49,7 @@ function ExpPropList({columns, incrExp}) {
         return prop.prop_name + '使用后增加' + prop.extra.experience + '灵气';
     }
     useEffect(() => {
+        console.log(props);
         const propL = props.map(prop => {
             return {
                 propId: prop.prop_id,

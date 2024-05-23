@@ -31,6 +31,8 @@ import {FailedToast, SuccessToast} from "../style/ShowToast";
 import FishHeader from "./FishHeader";
 import FishBaseInfo from "./FishBaseInfo";
 import {GetFishColorByRating} from "../style/ColorUtil";
+import FishHeaderMobile from "./FishHeaderMobile";
+import FishBaseInfoMobile from "./FishBaseInfoMobile";
 
 function MarketMobileList() {
     const [markets, setMarkets] = useState([]);
@@ -125,10 +127,10 @@ function MarketMobileList() {
                         {detailData != null && (
                             <Card padding={5} bg={GetFishColorByRating(detailData.fish.rating)}>
                                 <CardHeader>
-                                    <FishHeader fish={detailData.fish.fish}/>
+                                    <FishHeaderMobile fish={detailData.fish.fish}/>
                                 </CardHeader>
                                 <CardBody>
-                                    <FishBaseInfo fish={detailData.fish.fish}/>
+                                    <FishBaseInfoMobile fish={detailData.fish.fish}/>
                                 </CardBody>
                                 <Stack direction='row'>
                                     <Button colorScheme='orange'
