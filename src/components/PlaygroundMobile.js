@@ -7,7 +7,7 @@ import {
     Button,
     Card,
     CardBody,
-    CardHeader,
+    CardHeader, Center,
     FormControl,
     FormHelperText,
     FormLabel,
@@ -54,7 +54,7 @@ import {
     RefineFish,
     SleepFish
 } from "../request/Fish";
-import {Configs, ExpandFishParking, FetchUserAsset, FetchUserBaseInfo} from "../request/User";
+import {Configs, ExpandFishParking, FetchGodheadList, FetchUserAsset, FetchUserBaseInfo} from "../request/User";
 import {
     GetFishColorByRating,
     GetFishColorByRatingMobile,
@@ -78,6 +78,9 @@ import UserSkillsMobile from "./UserSkillsMobile";
 import FishHeaderMobile from "./FishHeaderMobile";
 import FishBaseInfoMobile from "./FishBaseInfoMobile";
 import MarketMobile from "./MarketMobile";
+import UserBaseInfoMobile from "./UserBaseInfoMobile";
+import UserLevelRankMobile from "./UserLevelRankMobile";
+import {RepeatIcon} from "@chakra-ui/icons";
 
 let socket = null;
 
@@ -103,6 +106,8 @@ function PlaygroundMobile() {
     const toast = useToast()
     const [parkingEffect, setParkingEffect] = useState({});
     const [coldDownTriger, setColdDownTriger] = useState(false)
+    const [userInfo, setUserInfo] = useState(null);
+    const [godheadList, setGodheadList] = useState(null);
 
     const defaultFailedCallback = (message) => {
         FailedToast(message, toast);
@@ -128,7 +133,17 @@ function PlaygroundMobile() {
             }
         }, defaultFailedCallback).then()
     }
-
+    useEffect(() => {
+        if (asset && baseInfo && Array.isArray(godheadList)) {
+            setUserInfo({
+                username: baseInfo.username,
+                level: asset.level,
+                exp: asset.exp,
+                gold: asset.gold,
+                godhead: godheadList
+            });
+        }
+    }, [asset, baseInfo, godheadList]);
     const refreshFishList = (fishes) => {
         if (fishes != null) {
             fishes.forEach(item => {
@@ -497,6 +512,7 @@ function PlaygroundMobile() {
             }, defaultFailedCallback).then();
             FetchUserAsset(setAsset, defaultFailedCallback).then();
             FetchUserBaseInfo(setBaseInfo, defaultFailedCallback).then();
+            FetchGodheadList(defaultFailedCallback, setGodheadList).then();
         });
         const handleAccessTokenChange = (event) => {
             console.log(event);
@@ -512,10 +528,25 @@ function PlaygroundMobile() {
         }
     }, [])
     return (<VStack>
-        <Modal onClose={onClose} size='full' isOpen={true} scrollBehavior='inside'>
-            <ModalContent>
+        <Modal
+            onClose={onClose}
+            size='full'
+            isOpen={true}
+            closeOnOverlayClick={false}
+            scrollBehavior='inside'>
+            <ModalOverlay/>
+            <ModalContent tabIndex={-1}>
                 <ModalHeader>
-                    <UserBaseInfo asset={asset} userBaseInfo={baseInfo}/>
+                    <Grid templateColumns='repeat(60, 1fr)'>
+                        <GridItem colSpan={55}>
+                            {userInfo && (<UserBaseInfoMobile info={userInfo}/>)}
+                        </GridItem>
+                        <GridItem colSpan={5}>
+                            <IconButton mt={-1} variant='ghost' maxW='50px' isRound aria-label='refresh' icon={<RepeatIcon  color='teal.500'/>} onClick={() => {
+                                window.location.reload();
+                            }}/>
+                        </GridItem>
+                    </Grid>
                 </ModalHeader>
                 <ModalBody>
                     <Grid templateColumns='repeat(24, 1fr)' alignItems='center'>
@@ -600,6 +631,154 @@ function PlaygroundMobile() {
                             </SimpleGrid>
                         </GridItem>
                     </Grid>
+                    <Modal
+                        isOpen={isOpen}
+                        onClose={closeTopModal}
+                        isCentered
+                    >
+                        <ModalOverlay/>
+                        {marketOpen && (<ModalContent>
+                            <ModalHeader>
+                                交易
+                            </ModalHeader>
+                            <ModalBody>
+                                <MarketMobile/>
+                            </ModalBody>
+                        </ModalContent>)}
+                        {userSkillsOpen && (
+                            <ModalContent>
+                                <ModalHeader>
+                                    技能
+                                </ModalHeader>
+                                <ModalBody>
+                                    <UserSkillsMobile userLevel={asset.level} fishList={fishList} expendGold={(cost) => {
+                                        const newAsset = {
+                                            ...asset
+                                        };
+                                        newAsset.gold = asset.gold - cost
+                                        setAsset(newAsset);
+                                    }}/>
+                                </ModalBody>
+                            </ModalContent>
+                        )}
+                        {propOpen && (<ModalContent>
+                            <ModalHeader>
+                                背包
+                            </ModalHeader>
+                            <ModalBody>
+                                <PropList columns={4} incrExp={(exp, levelUpCount) => {
+                                    const newAsset = {
+                                        ...asset
+                                    };
+                                    newAsset.exp = asset.exp + exp
+                                    if (levelUpCount !== 0) {
+                                        newAsset.level = newAsset.level + levelUpCount
+                                        SuccessToast( '升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！', toast);
+                                    } else {
+                                        SuccessToast( '增加经验' + exp + '！', toast);
+                                    }
+                                    setAsset(newAsset);
+                                }}/>
+                            </ModalBody>
+                        </ModalContent>)}
+                        {poolRankOpen && (<ModalContent>
+                            <ModalHeader>
+                                榜单
+                            </ModalHeader>
+                            <ModalBody>
+                                <Tabs variant='enclosed'>
+                                    <TabList>
+                                        <Tab>玩家等级榜</Tab>
+                                        <Tab>🐟修为榜</Tab>
+                                        <Tab>🐟击杀榜</Tab>
+                                    </TabList>
+                                    <TabPanels>
+                                        <TabPanel>
+                                            <UserLevelRankMobile/>
+                                        </TabPanel>
+                                        <TabPanel>
+                                            <PoolRankMobile rankType={0}/>
+                                        </TabPanel>
+                                        <TabPanel>
+                                            <PoolRankMobile rankType={1}/>
+                                        </TabPanel>
+                                    </TabPanels>
+                                </Tabs>
+                            </ModalBody>
+                        </ModalContent>)}
+                        {sellFish != null && (<ModalContent>
+                            <ModalHeader>
+                                上架【{sellFish.name}】
+                            </ModalHeader>
+                            <ModalBody>
+                                <FormControl>
+                                    <FormLabel>价格</FormLabel>
+                                    <NumberInput defaultValue={price} min={0} onChange={(e) => setPrice(e)}>
+                                        <NumberInputField/>
+                                        <NumberInputStepper>
+                                            <NumberIncrementStepper/>
+                                            <NumberDecrementStepper/>
+                                        </NumberInputStepper>
+                                    </NumberInput>
+                                    <FormHelperText>合理的价格可以让您的商品更受青睐</FormHelperText>
+                                </FormControl>
+                                <FormControl>
+                                    <FormLabel>上架时长</FormLabel>
+                                    <RadioGroup gap={5} defaultValue={sellDuration} onChange={(e) => setSellDuration(e)}>
+                                        <Radio value='half_day'>半天</Radio>
+                                        <Radio value='one_day'>一天</Radio>
+                                        <Radio value='three_day'>三天</Radio>
+                                        <Radio value='one_week'>一周</Radio>
+                                    </RadioGroup>
+                                    <FormHelperText>注. 手续费取决于售价与上架时长</FormHelperText>
+                                </FormControl>
+                            </ModalBody>
+                            <ModalFooter>
+                                <HStack>
+                                    <Button colorScheme='yellow'
+                                            onClick={() => SellStart(sellFish, price, sellDuration, asset, setAsset, (commission) => {
+                                                SuccessToast('上架成功! 扣除手续费' + commission + '晶石', toast)
+                                                setAsset({
+                                                    ...asset,
+                                                    gold: asset.gold - commission
+                                                })
+                                                closeTopModal();
+                                                FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
+                                                FetchFishList(refreshFishList).then();
+                                            }, defaultFailedCallback)}>上架</Button>
+                                    <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
+                                </HStack>
+                            </ModalFooter>
+                        </ModalContent>)}
+                        {downSellFish != null && (<ModalContent>
+                            <ModalHeader>
+                                下架【{downSellFish.name}】? 手续费将不退还。
+                            </ModalHeader>
+                            <ModalBody>
+                                <HStack direction='row'>
+                                    <Button bg='blue.300' onClick={() => SellStop(downSellFish.id, () => {
+                                        SuccessToast('下架成功', toast);
+                                        closeTopModal();
+                                        FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
+                                        FetchFishList(refreshFishList).then();
+                                    }, defaultFailedCallback)}>下架</Button>
+                                    <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
+                                </HStack>
+                            </ModalBody>
+                        </ModalContent>)}
+                        {refineFishId !== 0 && (<ModalContent>
+                            <ModalHeader>
+                                确认炼化?
+                            </ModalHeader>
+                            <ModalBody>
+                                <HStack>
+                                    <Button size='sm' colorScheme='orange'
+                                            onClick={() => refine(refineFishId)}>确认</Button>
+                                    <Button size='sm' colorScheme='blue' onClick={closeTopModal}>取消</Button>
+                                </HStack>
+                            </ModalBody>
+                        </ModalContent>)}
+                    </Modal>
                 </ModalBody>
                 <ModalFooter>
                     <HStack gap={4} align='center'>
@@ -612,154 +791,6 @@ function PlaygroundMobile() {
                     </HStack>
                 </ModalFooter>
             </ModalContent>
-        </Modal>
-        <Modal
-            isOpen={isOpen}
-            onClose={closeTopModal}
-            isCentered
-        >
-            <ModalOverlay/>
-            {marketOpen && (<ModalContent>
-                <ModalHeader>
-                    交易
-                </ModalHeader>
-                <ModalBody>
-                    <MarketMobile/>
-                </ModalBody>
-            </ModalContent>)}
-            {userSkillsOpen && (
-                <ModalContent>
-                    <ModalHeader>
-                        技能
-                    </ModalHeader>
-                    <ModalBody>
-                        <UserSkillsMobile userLevel={asset.level} fishList={fishList} expendGold={(cost) => {
-                            const newAsset = {
-                                ...asset
-                            };
-                            newAsset.gold = asset.gold - cost
-                            setAsset(newAsset);
-                        }}/>
-                    </ModalBody>
-                </ModalContent>
-            )}
-            {propOpen && (<ModalContent>
-                <ModalHeader>
-                    背包
-                </ModalHeader>
-                <ModalBody>
-                    <PropList columns={4} incrExp={(exp, levelUpCount) => {
-                        const newAsset = {
-                            ...asset
-                        };
-                        newAsset.exp = asset.exp + exp
-                        if (levelUpCount !== 0) {
-                            newAsset.level = newAsset.level + levelUpCount
-                            SuccessToast( '升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！', toast);
-                        } else {
-                            SuccessToast( '增加经验' + exp + '！', toast);
-                        }
-                        setAsset(newAsset);
-                    }}/>
-                </ModalBody>
-            </ModalContent>)}
-            {poolRankOpen && (<ModalContent>
-                <ModalHeader>
-                    榜单
-                </ModalHeader>
-                <ModalBody>
-                    <Tabs variant='enclosed'>
-                        <TabList>
-                            <Tab>玩家等级榜</Tab>
-                            <Tab>🐟修为榜</Tab>
-                            <Tab>🐟击杀榜</Tab>
-                        </TabList>
-                        <TabPanels>
-                            <TabPanel>
-                                <UserLevelRank/>
-                            </TabPanel>
-                            <TabPanel>
-                                <PoolRankMobile rankType={0}/>
-                            </TabPanel>
-                            <TabPanel>
-                                <PoolRankMobile rankType={1}/>
-                            </TabPanel>
-                        </TabPanels>
-                    </Tabs>
-                </ModalBody>
-            </ModalContent>)}
-            {sellFish != null && (<ModalContent>
-                <ModalHeader>
-                    上架【{sellFish.name}】
-                </ModalHeader>
-                <ModalBody>
-                    <FormControl>
-                        <FormLabel>价格</FormLabel>
-                        <NumberInput defaultValue={price} min={0} onChange={(e) => setPrice(e)}>
-                            <NumberInputField/>
-                            <NumberInputStepper>
-                                <NumberIncrementStepper/>
-                                <NumberDecrementStepper/>
-                            </NumberInputStepper>
-                        </NumberInput>
-                        <FormHelperText>合理的价格可以让您的商品更受青睐</FormHelperText>
-                    </FormControl>
-                    <FormControl>
-                        <FormLabel>上架时长</FormLabel>
-                        <RadioGroup gap={5} defaultValue={sellDuration} onChange={(e) => setSellDuration(e)}>
-                            <Radio value='half_day'>半天</Radio>
-                            <Radio value='one_day'>一天</Radio>
-                            <Radio value='three_day'>三天</Radio>
-                            <Radio value='one_week'>一周</Radio>
-                        </RadioGroup>
-                        <FormHelperText>注. 手续费取决于售价与上架时长</FormHelperText>
-                    </FormControl>
-                </ModalBody>
-                <ModalFooter>
-                    <HStack>
-                        <Button colorScheme='yellow'
-                                onClick={() => SellStart(sellFish, price, sellDuration, asset, setAsset, (commission) => {
-                                    SuccessToast('上架成功! 扣除手续费' + commission + '晶石', toast)
-                                    setAsset({
-                                        ...asset,
-                                        gold: asset.gold - commission
-                                    })
-                                    closeTopModal();
-                                    FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
-                                    FetchFishList(refreshFishList).then();
-                                }, defaultFailedCallback)}>上架</Button>
-                        <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
-                    </HStack>
-                </ModalFooter>
-            </ModalContent>)}
-            {downSellFish != null && (<ModalContent>
-                <ModalHeader>
-                    下架【{downSellFish.name}】? 手续费将不退还。
-                </ModalHeader>
-                <ModalBody>
-                    <HStack direction='row'>
-                        <Button bg='blue.300' onClick={() => SellStop(downSellFish.id, () => {
-                            SuccessToast('下架成功', toast);
-                            closeTopModal();
-                            FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
-                            FetchFishList(refreshFishList).then();
-                        }, defaultFailedCallback)}>下架</Button>
-                        <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
-                    </HStack>
-                </ModalBody>
-            </ModalContent>)}
-            {refineFishId !== 0 && (<ModalContent>
-                <ModalHeader>
-                    确认炼化?
-                </ModalHeader>
-                <ModalBody>
-                    <HStack>
-                        <Button size='sm' colorScheme='orange'
-                                onClick={() => refine(refineFishId)}>确认</Button>
-                        <Button size='sm' colorScheme='blue' onClick={closeTopModal}>取消</Button>
-                    </HStack>
-                </ModalBody>
-            </ModalContent>)}
         </Modal>
     </VStack>);
 }

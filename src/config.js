@@ -36,5 +36,6 @@ export const USER_EXPAND_PARKING_API_ENDPOINT = `/api/v1/user/expand/parking`;
 export const USER_DESTROY_GODHEAD_API_ENDPOINT = `/api/v1/user/godhead/destroy`;
 export const USER_EMBED_GODHEAD_API_ENDPOINT = `/api/v1/user/godhead/embed`;
 export const USER_GODHEAD_LIST_API_ENDPOINT = `/api/v1/user/godhead/list`;
+export const USER_CARD_API_ENDPOINT = `/api/v1/user/card`;
 export const FISH_PARKING_LIST_API_ENDPOINT = "/api/v1/fish/parking/list"
 export const BASE_WS_ENDPOINT = `${WS_URL}/v1/ws`;

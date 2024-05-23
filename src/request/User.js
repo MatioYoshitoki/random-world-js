@@ -1,7 +1,7 @@
 import {
     CONFIGS_API_ENDPOINT,
     USER_ASSET_API_ENDPOINT,
-    USER_BASE_INFO_API_ENDPOINT,
+    USER_BASE_INFO_API_ENDPOINT, USER_CARD_API_ENDPOINT,
     USER_CRAZY_FISH_API_ENDPOINT,
     USER_DESTROY_GODHEAD_API_ENDPOINT,
     USER_EAT_API_ENDPOINT,
@@ -25,6 +25,7 @@ export const Configs = () => {
             if (code === 0) {
                 localStorage.setItem('fish_level_name_configs', JSON.stringify(data.fish_level_name));
                 localStorage.setItem('fish_skill_name_configs', JSON.stringify(data.fish_skill_name));
+                localStorage.setItem('user_level_up_exp_required_configs', JSON.stringify(data.user_level_up_exp_required));
             }
         })
         .catch((error) => {
@@ -50,6 +51,26 @@ export const ExpandFishParking = (callback, failedCallback) => {
 
 export const FetchUserBaseInfo = (callback, failedCallback) => {
     return api.post(USER_BASE_INFO_API_ENDPOINT, {}).then((response) => {
+        const {code, data} = response.data;
+        if (code === 0) {
+            callback(data);
+        } else {
+            failedCallback(response.data.message);
+        }
+    })
+        .catch(error => {
+            if (error.response) {
+                failedCallback(error.response.message);
+            }
+
+        })
+};
+
+
+export const GetUserCard = (uid, callback, failedCallback) => {
+    return api.post(USER_CARD_API_ENDPOINT, {
+        uid: uid.toString()
+    }).then((response) => {
         const {code, data} = response.data;
         if (code === 0) {
             callback(data);

@@ -86,7 +86,7 @@ function MarketMobileList() {
                         <ReactPager
                             total={totalPages}
                             current={currentPage}
-                            visiblePages={5}
+                            visiblePages={1}
                             onPageChanged={handlePageChange}
                             className="pagination" // 添加类名
                         />

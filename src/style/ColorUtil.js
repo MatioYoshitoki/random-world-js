@@ -98,3 +98,19 @@ export function GetHpProgressColor(heal, maxHeal) {
     }
     return 'red';
 }
+
+export function GetUserCardColor(level) {
+    if (level <= 20) {
+        return 'gray.400';
+    }
+    if (level <= 40) {
+        return 'green.400';
+    }
+    if (level <= 80) {
+        return 'blue.400'
+    }
+    if (level <= 160) {
+        return 'purple.600';
+    }
+    return 'orange.500';
+}

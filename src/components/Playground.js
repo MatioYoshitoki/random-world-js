@@ -5,6 +5,7 @@ import {v4 as uuidv4} from 'uuid'; // 引入 uuid 库
 import {BASE_WS_ENDPOINT,} from '../config';
 import Market from "./Market"; // 导入配置文件
 import {
+    Box,
     Button,
     Card,
     CardBody,
@@ -54,7 +55,7 @@ import {
     RefineFish,
     SleepFish
 } from "../request/Fish";
-import {Configs, ExpandFishParking, FetchUserAsset, FetchUserBaseInfo} from "../request/User";
+import {Configs, ExpandFishParking, FetchGodheadList, FetchUserAsset, FetchUserBaseInfo} from "../request/User";
 import {GetFishColorByRating, GetParkingStatusColor} from "../style/ColorUtil";
 import UserBaseInfo from "./UserBaseInfo";
 import {FishCardClassNameByStatus} from "../style/StyleUtil";
@@ -63,6 +64,7 @@ import UserSkills from "./UserSkills";
 import {FailedToast, SuccessToast} from "../style/ShowToast";
 import FishBaseInfo from "./FishBaseInfo";
 import FishHeader from "./FishHeader";
+import userBaseInfo from "./UserBaseInfo";
 
 let socket = null;
 
@@ -86,12 +88,25 @@ function Playground() {
     const [needDestroyFish, setNeedDestroyFish] = useState(null)
     const toast = useToast()
     const [parkingEffect, setParkingEffect] = useState({});
+    const [userInfo, setUserInfo] = useState(null);
+    const [godheadList, setGodheadList] = useState(null);
 
     const [coldDownTriger, setColdDownTriger] = useState(false)
     const defaultFailedCallback = (message) => {
         FailedToast(message, toast);
     }
 
+    useEffect(() => {
+        if (asset && baseInfo && Array.isArray(godheadList)) {
+            setUserInfo({
+                username: baseInfo.username,
+                level: asset.level,
+                exp: asset.exp,
+                gold: asset.gold,
+                godhead: godheadList
+            });
+        }
+    }, [asset, baseInfo, godheadList]);
     useEffect(() => {
         if (coldDownTriger) {
             const coldDown = () => {
@@ -128,7 +143,7 @@ function Playground() {
     const refreshFishList = (fishes) => {
         if (fishes != null) {
             fishes.forEach(item => {
-                if (item.fish.status === null || item.fish.status === undefined) {
+                if (item.fish && item.fish.status === null || item.fish.status === undefined) {
                     item.fish.status = 0;
                 }
             })
@@ -440,6 +455,7 @@ function Playground() {
             FetchFishList(refreshFishList, defaultFailedCallback).then();
             FetchUserAsset(setAsset, defaultFailedCallback).then();
             FetchUserBaseInfo(setBaseInfo, defaultFailedCallback).then();
+            FetchGodheadList(defaultFailedCallback, setGodheadList).then();
         });
         const handleAccessTokenChange = (event) => {
             console.log(event);
@@ -457,7 +473,9 @@ function Playground() {
     return (
         <Grid templateColumns='repeat(24, 1fr)'>
             <GridItem colSpan={23}>
-                <UserBaseInfo asset={asset} userBaseInfo={baseInfo}/>
+                <Box ml={10} mt={3}>
+                    {userInfo && (<UserBaseInfo info={userInfo}/>)}
+                </Box>
                 <Grid templateRows='repeat(2, 1fr)'
                       templateColumns='repeat(3, 1fr)'
                       gap={10}

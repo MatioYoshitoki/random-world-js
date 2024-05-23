@@ -1,24 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import '../Login.css'
 import ReactPager from 'react-pager';
-import {
-    Link, Popover, PopoverBody,
-    PopoverContent,
-    PopoverTrigger, Skeleton,
-    Table,
-    TableCaption,
-    TableContainer,
-    Td,
-    Th,
-    Thead,
-    Tr, useDisclosure,
-    useToast
-} from '@chakra-ui/react'
-import {FetchUserLevelRanks, GetUserCard} from "../request/User";
+import {Table, TableCaption, TableContainer, Td, Th, Thead, Tr, useToast} from '@chakra-ui/react'
+import {FetchUserLevelRanks} from "../request/User";
 import {FailedToast} from "../style/ShowToast";
 import UserClickDetails from "./UserClickDetails";
 
-function UserLevelRank() {
+function UserLevelRankMobile() {
     const [userLevelRanks, setUserLevelRanks] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
@@ -26,10 +14,10 @@ function UserLevelRank() {
     const defaultFailedCallback = (message) => {
         FailedToast(message, toast);
     }
-    const {isOpen, onOpen, onClose} = useDisclosure();
 
     useEffect(() => {
         FetchUserLevelRanks(currentPage, (userLevelRanks, totalPage) =>{
+            console.log(userLevelRanks);
             if (userLevelRanks !== undefined) {
                 setUserLevelRanks(userLevelRanks.ranks);
             }
@@ -43,7 +31,7 @@ function UserLevelRank() {
 
     return (
         <TableContainer>
-            <Table variant='simple' >
+            <Table size='sm' variant='simple' >
                 <TableCaption mb={3}>
                     <ReactPager
                         total={totalPages}
@@ -62,9 +50,7 @@ function UserLevelRank() {
                 </Thead>
                 {userLevelRanks.map(userLevelRank => (
                     <Tr key={userLevelRank.uid}>
-                        <Td>
-                            <UserClickDetails fontSize={11} uid={userLevelRank.uid} showText={userLevelRank.rank+'.'+userLevelRank.username}/>
-                        </Td>
+                        <Td><UserClickDetails fontSize={11} uid={userLevelRank.uid} showText={userLevelRank.rank+'.'+userLevelRank.username}/></Td>
                         <Td>{userLevelRank.level}</Td>
                         <Td>{userLevelRank.exp}</Td>
                     </Tr>
@@ -74,4 +60,4 @@ function UserLevelRank() {
     );
 }
 
-export default UserLevelRank;
+export default UserLevelRankMobile;
