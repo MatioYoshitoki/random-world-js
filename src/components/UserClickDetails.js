@@ -2,19 +2,17 @@ import React, {useState} from 'react';
 import '../Login.css'
 import {
     Box,
-    Button,
-    Card, CardBody, CardHeader, Center,
-    Link, Modal, ModalBody, ModalContent, ModalOverlay, Popover, PopoverBody,
-    PopoverContent,
-    PopoverTrigger, Skeleton, Stack, useDisclosure,
+    Link,
+    Modal,
+    ModalContent,
+    ModalOverlay,
+    Skeleton,
+    useDisclosure,
     useToast
 } from '@chakra-ui/react'
 import {GetUserCard} from "../request/User";
 import {FailedToast} from "../style/ShowToast";
 import UserBaseInfo from "./UserBaseInfo";
-import {GetFishColorByRating} from "../style/ColorUtil";
-import FishHeader from "./FishHeader";
-import FishBaseInfo from "./FishBaseInfo";
 
 function UserClickDetails({uid, showText, fontSize}) {
     const toast = useToast();

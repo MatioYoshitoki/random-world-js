@@ -143,7 +143,7 @@ function Playground() {
     const refreshFishList = (fishes) => {
         if (fishes != null) {
             fishes.forEach(item => {
-                if (item.fish && item.fish.status === null || item.fish.status === undefined) {
+                if (item.fish && (item.fish.status === null || item.fish.status === undefined)) {
                     item.fish.status = 0;
                 }
             })
