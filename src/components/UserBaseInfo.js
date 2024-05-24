@@ -4,9 +4,9 @@ import UserGodhead from "./UserGodhead";
 import {GetUserLevelUpRequired} from "../pkg/UserUtils";
 import {GetUserCardColor} from "../style/ColorUtil";
 
-function UserBaseInfo({info, onlyShow}) {
+function UserBaseInfo({maxW, info, onlyShow}) {
     return (
-        <Box color="gray.50" bg={GetUserCardColor(info.level)} maxW={300} align='start' borderRadius='md' padding={3}>
+        <Box color="gray.50" bg={GetUserCardColor(info.level)} maxW={maxW} align='start' borderRadius='md' padding={3}>
             <HStack>
                 <Avatar name={info.username} />
                 <Box align='start'>

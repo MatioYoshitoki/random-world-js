@@ -1,22 +1,20 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import '../Login.css'
-import ReactPager from 'react-pager';
 import {
-    Link, Popover, PopoverBody,
+    Box,
+    Button,
+    Card, CardBody, CardHeader, Center,
+    Link, Modal, ModalBody, ModalContent, ModalOverlay, Popover, PopoverBody,
     PopoverContent,
-    PopoverTrigger, Skeleton,
-    Table,
-    TableCaption,
-    TableContainer,
-    Td,
-    Th,
-    Thead,
-    Tr, useDisclosure,
+    PopoverTrigger, Skeleton, Stack, useDisclosure,
     useToast
 } from '@chakra-ui/react'
-import {FetchUserLevelRanks, GetUserCard} from "../request/User";
+import {GetUserCard} from "../request/User";
 import {FailedToast} from "../style/ShowToast";
 import UserBaseInfo from "./UserBaseInfo";
+import {GetFishColorByRating} from "../style/ColorUtil";
+import FishHeader from "./FishHeader";
+import FishBaseInfo from "./FishBaseInfo";
 
 function UserClickDetails({uid, showText, fontSize}) {
     const toast = useToast();
@@ -43,18 +41,22 @@ function UserClickDetails({uid, showText, fontSize}) {
     }
 
     return (
-        <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement='bottom-end'>
-            <PopoverTrigger>
-                <Link fontWeight="bold" color='teal.500' fontSize={fontSize} onClick={() => lookAt(uid)}>{showText}</Link>
-            </PopoverTrigger>
-            <PopoverContent>
-                <PopoverBody>
+        <Box>
+            <Link fontWeight="bold" color='teal.500' fontSize={fontSize} onClick={() => lookAt(uid)}>{showText}</Link>
+            <Modal
+                isOpen={isOpen}
+                onClose={onClose}
+                isCentered
+                size='xs'
+            >
+                <ModalOverlay/>
+                <ModalContent>
                     <Skeleton isLoaded={!loading}>
-                        <UserBaseInfo info={info} onlyShow={true}/>
+                        <UserBaseInfo maxW='100%' info={info} onlyShow={true}/>
                     </Skeleton>
-                </PopoverBody>
-            </PopoverContent>
-        </Popover>
+                </ModalContent>
+            </Modal>
+        </Box>
     );
 }
 

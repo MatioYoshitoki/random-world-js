@@ -17,7 +17,6 @@ function UserLevelRankMobile() {
 
     useEffect(() => {
         FetchUserLevelRanks(currentPage, (userLevelRanks, totalPage) =>{
-            console.log(userLevelRanks);
             if (userLevelRanks !== undefined) {
                 setUserLevelRanks(userLevelRanks.ranks);
             }
@@ -50,7 +49,9 @@ function UserLevelRankMobile() {
                 </Thead>
                 {userLevelRanks.map(userLevelRank => (
                     <Tr key={userLevelRank.uid}>
-                        <Td><UserClickDetails fontSize={11} uid={userLevelRank.uid} showText={userLevelRank.rank+'.'+userLevelRank.username}/></Td>
+                        <Td>
+                            <UserClickDetails fontSize={11} uid={userLevelRank.uid} showText={userLevelRank.rank+'.'+userLevelRank.username}/>
+                        </Td>
                         <Td>{userLevelRank.level}</Td>
                         <Td>{userLevelRank.exp}</Td>
                     </Tr>

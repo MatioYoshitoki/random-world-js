@@ -22,7 +22,7 @@ function UserBaseInfoMobile({info}) {
                 </PopoverTrigger>
                 <PopoverContent>
                     <PopoverBody>
-                        <UserBaseInfo info={info} onlyShow={false}/>
+                        <UserBaseInfo maxW={300} info={info} onlyShow={false}/>
                     </PopoverBody>
                 </PopoverContent>
             </Popover>

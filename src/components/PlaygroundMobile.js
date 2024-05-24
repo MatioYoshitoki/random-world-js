@@ -535,7 +535,7 @@ function PlaygroundMobile() {
             closeOnOverlayClick={false}
             scrollBehavior='inside'>
             <ModalOverlay/>
-            <ModalContent tabIndex={-1}>
+            <ModalContent>
                 <ModalHeader>
                     <Grid templateColumns='repeat(60, 1fr)'>
                         <GridItem colSpan={55}>
