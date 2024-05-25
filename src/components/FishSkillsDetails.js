@@ -27,7 +27,6 @@ function FishSkillDetail({fishSkill, fontSize}) {
                         {getFishSkillNameByLevel(fishSkill.skill_id, fishSkill.level)}
                     </Text>
                 </PopoverHeader>
-                <PopoverArrow />
                 <PopoverCloseButton />
                 <PopoverBody>
                     <Text>

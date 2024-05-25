@@ -1,4 +1,4 @@
-import {HStack} from "@chakra-ui/react";
+import {Box, Center, HStack, SimpleGrid} from "@chakra-ui/react";
 import {useEffect, useState} from "react";
 import UserGodheadDetail from "./UserGodheadDetail";
 
@@ -12,11 +12,11 @@ function UserGodhead({godheadInfo, onlyShow}) {
         setGodheadList(newGodheadList);
     }
     return (
-        <HStack gap={0}>
+        <SimpleGrid columns={10} gap={-2}>
             {Array.isArray(godheadList) && godheadList.map(info => (
                 <UserGodheadDetail onlyShow={onlyShow} key={info.id} godhead={info} loseGodhead={loseGodhead}/>
             ))}
-        </HStack>
+        </SimpleGrid>
     )
 }
 

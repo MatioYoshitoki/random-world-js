@@ -51,7 +51,7 @@ function BehaviorDetails({behavior}) {
                     data: [
                         { value: behavior[0], name: '攻击' },
                         { value: behavior[1] - behavior[0], name: '休整' },
-                        { value: behavior[2] - behavior[1] - behavior[0], name: '修炼' },
+                        { value: behavior[2] - behavior[1], name: '修炼' },
                     ]
                 },
             ]

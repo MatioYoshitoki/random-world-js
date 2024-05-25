@@ -39,7 +39,7 @@ function UserGodheadDetail({godhead, loseGodhead, onlyShow}) {
             <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement='bottom-end'>
                 <PopoverTrigger>
                     <IconButton variant='ghost' isRound size='xs' aria-label={godhead.id}>
-                        <Image maxW='15px' src={icon}/>
+                        <Image maxW='14px' src={icon}/>
                     </IconButton>
                 </PopoverTrigger>
                 <PopoverContent>

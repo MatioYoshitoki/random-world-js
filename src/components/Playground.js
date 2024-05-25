@@ -97,7 +97,7 @@ function Playground() {
     }
 
     useEffect(() => {
-        if (asset && baseInfo && Array.isArray(godheadList)) {
+        if (asset && baseInfo) {
             setUserInfo({
                 username: baseInfo.username,
                 level: asset.level,

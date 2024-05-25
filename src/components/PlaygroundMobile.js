@@ -134,7 +134,7 @@ function PlaygroundMobile() {
         }, defaultFailedCallback).then()
     }
     useEffect(() => {
-        if (asset && baseInfo && Array.isArray(godheadList)) {
+        if (asset && baseInfo) {
             setUserInfo({
                 username: baseInfo.username,
                 level: asset.level,
@@ -226,12 +226,9 @@ function PlaygroundMobile() {
     const handleCreateClick = () => {
         // 发送创建请求
         CreateFish((newFish) => {
-            console.log(newFish)
             const newList = [...fishList];
             newList.push(newFish);
-            if (showFish == null) {
-                setShowFish(newFish);
-            }
+            setShowFish(newFish);
             refreshFishList(newList);
             FetchUserAsset(setAsset, defaultFailedCallback).then();
             SuccessToast('创建成功', toast);
@@ -536,8 +533,8 @@ function PlaygroundMobile() {
             scrollBehavior='inside'>
             <ModalOverlay/>
             <ModalContent>
-                <ModalHeader>
-                    <Grid templateColumns='repeat(60, 1fr)'>
+                <ModalHeader maxH={50}>
+                    <Grid zIndex={200} templateColumns='repeat(60, 1fr)'>
                         <GridItem colSpan={55}>
                             {userInfo && (<UserBaseInfoMobile info={userInfo}/>)}
                         </GridItem>
@@ -552,6 +549,7 @@ function PlaygroundMobile() {
                     <Grid templateColumns='repeat(24, 1fr)' alignItems='center'>
                         <GridItem colSpan={24}>
                             {showFish != null && (<Card
+                                zIndex={1}
                                 className={FishCardClassNameByStatus(showFish.fish.status)}
                                 mt={2}
                                 bg={GetFishColorByRating(showFish.rating)}

@@ -3,12 +3,6 @@ import React from "react";
 import FishSkillDetail from "./FishSkillsDetails";
 
 function FishSkills({fishSkillList, awakingRemain, fontSize}) {
-    const {isOpen, onOpen, onClose} = useDisclosure();
-    const skillDescOpen = (fishSkill) => {
-        console.log(fishSkill);
-        onOpen();
-        console.log(isOpen);
-    }
     return (
         <Box>
             <Text fontSize={fontSize}>技能{awakingRemain != null && awakingRemain !== 0 && (<>【未觉醒{awakingRemain}条】</>)}：</Text>
