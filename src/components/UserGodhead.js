@@ -1,4 +1,4 @@
-import {Box, Center, HStack, SimpleGrid} from "@chakra-ui/react";
+import {SimpleGrid} from "@chakra-ui/react";
 import {useEffect, useState} from "react";
 import UserGodheadDetail from "./UserGodheadDetail";
 

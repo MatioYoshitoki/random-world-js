@@ -4,13 +4,12 @@ import {
     Grid,
     GridItem,
     Heading,
-    HStack, IconButton,
-    Image,
-    Link, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader,
+    HStack,
+    Image, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader,
     PopoverTrigger,
     Progress,
     Text,
-    Tooltip, useDisclosure, VStack
+    Tooltip, useDisclosure
 } from "@chakra-ui/react";
 import FishGodhead from "./FishGodhead";
 import FishDeadRecordsTrigger from "./FishDeadRecordsTrigger";
@@ -37,7 +36,7 @@ function FishHeader({fish, effectList}) {
                 </GridItem>
                 <GridItem colSpan={2}></GridItem>
                 <GridItem colSpan={1}>
-                    {fish.status === 3 && <FishDeadRecordsTrigger fishId={fish.id}/>}
+                    {fish.status === 3 && <FishDeadRecordsTrigger fish={fish}/>}
                 </GridItem>
                 <GridItem colSpan={1}>
                     <FishStatusIcon status={fish.status}

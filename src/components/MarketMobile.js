@@ -28,8 +28,6 @@ import {
 import {Buy, FetchMarketDetail, FetchMarkets} from "../request/Market";
 import {FormatTime} from "../style/TimeDisplayUtil";
 import {FailedToast, SuccessToast} from "../style/ShowToast";
-import FishHeader from "./FishHeader";
-import FishBaseInfo from "./FishBaseInfo";
 import {GetFishColorByRating} from "../style/ColorUtil";
 import FishHeaderMobile from "./FishHeaderMobile";
 import FishBaseInfoMobile from "./FishBaseInfoMobile";

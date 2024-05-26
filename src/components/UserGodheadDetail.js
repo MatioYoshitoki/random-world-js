@@ -11,7 +11,7 @@ import {
     PopoverContent,
     PopoverFooter,
     PopoverHeader,
-    PopoverTrigger, Text,
+    PopoverTrigger,
     useDisclosure,
     useToast,
 } from '@chakra-ui/react'

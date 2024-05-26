@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import '../Login.css'
 import ReactPager from 'react-pager';
-import {Center, Grid, GridItem, useToast} from '@chakra-ui/react'
-import {EatProp, FetchProps} from "../request/User";
-import {FailedToast} from "../style/ShowToast";
+import {Center, Grid, GridItem, useToast,} from '@chakra-ui/react'
+import {FetchProps} from "../request/User";
+import {FailedToast, SuccessToast} from "../style/ShowToast";
+import {GetGodheadIcon} from "../style/GodheadIconUtil";
 import Bag from "./Bag";
-import PropIcon from "../assets/user_skills/refine_fish.svg";
+import {MailSend} from "../request/Mail";
 
-function ExpPropList({columns, incrExp}) {
+function GodheadPropRecall({receiverUid, columns, recallCallback}) {
     const [props, setProps] = useState([]);
     const [propList, setPropList] = useState([])
     const [currentPage, setCurrentPage] = useState(0);
@@ -18,7 +19,7 @@ function ExpPropList({columns, incrExp}) {
     }
 
     useEffect(() => {
-        FetchProps(currentPage, 1001, (propList, totalPage) => {
+        FetchProps(currentPage, 1002, (propList, totalPage) => {
             setProps(propList);
             setTotalPages(totalPage);
         }, defaultFailedCallback).then();
@@ -27,33 +28,21 @@ function ExpPropList({columns, incrExp}) {
     const handlePageChange = (newPage) => {
         setCurrentPage(newPage);
     };
-
-    const useFunc = (prop) => EatProp(prop.propId, (data) => {
-        if (props.length === 1) {
-            setProps([]);
-            setPropList([]);
-        } else {
-            FetchProps(currentPage, 1001, (propList, totalPage) => {
-                setProps(propList);
-                setTotalPages(totalPage);
-            }, defaultFailedCallback).then();
-        }
-
-        incrExp(data.exp, data.level_up_count);
-    }, defaultFailedCallback);
-
     const iconFunc = (prop) => {
-        return PropIcon;
+        return GetGodheadIcon(prop.extra.level);
     }
-    const getRemark = (prop) => {
-        return prop.prop_name + '使用后增加' + prop.extra.experience + '灵气';
-    }
+    const useFunc = (prop) => {
+        MailSend(receiverUid, 1, prop.propId, {}, (data) => {
+            recallCallback();
+            SuccessToast('归还成功!邮费: '+data.cost, toast);
+        }, defaultFailedCallback).then();
+    };
     useEffect(() => {
         const propL = props.map(prop => {
             return {
                 propId: prop.prop_id,
                 propName: prop.prop_name,
-                propRemark: getRemark(prop),
+                propRemark: prop.prop_remark,
                 propImage: iconFunc(prop),
                 useFunc: (pp) => useFunc(pp)
             };
@@ -66,9 +55,9 @@ function ExpPropList({columns, incrExp}) {
               templateColumns='repeat(6, 1fr)'
               gap={10}>
             <GridItem colSpan={6}>
-                <Bag columns={columns} propList={propList} buttonText='使用'/>
+                <Bag columns={columns} propList={propList} buttonText='归还'/>
             </GridItem>
-            <GridItem  colSpan={6}>
+            <GridItem colSpan={6}>
                 <Center>
                     <ReactPager
                         total={totalPages}
@@ -83,4 +72,4 @@ function ExpPropList({columns, incrExp}) {
     );
 }
 
-export default ExpPropList;
+export default GodheadPropRecall;

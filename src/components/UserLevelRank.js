@@ -2,19 +2,16 @@ import React, {useEffect, useState} from 'react';
 import '../Login.css'
 import ReactPager from 'react-pager';
 import {
-    Link, Popover, PopoverBody,
-    PopoverContent,
-    PopoverTrigger, Skeleton,
     Table,
     TableCaption,
     TableContainer,
     Td,
     Th,
     Thead,
-    Tr, useDisclosure,
+    Tr,
     useToast
 } from '@chakra-ui/react'
-import {FetchUserLevelRanks, GetUserCard} from "../request/User";
+import {FetchUserLevelRanks} from "../request/User";
 import {FailedToast} from "../style/ShowToast";
 import UserClickDetails from "./UserClickDetails";
 
@@ -26,7 +23,6 @@ function UserLevelRank() {
     const defaultFailedCallback = (message) => {
         FailedToast(message, toast);
     }
-    const {isOpen, onOpen, onClose} = useDisclosure();
 
     useEffect(() => {
         FetchUserLevelRanks(currentPage, (userLevelRanks, totalPage) =>{

@@ -64,7 +64,6 @@ import UserSkills from "./UserSkills";
 import {FailedToast, SuccessToast} from "../style/ShowToast";
 import FishBaseInfo from "./FishBaseInfo";
 import FishHeader from "./FishHeader";
-import userBaseInfo from "./UserBaseInfo";
 
 let socket = null;
 

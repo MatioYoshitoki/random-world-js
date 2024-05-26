@@ -38,4 +38,11 @@ export const USER_EMBED_GODHEAD_API_ENDPOINT = `/api/v1/user/godhead/embed`;
 export const USER_GODHEAD_LIST_API_ENDPOINT = `/api/v1/user/godhead/list`;
 export const USER_CARD_API_ENDPOINT = `/api/v1/user/card`;
 export const FISH_PARKING_LIST_API_ENDPOINT = "/api/v1/fish/parking/list"
+
+export const MAIL_RECEIVED_API_ENDPOINT = `/api/v1/mail/received`;
+export const MAIL_SEND_API_ENDPOINT = `/api/v1/mail/send`;
+export const MAIL_RECEIVE_API_ENDPOINT = `/api/v1/mail/receive`;
+export const MAIL_REMOVE_API_ENDPOINT = `/api/v1/mail/remove`;
+
+
 export const BASE_WS_ENDPOINT = `${WS_URL}/v1/ws`;

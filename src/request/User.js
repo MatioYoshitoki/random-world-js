@@ -26,6 +26,7 @@ export const Configs = () => {
                 localStorage.setItem('fish_level_name_configs', JSON.stringify(data.fish_level_name));
                 localStorage.setItem('fish_skill_name_configs', JSON.stringify(data.fish_skill_name));
                 localStorage.setItem('user_level_up_exp_required_configs', JSON.stringify(data.user_level_up_exp_required));
+                localStorage.setItem('mail_message_template_configs', JSON.stringify(data.mail_message_template));
             }
         })
         .catch((error) => {
@@ -62,7 +63,6 @@ export const FetchUserBaseInfo = (callback, failedCallback) => {
             if (error.response) {
                 failedCallback(error.response.message);
             }
-
         })
 };
 

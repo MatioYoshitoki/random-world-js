@@ -19,8 +19,36 @@
     }
 }
 
+@keyframes mailUnread {
+    0% {
+        transform: translate(0, 0);
+    }
+    5% {
+        transform: translate(2px, 0px);
+    }
+    10% {
+        transform: translate(-2px, 0px);
+    }
+    15% {
+        transform: translate(2px, 0px);
+    }
+    20% {
+        transform: translate(-2px, 0px);
+    }
+    25% {
+        transform: translate(0, 0);
+    }
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
 .alive-fish {
     animation: shakeAnimation 1s ease-in-out infinite;
+}
+
+.mail-unread {
+    animation: mailUnread 1s ease-in-out infinite;
 }
 
 .bottom-element {

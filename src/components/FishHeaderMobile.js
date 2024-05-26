@@ -5,7 +5,6 @@ import {
     GridItem,
     Heading,
     HStack,
-    IconButton,
     Image, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader,
     PopoverTrigger,
     Progress,
@@ -37,7 +36,7 @@ function FishHeaderMobile({fish, effectList}) {
                 </GridItem>
                 <GridItem colSpan={1}></GridItem>
                 <GridItem colSpan={1}>
-                    {fish.status === 3 && <FishDeadRecordsTrigger fishId={fish.id}/>}
+                    {fish.status === 3 && <FishDeadRecordsTrigger fish={fish}/>}
                 </GridItem>
                 <GridItem colSpan={1}>
                     <FishStatusIcon status={fish.status}

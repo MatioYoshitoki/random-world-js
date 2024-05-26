@@ -23,7 +23,7 @@ function BagItem({prop, buttonText}) {
         <Box>
             <VStack borderWidth='4px' borderRadius='lg' overflow='hidden'>
                 <IconButton alignItems='center' maxW='40px' aria-label={prop.propId} icon={<Image src={prop.propImage} onClick={onOpen}/>}/>
-                <Text fontSize={9}>{prop.propName}</Text>
+                <Text textAlign='center' fontSize={9}>{prop.propName}</Text>
             </VStack>
             <AlertDialog
                 motionPreset='slideInBottom'

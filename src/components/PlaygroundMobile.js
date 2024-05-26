@@ -7,7 +7,7 @@ import {
     Button,
     Card,
     CardBody,
-    CardHeader, Center,
+    CardHeader,
     FormControl,
     FormHelperText,
     FormLabel,
@@ -61,7 +61,6 @@ import {
     GetHpProgressColor,
     GetParkingStatusColorMobile
 } from "../style/ColorUtil";
-import UserBaseInfo from "./UserBaseInfo";
 import FishStatusIcon from "./FishStatusIcon";
 import {FishCardClassNameByStatus} from "../style/StyleUtil";
 
@@ -72,7 +71,6 @@ import skillsIcon from '../assets/mobile_button_icon/skills.svg';
 import poolRankIcon from '../assets/mobile_button_icon/pool_rank.svg';
 import propsIcon from '../assets/mobile_button_icon/props.svg';
 import PoolRankMobile from "./PoolRankMobile";
-import UserLevelRank from "./UserLevelRank";
 import {FailedToast, SuccessToast} from "../style/ShowToast";
 import UserSkillsMobile from "./UserSkillsMobile";
 import FishHeaderMobile from "./FishHeaderMobile";
@@ -81,6 +79,7 @@ import MarketMobile from "./MarketMobile";
 import UserBaseInfoMobile from "./UserBaseInfoMobile";
 import UserLevelRankMobile from "./UserLevelRankMobile";
 import {RepeatIcon} from "@chakra-ui/icons";
+import MailButton from "./MailButton";
 
 let socket = null;
 
@@ -105,7 +104,7 @@ function PlaygroundMobile() {
     const [userSkillsOpen, setUserSkillsOpen] = useState(false);
     const toast = useToast()
     const [parkingEffect, setParkingEffect] = useState({});
-    const [coldDownTriger, setColdDownTriger] = useState(false)
+    const [coldDownTrigger, setColdDownTrigger] = useState(false)
     const [userInfo, setUserInfo] = useState(null);
     const [godheadList, setGodheadList] = useState(null);
 
@@ -336,7 +335,7 @@ function PlaygroundMobile() {
         refreshFishList(newList);
     }
     useEffect(() => {
-        if (coldDownTriger) {
+        if (coldDownTrigger) {
             const coldDown = () => {
                 const newParkingEffects = {
                     ...parkingEffect
@@ -354,13 +353,13 @@ function PlaygroundMobile() {
                 setParkingEffect(newParkingEffects);
             }
             coldDown();
-            setColdDownTriger(false);
+            setColdDownTrigger(false);
         }
-    }, [coldDownTriger, parkingEffect]);
+    }, [coldDownTrigger, parkingEffect]);
 
     useEffect(() => {
         const cdInterval = setInterval(() => {
-            setColdDownTriger(true);
+            setColdDownTrigger(true);
         }, 1000);
         return () => {
             clearInterval(cdInterval);
@@ -377,7 +376,7 @@ function PlaygroundMobile() {
                 let idx = 0
                 newParkingEffects[item.parking] = Array.of();
                 const nowMs = new Date().getTime()
-                for (let effect of item.effects) {
+                for (let effect of item.fish.effects) {
                     if (Math.round((effect.effect_expire_ms - nowMs) / 1000) > 0) {
                         newParkingEffects[item.parking][idx] = {
                             ...effect
@@ -535,7 +534,10 @@ function PlaygroundMobile() {
             <ModalContent>
                 <ModalHeader maxH={50}>
                     <Grid zIndex={200} templateColumns='repeat(60, 1fr)'>
-                        <GridItem colSpan={55}>
+                        <GridItem colSpan={6}>
+                            <MailButton/>
+                        </GridItem>
+                        <GridItem colSpan={49}>
                             {userInfo && (<UserBaseInfoMobile info={userInfo}/>)}
                         </GridItem>
                         <GridItem colSpan={5}>
