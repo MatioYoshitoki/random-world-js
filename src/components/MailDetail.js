@@ -16,7 +16,7 @@ import {GetGodheadIcon} from "../style/GodheadIconUtil";
 import {useEffect, useState} from "react";
 import MailGodheadRecall from "./MailGodheadRecall";
 
-function MailDetail({title, message, mail, readCallback, receiveCallback, recallCallback, deleteCallback}) {
+function MailDetail({title, message, pageSize, mail, readCallback, receiveCallback, recallCallback, deleteCallback}) {
     const {isOpen, onOpen, onClose} = useDisclosure();
     const getPropIcon = (prop) => {
         if (prop.prop_type === 1001) {
@@ -77,7 +77,7 @@ function MailDetail({title, message, mail, readCallback, receiveCallback, recall
                         }} colorScheme='whatsapp' isDisabled={mail.status === 2}>{mail.status === 2?'已领取':'领取'}</Button>
                     )}
                     {mail.mail_type === 0 && (
-                        <MailGodheadRecall receiverUid={mail.sender_uid} columns={4} isDisabled={mail.status === 3} recallCallback={recallCallback}>归还</MailGodheadRecall>
+                        <MailGodheadRecall receiverUid={mail.sender_uid} columns={4} pageSize={pageSize} isDisabled={mail.status === 3} recallCallback={recallCallback}>归还</MailGodheadRecall>
                     )}
                     <Button isDisabled={Array.isArray(mail.props) && mail.props.length > 0 && mail.status !== 2} onClick={deleteCallback}>删除</Button>
                 </ModalFooter>

@@ -172,10 +172,10 @@ function Playground() {
         onOpen();
     }
 
-    const handleOpenProps = () => {
-        setPropOpen(true);
-        onOpen();
-    }
+    // const handleOpenProps = () => {
+    //     setPropOpen(true);
+    //     onOpen();
+    // }
     const handleOpenUserSkills = () => {
         setUserSkillsOpen(true);
         onOpen();
@@ -591,29 +591,6 @@ function Playground() {
                             </ModalBody>
                         </ModalContent>
                     )}
-                    {propOpen && (
-                        <ModalContent>
-                            <ModalHeader>
-                                背包
-                            </ModalHeader>
-                            <ModalBody>
-                                <PropList columns={8} incrExp={(exp, levelUpCount) => {
-                                    const newAsset = {
-                                        ...asset
-                                    };
-                                    newAsset.exp = asset.exp + exp
-                                    if (levelUpCount !== 0) {
-                                        newAsset.level = newAsset.level + levelUpCount
-                                        SuccessToast('升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！', toast);
-                                    } else {
-                                        SuccessToast('增加经验' + exp + '！', toast);
-                                    }
-                                    setAsset(newAsset);
-                                }}/>
-                            </ModalBody>
-
-                        </ModalContent>
-                    )}
                     {poolRankOpen && (
                         <ModalContent>
                             <ModalHeader>
@@ -729,7 +706,19 @@ function Playground() {
                     <Button className="circle" onClick={handleCreateClick}>创建</Button>
                     <Button className="circle" onClick={handleOpenMarket}>交易</Button>
                     <Button className="circle" onClick={handleOpenPoolRank}>排行</Button>
-                    <Button className="circle" onClick={handleOpenProps}>背包</Button>
+                    <PropList columns={8} size='3xl' pageSize={20} incrExp={(exp, levelUpCount) => {
+                        const newAsset = {
+                            ...asset
+                        };
+                        newAsset.exp = asset.exp + exp
+                        if (levelUpCount !== 0) {
+                            newAsset.level = newAsset.level + levelUpCount
+                            SuccessToast('升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！', toast);
+                        } else {
+                            SuccessToast('增加经验' + exp + '！', toast);
+                        }
+                        setAsset(newAsset);
+                    }} />
                     <Button className="circle" onClick={handleOpenUserSkills}>技能</Button>
                     <Button className="circle">建筑</Button>
                     <MailButton/>

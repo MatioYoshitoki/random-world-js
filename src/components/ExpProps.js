@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import '../Login.css'
 import ReactPager from 'react-pager';
-import {Center, Grid, GridItem, useToast} from '@chakra-ui/react'
+import {Center, Grid, GridItem, useToast, VStack} from '@chakra-ui/react'
 import {EatProp, FetchProps} from "../request/User";
 import {FailedToast} from "../style/ShowToast";
 import Bag from "./Bag";
 import PropIcon from "../assets/user_skills/refine_fish.svg";
 
-function ExpPropList({columns, incrExp}) {
+function ExpPropList({columns, incrExp, pageSize}) {
     const [props, setProps] = useState([]);
     const [propList, setPropList] = useState([])
     const [currentPage, setCurrentPage] = useState(0);
@@ -18,7 +18,7 @@ function ExpPropList({columns, incrExp}) {
     }
 
     useEffect(() => {
-        FetchProps(currentPage, 1001, (propList, totalPage) => {
+        FetchProps(currentPage, pageSize, 1001, (propList, totalPage) => {
             setProps(propList);
             setTotalPages(totalPage);
         }, defaultFailedCallback).then();
@@ -33,7 +33,7 @@ function ExpPropList({columns, incrExp}) {
             setProps([]);
             setPropList([]);
         } else {
-            FetchProps(currentPage, 1001, (propList, totalPage) => {
+            FetchProps(currentPage, pageSize, 1001, (propList, totalPage) => {
                 setProps(propList);
                 setTotalPages(totalPage);
             }, defaultFailedCallback).then();
@@ -62,24 +62,16 @@ function ExpPropList({columns, incrExp}) {
     }, [props]);
 
     return (
-        <Grid templateRows='repeat(2, 1fr)'
-              templateColumns='repeat(6, 1fr)'
-              gap={10}>
-            <GridItem colSpan={6}>
-                <Bag columns={columns} propList={propList} buttonText='使用'/>
-            </GridItem>
-            <GridItem  colSpan={6}>
-                <Center>
-                    <ReactPager
-                        total={totalPages}
-                        current={currentPage}
-                        visiblePages={1}
-                        onPageChanged={handlePageChange}
-                        className="pagination" // 添加类名
-                    />
-                </Center>
-            </GridItem>
-        </Grid>
+        <VStack gap={10}>
+            <Bag columns={columns} propList={propList} buttonText='使用'/>
+            <ReactPager
+                total={totalPages}
+                current={currentPage}
+                visiblePages={1}
+                onPageChanged={handlePageChange}
+                className="pagination" // 添加类名
+            />
+        </VStack>
     );
 }
 

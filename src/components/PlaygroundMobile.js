@@ -80,6 +80,7 @@ import UserBaseInfoMobile from "./UserBaseInfoMobile";
 import UserLevelRankMobile from "./UserLevelRankMobile";
 import {RepeatIcon} from "@chakra-ui/icons";
 import MailButtonMobile from "./MailButtonMobile";
+import PropListMobile from "./PropsMobile";
 
 let socket = null;
 
@@ -650,37 +651,15 @@ function PlaygroundMobile() {
                                 <ModalHeader>
                                     技能
                                 </ModalHeader>
-                                <ModalBody>
-                                    <UserSkillsMobile userLevel={asset.level} fishList={fishList} expendGold={(cost) => {
-                                        const newAsset = {
-                                            ...asset
-                                        };
-                                        newAsset.gold = asset.gold - cost
-                                        setAsset(newAsset);
-                                    }}/>
-                                </ModalBody>
-                            </ModalContent>
-                        )}
-                        {propOpen && (<ModalContent>
-                            <ModalHeader>
-                                背包
-                            </ModalHeader>
-                            <ModalBody>
-                                <PropList columns={4} incrExp={(exp, levelUpCount) => {
+                                <UserSkillsMobile userLevel={asset.level} fishList={fishList} expendGold={(cost) => {
                                     const newAsset = {
                                         ...asset
                                     };
-                                    newAsset.exp = asset.exp + exp
-                                    if (levelUpCount !== 0) {
-                                        newAsset.level = newAsset.level + levelUpCount
-                                        SuccessToast( '升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！', toast);
-                                    } else {
-                                        SuccessToast( '增加经验' + exp + '！', toast);
-                                    }
+                                    newAsset.gold = asset.gold - cost
                                     setAsset(newAsset);
                                 }}/>
-                            </ModalBody>
-                        </ModalContent>)}
+                            </ModalContent>
+                        )}
                         {poolRankOpen && (<ModalContent>
                             <ModalHeader>
                                 榜单
@@ -784,7 +763,19 @@ function PlaygroundMobile() {
                     <HStack gap={4} align='center'>
                         <IconButton aria-label='创建' onClick={handleCreateClick} icon={<Image src={createIcon}/>}/>
                         <IconButton aria-label='排行' onClick={handleOpenPoolRank} icon={<Image src={poolRankIcon}/>}/>
-                        <IconButton aria-label='背包' onClick={handleOpenProps} icon={<Image src={propsIcon}/>}/>
+                        <PropListMobile columns={4} pageSize={12} incrExp={(exp, levelUpCount) => {
+                            const newAsset = {
+                                ...asset
+                            };
+                            newAsset.exp = asset.exp + exp
+                            if (levelUpCount !== 0) {
+                                newAsset.level = newAsset.level + levelUpCount
+                                SuccessToast('升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！', toast);
+                            } else {
+                                SuccessToast('增加经验' + exp + '！', toast);
+                            }
+                            setAsset(newAsset);
+                        }} />
                         <IconButton aria-label='交易' onClick={handleOpenMarket} icon={<Image src={marketIcon}/>}/>
                         <IconButton aria-label='技能' onClick={handleOpenUserSkills} icon={<Image src={skillsIcon}/>}/>
                         <IconButton aria-label='建筑' icon={<Image src={buildingIcon}/>}/>

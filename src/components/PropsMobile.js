@@ -2,24 +2,26 @@ import React from 'react';
 import '../Login.css'
 import {
     Box,
-    Button,
-    Modal, ModalBody,
-    ModalContent, ModalHeader, ModalOverlay,
+    IconButton, Image,
+    Modal,
+    ModalBody,
+    ModalContent,
+    ModalHeader, ModalOverlay,
     Tab,
     TabList,
     TabPanel,
     TabPanels,
-    Tabs,
-    useDisclosure
+    Tabs, useDisclosure
 } from '@chakra-ui/react';
 import ExpPropList from "./ExpProps";
 import GodheadPropList from "./GodheadProps";
+import propsIcon from "../assets/mobile_button_icon/props.svg";
 
-function PropList({columns, pageSize, size, incrExp}) {
+function PropListMobile({columns, size, pageSize, incrExp}) {
     const {isOpen, onOpen, onClose} = useDisclosure();
     return (
         <Box>
-            <Button onClick={onOpen}>背包</Button>
+            <IconButton aria-label='背包' onClick={onOpen} icon={<Image src={propsIcon}/>}/>
             <Modal isCentered isOpen={isOpen} onClose={onClose} size={size}>
                 <ModalOverlay/>
                 <ModalContent>
@@ -48,4 +50,4 @@ function PropList({columns, pageSize, size, incrExp}) {
     );
 }
 
-export default PropList;
+export default PropListMobile;

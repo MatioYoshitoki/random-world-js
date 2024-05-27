@@ -8,7 +8,7 @@ import {GetGodheadIcon} from "../style/GodheadIconUtil";
 import Bag from "./Bag";
 import {MailSend} from "../request/Mail";
 
-function GodheadPropRecall({receiverUid, columns, recallCallback}) {
+function GodheadPropRecall({receiverUid, columns, pageSize, recallCallback}) {
     const [props, setProps] = useState([]);
     const [propList, setPropList] = useState([])
     const [currentPage, setCurrentPage] = useState(0);
@@ -19,7 +19,7 @@ function GodheadPropRecall({receiverUid, columns, recallCallback}) {
     }
 
     useEffect(() => {
-        FetchProps(currentPage, 1002, (propList, totalPage) => {
+        FetchProps(currentPage, pageSize, 1002, (propList, totalPage) => {
             setProps(propList);
             setTotalPages(totalPage);
         }, defaultFailedCallback).then();

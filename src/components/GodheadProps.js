@@ -7,7 +7,7 @@ import {FailedToast} from "../style/ShowToast";
 import {GetGodheadIcon} from "../style/GodheadIconUtil";
 import Bag from "./Bag";
 
-function GodheadPropList({columns}) {
+function GodheadPropList({columns, pageSize}) {
     const [props, setProps] = useState([]);
     const [propList, setPropList] = useState([])
     const [currentPage, setCurrentPage] = useState(0);
@@ -18,7 +18,7 @@ function GodheadPropList({columns}) {
     }
 
     useEffect(() => {
-        FetchProps(currentPage, 1002, (propList, totalPage) => {
+        FetchProps(currentPage, pageSize, 1002, (propList, totalPage) => {
             setProps(propList);
             setTotalPages(totalPage);
         }, defaultFailedCallback).then();

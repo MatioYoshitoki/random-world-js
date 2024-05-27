@@ -1,7 +1,7 @@
 import {Box, Button, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure} from "@chakra-ui/react";
 import GodheadPropRecall from "./GodheadPropsRecall";
 
-function MailGodheadRecall({receiverUid, columns, recallCallback, isDisabled}) {
+function MailGodheadRecall({receiverUid, columns, pageSize, recallCallback, isDisabled}) {
     const {isOpen, onOpen, onClose} = useDisclosure();
     return (<Box>
         <Button isDisabled={isDisabled} colorScheme='teal' onClick={onOpen}>{isDisabled?'已归还':'归还'}</Button>
@@ -11,7 +11,7 @@ function MailGodheadRecall({receiverUid, columns, recallCallback, isDisabled}) {
                     选择归还的神格
                 </ModalHeader>
                 <ModalBody>
-                    <GodheadPropRecall columns={columns} receiverUid={receiverUid} recallCallback={() => {
+                    <GodheadPropRecall columns={columns} pageSize={pageSize} receiverUid={receiverUid} recallCallback={() => {
                         recallCallback();
                         onClose();
                     }} />

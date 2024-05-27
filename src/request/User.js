@@ -103,11 +103,11 @@ export const FetchUserAsset = (callback, failedCallback) => {
         })
 };
 
-export const FetchProps = (page, propType, callback, failedCallback) => {
+export const FetchProps = (page, pageSize, propType, callback, failedCallback) => {
     return api.post(USER_PROPS_API_ENDPOINT, {
         prop_type: propType,
         page: page,
-        page_size: 20
+        page_size: pageSize
     })
         .then(response => {
             if (response.data.code === 0) {

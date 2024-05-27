@@ -150,7 +150,7 @@ function MailButtonMobile() {
                                                 {mail.status === 1 && (<Badge>已读</Badge>)}
                                                 {mail.status === 2 && (<Badge>已领取</Badge>)}
                                                 {mail.status === 3 && (<Badge>已归还</Badge>)}
-                                                <MailDetail mail={mail} title={mailConfig[mail.message_id].title} message={mailConfig[mail.message_id].message} readCallback={() => {
+                                                <MailDetail mail={mail} pageSize={12} title={mailConfig[mail.message_id].title} message={mailConfig[mail.message_id].message} readCallback={() => {
                                                     const newMailList = mailList.map(item => {
                                                         const newItem = {...item}
                                                         if (item.mail_id === mail.mail_id && mail.status === 0) {
