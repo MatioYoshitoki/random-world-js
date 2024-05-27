@@ -20,7 +20,7 @@ function GrowthDetails({fish}) {
                 }
             },
             {
-                value: [499 + 540 * growthCountDetail[1], 269 + 240 * growthCountDetail[4], 14999 + 3000 * growthCountDetail[0], 100 + 50 * growthCountDetail[2], 79 + 220 * growthCountDetail[3]],
+                value: [499 + 540 * growthCountDetail[1], 269 + 240 * growthCountDetail[4], 14999 + 3000 * growthCountDetail[0], 300 + 50 * growthCountDetail[2], 79 + 220 * growthCountDetail[3]],
                 name: '最大',
                 lineStyle: {
                     color: '#DD6B20'
@@ -51,7 +51,7 @@ function GrowthDetails({fish}) {
                     {name: '攻击', max: 499 + 540 * (level - 1) / 5},
                     {name: '防御', max: 269 + 240 * (level - 1) / 5},
                     {name: '生命', max: 14999 + 3000 * (level - 1) / 5},
-                    {name: '自愈', max: 100 + 50 * (level - 1) / 5},
+                    {name: '自愈', max: 300 + 50 * (level - 1) / 5},
                     {name: '修炼', max: 79 + 220 * (level - 1) / 5}
                 ],
                 radius: 65,

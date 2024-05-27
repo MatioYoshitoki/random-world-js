@@ -64,7 +64,6 @@ import UserSkills from "./UserSkills";
 import {FailedToast, SuccessToast} from "../style/ShowToast";
 import FishBaseInfo from "./FishBaseInfo";
 import FishHeader from "./FishHeader";
-import MailButtonMobile from "./MailButtonMobile";
 import MailButton from "./MailButton";
 
 let socket = null;
@@ -327,9 +326,9 @@ function Playground() {
         const newFishMap = {}
         const newParkingEffects = {}
         // console.log('refresh fish map: ' + fishList);
-        fishList.forEach(item => {
+        for (let item of fishList) {
             newFishMap[item.parking] = item;
-            if (Array.isArray(item.fish.effects)) {
+            if (item.fish && Array.isArray(item.fish.effects)) {
                 let idx = 0
                 newParkingEffects[item.parking] = Array.of();
                 const nowMs = new Date().getTime()
@@ -342,8 +341,7 @@ function Playground() {
                     }
                 }
             }
-
-        })
+        }
         setParkingEffect(newParkingEffects);
         setFishMap(newFishMap);
     }, [fishList])
@@ -355,10 +353,8 @@ function Playground() {
                 const index = newFishList.findIndex(fish => fish.fish.id === deadFish.id);
                 const oldFish = newFishList[index];
                 newFishList[index] = {
-                    ...deadFish,
-                    parking: oldFish.parking,
-                    rating: oldFish.rating,
-                    level: oldFish.level,
+                    ...oldFish,
+                    fish: deadFish,
                 };
                 refreshFishList(newFishList);
                 setNeedDestroyFish(null);

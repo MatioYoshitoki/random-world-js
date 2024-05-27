@@ -372,10 +372,10 @@ function PlaygroundMobile() {
         // console.log('refresh fish map: ' + fishList);
         fishList.forEach(item => {
             newFishMap[item.parking] = item;
-            if (Array.isArray(item.effects)) {
+            if (item.fish && Array.isArray(item.fish.effects)) {
                 let idx = 0
                 newParkingEffects[item.parking] = Array.of();
-                const nowMs = new Date().getTime()
+                const nowMs = new Date().getTime();
                 for (let effect of item.fish.effects) {
                     if (Math.round((effect.effect_expire_ms - nowMs) / 1000) > 0) {
                         newParkingEffects[item.parking][idx] = {
@@ -541,7 +541,7 @@ function PlaygroundMobile() {
                             {userInfo && (<UserBaseInfoMobile info={userInfo}/>)}
                         </GridItem>
                         <GridItem colSpan={5}>
-                            <IconButton mt={-1} variant='ghost' maxW='50px' isRound aria-label='refresh' icon={<RepeatIcon  color='teal.500'/>} onClick={() => {
+                            <IconButton mt={-1} variant='ghost' maxW='50px' isRound aria-label='refresh' icon={<RepeatIcon color='teal.500'/>} onClick={() => {
                                 window.location.reload();
                             }}/>
                         </GridItem>
