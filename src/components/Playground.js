@@ -64,6 +64,8 @@ import UserSkills from "./UserSkills";
 import {FailedToast, SuccessToast} from "../style/ShowToast";
 import FishBaseInfo from "./FishBaseInfo";
 import FishHeader from "./FishHeader";
+import MailButtonMobile from "./MailButtonMobile";
+import MailButton from "./MailButton";
 
 let socket = null;
 
@@ -734,6 +736,7 @@ function Playground() {
                     <Button className="circle" onClick={handleOpenProps}>背包</Button>
                     <Button className="circle" onClick={handleOpenUserSkills}>技能</Button>
                     <Button className="circle">建筑</Button>
+                    <MailButton/>
                     <Button className="circle" onClick={handleLogout}>退出</Button>
                 </VStack>
             </GridItem>

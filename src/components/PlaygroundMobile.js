@@ -79,7 +79,7 @@ import MarketMobile from "./MarketMobile";
 import UserBaseInfoMobile from "./UserBaseInfoMobile";
 import UserLevelRankMobile from "./UserLevelRankMobile";
 import {RepeatIcon} from "@chakra-ui/icons";
-import MailButton from "./MailButton";
+import MailButtonMobile from "./MailButtonMobile";
 
 let socket = null;
 
@@ -535,7 +535,7 @@ function PlaygroundMobile() {
                 <ModalHeader maxH={50}>
                     <Grid zIndex={200} templateColumns='repeat(60, 1fr)'>
                         <GridItem colSpan={6}>
-                            <MailButton/>
+                            <MailButtonMobile/>
                         </GridItem>
                         <GridItem colSpan={49}>
                             {userInfo && (<UserBaseInfoMobile info={userInfo}/>)}

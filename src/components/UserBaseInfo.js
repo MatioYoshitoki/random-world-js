@@ -1,4 +1,4 @@
-import {Avatar, Box, Button, Flex, HStack, Progress, Spacer, Stack, Text} from "@chakra-ui/react";
+import {Avatar, Box, Flex, HStack, Progress, Spacer, Stack, Text} from "@chakra-ui/react";
 import React, {useEffect, useState} from "react";
 import UserGodhead from "./UserGodhead";
 import {GetUserLevelUpRequired} from "../pkg/UserUtils";
@@ -9,7 +9,6 @@ function UserBaseInfo({maxW, info, onlyShow, recallFishName}) {
     const [show, setShow] = useState(false);
     useEffect(() => {
         if (recallFishName !== undefined) {
-            console.log(info);
             const recalled = localStorage.getItem('recall_show:'+recallFishName);
             if (recalled == null) {
                 setShow(true);

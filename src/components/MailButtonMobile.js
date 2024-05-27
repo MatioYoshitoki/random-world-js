@@ -1,6 +1,6 @@
 import {
     Badge,
-    Box, Button,
+    Box,
     HStack,
     Modal,
     ModalBody,
@@ -9,12 +9,13 @@ import {
     useDisclosure,
     useToast
 } from "@chakra-ui/react";
+import {EmailIcon} from "@chakra-ui/icons";
 import {useEffect, useState} from "react";
 import {FetchMailReceived, MailReceive, MailRemove} from "../request/Mail";
 import {FailedToast, SuccessToast} from "../style/ShowToast";
 import MailDetail from "./MailDetail";
 
-function MailButton() {
+function MailButtonMobile() {
     const [mailList, setMailList] = useState([]);
     const [hasUnread, setHasUnread] = useState(false);
     const toast = useToast();
@@ -54,7 +55,6 @@ function MailButton() {
                 return newItem;
             })
             setMailList(newMailList);
-            window.location.reload();
             SuccessToast('领取成功', toast);
         }, defaultFailedCallback).then();
     }
@@ -125,7 +125,7 @@ function MailButton() {
     const {isOpen, onOpen, onClose} = useDisclosure();
     const mailConfig = JSON.parse(localStorage.getItem('mail_message_template_configs'));
     return (<Box>
-        <Button className={hasUnread?'mail-unread':''} colorScheme={hasUnread?'teal':'gray'} onClick={onOpen}>邮件</Button>
+        <EmailIcon className={hasUnread?'mail-unread':''} mt={-1} color={hasUnread?'teal.500':'gray.200'} onClick={onOpen}/>
         <Modal isOpen={isOpen} onClose={onClose} isCentered>
             <ModalOverlay/>
             <ModalContent>
@@ -200,4 +200,4 @@ function MailButton() {
     </Box>)
 }
 
-export default MailButton;
+export default MailButtonMobile;
