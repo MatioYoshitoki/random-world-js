@@ -8,9 +8,6 @@ import {
     Card,
     CardBody,
     CardHeader,
-    FormControl,
-    FormHelperText,
-    FormLabel,
     Grid,
     GridItem,
     HStack,
@@ -22,37 +19,19 @@ import {
     ModalFooter,
     ModalHeader,
     ModalOverlay,
-    NumberDecrementStepper,
-    NumberIncrementStepper,
-    NumberInput,
-    NumberInputField,
-    NumberInputStepper,
     Progress,
-    Radio,
-    RadioGroup,
     SimpleGrid,
-    Stack,
-    Tab,
-    TabList,
-    TabPanel,
-    TabPanels,
-    Tabs,
     Text,
-    useDisclosure,
     useToast,
     VStack,
 } from '@chakra-ui/react'
-import PropList from "./Props";
+import PropListButton from "./Props";
 import {DecodeBase64} from "../Base64.js";
-import {SellStart, SellStop} from "../request/Market";
 import {
-    AliveFish,
     CreateFish,
     FetchFishList,
     FetchFishParkingList,
     PullFish,
-    RefineFish,
-    SleepFish
 } from "../request/Fish";
 import {Configs, ExpandFishParking, FetchGodheadList, FetchUserAsset, FetchUserBaseInfo} from "../request/User";
 import {
@@ -70,17 +49,16 @@ import marketIcon from '../assets/mobile_button_icon/market.svg';
 import skillsIcon from '../assets/mobile_button_icon/skills.svg';
 import poolRankIcon from '../assets/mobile_button_icon/pool_rank.svg';
 import propsIcon from '../assets/mobile_button_icon/props.svg';
-import PoolRankMobile from "./PoolRankMobile";
 import {FailedToast, SuccessToast} from "../style/ShowToast";
-import UserSkillsMobile from "./UserSkillsMobile";
 import FishHeaderMobile from "./FishHeaderMobile";
 import FishBaseInfoMobile from "./FishBaseInfoMobile";
-import MarketMobile from "./MarketMobile";
 import UserBaseInfoMobile from "./UserBaseInfoMobile";
-import UserLevelRankMobile from "./UserLevelRankMobile";
 import {RepeatIcon} from "@chakra-ui/icons";
 import MailButtonMobile from "./MailButtonMobile";
-import PropListMobile from "./PropsMobile";
+import FishActionButtons from "./FishActionButtons";
+import MarketButton from "./MarketButton";
+import PoolRankButton from "./PoolRankButton";
+import UserSkillsButton from "./UserSkillsButton";
 
 let socket = null;
 
@@ -91,18 +69,8 @@ function PlaygroundMobile() {
     const [fishParkingList, setFishParkingList] = useState([]);
     const [asset, setAsset] = useState({exp: 0, level: 0, gold: 0});
     const [baseInfo, setBaseInfo] = useState({username: ''});
-    const {isOpen, onOpen, onClose} = useDisclosure()
-    const [marketOpen, setMarketOpen] = useState(false);
-    const [propOpen, setPropOpen] = useState(false);
-    const [sellFish, setSellFish] = useState(null);
-    const [downSellFish, setDownSellFish] = useState(null);
-    const [poolRankOpen, setPoolRankOpen] = useState(false);
-    const [refineFishId, setRefineFishId] = useState(0);
-    const [price, setPrice] = useState(0);
-    const [sellDuration, setSellDuration] = useState('half_day');
     const [needPull, setNeedPull] = useState(false);
     const [needDestroyFish, setNeedDestroyFish] = useState(null);
-    const [userSkillsOpen, setUserSkillsOpen] = useState(false);
     const toast = useToast()
     const [parkingEffect, setParkingEffect] = useState({});
     const [coldDownTrigger, setColdDownTrigger] = useState(false)
@@ -111,6 +79,20 @@ function PlaygroundMobile() {
 
     const defaultFailedCallback = (message) => {
         FailedToast(message, toast);
+    }
+
+    const incrExp = (exp, levelUpCount) => {
+        const newAsset = {
+            ...asset
+        };
+        newAsset.exp = asset.exp + exp
+        if (levelUpCount !== 0) {
+            newAsset.level = newAsset.level + levelUpCount
+            SuccessToast('升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！', toast);
+        } else {
+            SuccessToast('增加经验' + exp + '！', toast);
+        }
+        setAsset(newAsset);
     }
     const expandParking = () => {
         ExpandFishParking((newParking) => {
@@ -161,68 +143,6 @@ function PlaygroundMobile() {
         window.location.href = '/';
     };
 
-    const handleSellClickOpen = async (fish) => {
-        setSellFish(fish);
-        onOpen();
-    }
-
-    const handleDownSellClickOpen = async (fish) => {
-        setDownSellFish(fish);
-        onOpen();
-    }
-
-    const handleOpenMarket = () => {
-        setMarketOpen(true);
-        onOpen();
-    }
-
-    const handleOpenProps = () => {
-        setPropOpen(true);
-        onOpen();
-    }
-    const handleOpenPoolRank = () => {
-        setPoolRankOpen(true);
-        onOpen();
-    }
-    const handleOpenUserSkills = () => {
-        setUserSkillsOpen(true);
-        onOpen();
-    }
-    const closeTopModal = () => {
-        setMarketOpen(false);
-        setPropOpen(false);
-        setPoolRankOpen(false);
-        setRefineFishId(0)
-        setSellFish(null);
-        setDownSellFish(null);
-        setPrice(0);
-        setSellDuration('0');
-        setUserSkillsOpen(false);
-        onClose()
-    }
-
-
-    const handleSleepClick = (fishId) => {
-        // 发送休息请求
-        SleepFish(fishId, defaultFailedCallback, () => {
-            const newFishList = [...fishList]
-            for (let i = 0; i < newFishList.length; i++) {
-                if (newFishList[i].fish.id === fishId) {
-                    const nf = {
-                        ...newFishList[i],
-                        fish: {
-                            ...newFishList[i].fish,
-                            status: 1,
-                        }
-                    }
-                    newFishList[i] = nf;
-                    setShowFish(nf);
-                    break;
-                }
-            }
-            refreshFishList(newFishList)
-        }).then();
-    };
     const handleCreateClick = () => {
         // 发送创建请求
         CreateFish((newFish) => {
@@ -235,86 +155,8 @@ function PlaygroundMobile() {
         }, defaultFailedCallback).then();
     };
 
-    const handleRefineClick = (fishId) => {
-        // 发送炼化请求
-        setRefineFishId(fishId);
-        onOpen();
-    };
 
-    const refine = (fishId) => {
-        // 发送炼化请求
-        RefineFish(fishId, defaultFailedCallback, () => {
-            const newFishList = fishList.filter(fish => fish.fish.id !== fishId);
-            const newParkingList = [...fishParkingList];
-            for (let fish of fishList) {
-                if (fish.fish.id === fishId) {
-                    for (let parking of newParkingList) {
-                        if (parking.parking === fish.parking) {
-                            parking.status = 1;
-                        }
-                    }
-                }
-            }
-            setFishParkingList(newParkingList);
-            if (newFishList.length > 0) {
-                setShowFish(newFishList[0]);
-            } else {
-                setShowFish(null);
-            }
-            refreshFishList(newFishList);
-            closeTopModal();
-        }).then();
-    };
 
-    const handleAliveClick = (fishId) => {
-        // 发送休息请求
-        AliveFish(fishId, defaultFailedCallback, () => {
-            const newFishList = [...fishList]
-            for (let i = 0; i < newFishList.length; i++) {
-                if (newFishList[i].fish.id === fishId) {
-                    const nf = {
-                        ...newFishList[i],
-                        fish: {
-                            ...newFishList[i].fish,
-                            status: 0
-                        }
-                    }
-                    newFishList[i] = nf;
-                    setShowFish(nf);
-                    break;
-                }
-            }
-            refreshFishList(newFishList)
-        }).then();
-    };
-
-    const renderActionButtons = (fish) => {
-        switch (fish.status) {
-            case 0:
-                return (<Stack mt={3} direction='row' spacing={4} align='center'>
-                    <Button bg='yellow.50' onClick={() => handleSleepClick(fish.id)}>休息</Button>
-                </Stack>);
-            case 1:
-                return (<Stack mt={3} direction='row' spacing={4} align='center'>
-                    <Button bg='green.100'
-                            onClick={() => handleAliveClick(fish.id)}>激活</Button>
-                    <Button bg='cyan.50' onClick={() => handleSellClickOpen(fish)}>上架</Button>
-                    <Button bg='orange.100' onClick={() => handleRefineClick(fish.id)}>炼化</Button>
-                </Stack>);
-            case 2:
-                return (<Stack mt={3} direction='row' spacing={4} align='center'>
-                    <Button bg='blue.200' onClick={() => handleDownSellClickOpen(fish)}>下架</Button>
-                </Stack>);
-            case 3:
-                return (<Stack mt={3} direction='row' spacing={4} align='center'>
-                    <Button bg='orange.100' onClick={() => handleRefineClick(fish.id)}>炼化</Button>
-                </Stack>);
-            default:
-                return (<Stack mt={3} direction='row' spacing={4} align='center'>
-                    <Button bg='yellow.50' onClick={() => handleSleepClick(fish.id)}>休息</Button>
-                </Stack>);
-        }
-    }
     const afterPull = (pullList) => {
         const newList = [...fishList];
         if (Array.isArray(pullList)) {
@@ -526,7 +368,7 @@ function PlaygroundMobile() {
     }, [])
     return (<VStack>
         <Modal
-            onClose={onClose}
+            onClose={() => {}}
             size='full'
             isOpen={true}
             closeOnOverlayClick={false}
@@ -563,7 +405,7 @@ function PlaygroundMobile() {
                                 <CardBody mt={-8}>
                                     <FishBaseInfoMobile fish={showFish.fish}/>
                                 </CardBody>
-                                {renderActionButtons(showFish.fish)}
+                                <FishActionButtons fish={showFish.fish} fishList={fishList} asset={asset} fishParkingList={fishParkingList} refreshFishList={refreshFishList} setFishParkingList={setFishParkingList} setAsset={setAsset} defaultFailedCallback={defaultFailedCallback}/>
                             </Card>)}
                             <SimpleGrid mt={2} columns={3} gap={2}>
                                 {Array.isArray(fishParkingList) && fishParkingList.filter(fp => fp.status !== 0).map(fishParking => (
@@ -632,152 +474,14 @@ function PlaygroundMobile() {
                             </SimpleGrid>
                         </GridItem>
                     </Grid>
-                    <Modal
-                        isOpen={isOpen}
-                        onClose={closeTopModal}
-                        isCentered
-                    >
-                        <ModalOverlay/>
-                        {marketOpen && (<ModalContent>
-                            <ModalHeader>
-                                交易
-                            </ModalHeader>
-                            <ModalBody>
-                                <MarketMobile/>
-                            </ModalBody>
-                        </ModalContent>)}
-                        {userSkillsOpen && (
-                            <ModalContent>
-                                <ModalHeader>
-                                    技能
-                                </ModalHeader>
-                                <UserSkillsMobile userLevel={asset.level} fishList={fishList} expendGold={(cost) => {
-                                    const newAsset = {
-                                        ...asset
-                                    };
-                                    newAsset.gold = asset.gold - cost
-                                    setAsset(newAsset);
-                                }}/>
-                            </ModalContent>
-                        )}
-                        {poolRankOpen && (<ModalContent>
-                            <ModalHeader>
-                                榜单
-                            </ModalHeader>
-                            <ModalBody>
-                                <Tabs variant='enclosed'>
-                                    <TabList>
-                                        <Tab>玩家等级榜</Tab>
-                                        <Tab>🐟修为榜</Tab>
-                                        <Tab>🐟击杀榜</Tab>
-                                    </TabList>
-                                    <TabPanels>
-                                        <TabPanel>
-                                            <UserLevelRankMobile/>
-                                        </TabPanel>
-                                        <TabPanel>
-                                            <PoolRankMobile rankType={0}/>
-                                        </TabPanel>
-                                        <TabPanel>
-                                            <PoolRankMobile rankType={1}/>
-                                        </TabPanel>
-                                    </TabPanels>
-                                </Tabs>
-                            </ModalBody>
-                        </ModalContent>)}
-                        {sellFish != null && (<ModalContent>
-                            <ModalHeader>
-                                上架【{sellFish.name}】
-                            </ModalHeader>
-                            <ModalBody>
-                                <FormControl>
-                                    <FormLabel>价格</FormLabel>
-                                    <NumberInput defaultValue={price} min={0} onChange={(e) => setPrice(e)}>
-                                        <NumberInputField/>
-                                        <NumberInputStepper>
-                                            <NumberIncrementStepper/>
-                                            <NumberDecrementStepper/>
-                                        </NumberInputStepper>
-                                    </NumberInput>
-                                    <FormHelperText>合理的价格可以让您的商品更受青睐</FormHelperText>
-                                </FormControl>
-                                <FormControl>
-                                    <FormLabel>上架时长</FormLabel>
-                                    <RadioGroup gap={5} defaultValue={sellDuration} onChange={(e) => setSellDuration(e)}>
-                                        <Radio value='half_day'>半天</Radio>
-                                        <Radio value='one_day'>一天</Radio>
-                                        <Radio value='three_day'>三天</Radio>
-                                        <Radio value='one_week'>一周</Radio>
-                                    </RadioGroup>
-                                    <FormHelperText>注. 手续费取决于售价与上架时长</FormHelperText>
-                                </FormControl>
-                            </ModalBody>
-                            <ModalFooter>
-                                <HStack>
-                                    <Button colorScheme='yellow'
-                                            onClick={() => SellStart(sellFish, price, sellDuration, asset, setAsset, (commission) => {
-                                                SuccessToast('上架成功! 扣除手续费' + commission + '晶石', toast)
-                                                setAsset({
-                                                    ...asset,
-                                                    gold: asset.gold - commission
-                                                })
-                                                closeTopModal();
-                                                FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
-                                                FetchFishList(refreshFishList).then();
-                                            }, defaultFailedCallback)}>上架</Button>
-                                    <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
-                                </HStack>
-                            </ModalFooter>
-                        </ModalContent>)}
-                        {downSellFish != null && (<ModalContent>
-                            <ModalHeader>
-                                下架【{downSellFish.name}】? 手续费将不退还。
-                            </ModalHeader>
-                            <ModalBody>
-                                <HStack direction='row'>
-                                    <Button bg='blue.300' onClick={() => SellStop(downSellFish.id, () => {
-                                        SuccessToast('下架成功', toast);
-                                        closeTopModal();
-                                        FetchFishParkingList(setFishParkingList, defaultFailedCallback).then();
-                                        FetchFishList(refreshFishList).then();
-                                    }, defaultFailedCallback)}>下架</Button>
-                                    <Button colorScheme='red' onClick={closeTopModal}>取消</Button>
-                                </HStack>
-                            </ModalBody>
-                        </ModalContent>)}
-                        {refineFishId !== 0 && (<ModalContent>
-                            <ModalHeader>
-                                确认炼化?
-                            </ModalHeader>
-                            <ModalBody>
-                                <HStack>
-                                    <Button size='sm' colorScheme='orange'
-                                            onClick={() => refine(refineFishId)}>确认</Button>
-                                    <Button size='sm' colorScheme='blue' onClick={closeTopModal}>取消</Button>
-                                </HStack>
-                            </ModalBody>
-                        </ModalContent>)}
-                    </Modal>
                 </ModalBody>
                 <ModalFooter>
                     <HStack gap={4} align='center'>
                         <IconButton aria-label='创建' onClick={handleCreateClick} icon={<Image src={createIcon}/>}/>
-                        <IconButton aria-label='排行' onClick={handleOpenPoolRank} icon={<Image src={poolRankIcon}/>}/>
-                        <PropListMobile columns={4} pageSize={12} incrExp={(exp, levelUpCount) => {
-                            const newAsset = {
-                                ...asset
-                            };
-                            newAsset.exp = asset.exp + exp
-                            if (levelUpCount !== 0) {
-                                newAsset.level = newAsset.level + levelUpCount
-                                SuccessToast('升级啦~ 增加经验' + exp + '！等级提升' + levelUpCount + '！', toast);
-                            } else {
-                                SuccessToast('增加经验' + exp + '！', toast);
-                            }
-                            setAsset(newAsset);
-                        }} />
-                        <IconButton aria-label='交易' onClick={handleOpenMarket} icon={<Image src={marketIcon}/>}/>
-                        <IconButton aria-label='技能' onClick={handleOpenUserSkills} icon={<Image src={skillsIcon}/>}/>
+                        <PoolRankButton buttonFunc={(onOpen) => (<IconButton aria-label='排行' onClick={onOpen} icon={<Image src={poolRankIcon}/>}/>)}/>
+                        <PropListButton columns={4} pageSize={12} incrExp={incrExp} buttonFunc={(onOpen) => (<IconButton aria-label='背包' onClick={onOpen} icon={<Image src={propsIcon}/>}/>)} />
+                        <MarketButton buttonFunc={(onOpen) => (<IconButton aria-label='交易' onClick={onOpen} icon={<Image src={marketIcon}/>}/>)}/>
+                        <UserSkillsButton fishList={fishList} asset={asset} setAsset={setAsset} buttonFunc={(onOpen) => (<IconButton aria-label='技能' onClick={onOpen} icon={<Image src={skillsIcon}/>}/>)}/>
                         <IconButton aria-label='建筑' icon={<Image src={buildingIcon}/>}/>
                     </HStack>
                 </ModalFooter>

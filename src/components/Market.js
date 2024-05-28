@@ -84,7 +84,7 @@ function MarketList() {
                         <ReactPager
                             total={totalPages}
                             current={currentPage}
-                            visiblePages={5}
+                            visiblePages={1}
                             onPageChanged={handlePageChange}
                             className="pagination" // 添加类名
                         />
@@ -108,7 +108,7 @@ function MarketList() {
                                     </Link>
                                 </Td>
                                 <Td>{market.price}</Td>
-                                <Td>{FormatTime(market.sell_time_remain)}</Td>
+                                <Td fontSize={13}>{FormatTime(market.sell_time_remain)}</Td>
                             </Tr>
                         ))}
                     </Tbody>

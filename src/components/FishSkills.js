@@ -1,4 +1,4 @@
-import {Box, ListItem, Text, UnorderedList, useDisclosure} from "@chakra-ui/react";
+import {Box, ListItem, Text, UnorderedList} from "@chakra-ui/react";
 import React from "react";
 import FishSkillDetail from "./FishSkillsDetails";
 

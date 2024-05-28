@@ -17,7 +17,7 @@ import ExpPropList from "./ExpProps";
 import GodheadPropList from "./GodheadProps";
 import propsIcon from "../assets/mobile_button_icon/props.svg";
 
-function PropListMobile({columns, size, pageSize, incrExp}) {
+function PropListMobileButton({columns, size, pageSize, incrExp}) {
     const {isOpen, onOpen, onClose} = useDisclosure();
     return (
         <Box>
@@ -50,4 +50,4 @@ function PropListMobile({columns, size, pageSize, incrExp}) {
     );
 }
 
-export default PropListMobile;
+export default PropListMobileButton;

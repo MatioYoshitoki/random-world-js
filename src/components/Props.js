@@ -1,8 +1,6 @@
 import React from 'react';
 import '../Login.css'
 import {
-    Box,
-    Button,
     Modal, ModalBody,
     ModalContent, ModalHeader, ModalOverlay,
     Tab,
@@ -15,11 +13,11 @@ import {
 import ExpPropList from "./ExpProps";
 import GodheadPropList from "./GodheadProps";
 
-function PropList({columns, pageSize, size, incrExp}) {
+function PropListButton({buttonFunc, columns, pageSize, size, incrExp}) {
     const {isOpen, onOpen, onClose} = useDisclosure();
     return (
-        <Box>
-            <Button onClick={onOpen}>背包</Button>
+        <>
+            {buttonFunc(onOpen)}
             <Modal isCentered isOpen={isOpen} onClose={onClose} size={size}>
                 <ModalOverlay/>
                 <ModalContent>
@@ -44,8 +42,8 @@ function PropList({columns, pageSize, size, incrExp}) {
                     </ModalBody>
                 </ModalContent>
             </Modal>
-        </Box>
+        </>
     );
 }
 
-export default PropList;
+export default PropListButton;
