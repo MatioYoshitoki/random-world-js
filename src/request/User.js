@@ -27,6 +27,7 @@ export const Configs = () => {
                 localStorage.setItem('fish_skill_name_configs', JSON.stringify(data.fish_skill_name));
                 localStorage.setItem('user_level_up_exp_required_configs', JSON.stringify(data.user_level_up_exp_required));
                 localStorage.setItem('mail_message_template_configs', JSON.stringify(data.mail_message_template));
+                localStorage.setItem('special_time_configs', JSON.stringify({time_range: data.special_time}))
             }
         })
         .catch((error) => {

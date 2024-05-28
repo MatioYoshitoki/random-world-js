@@ -49,6 +49,7 @@ import marketIcon from '../assets/mobile_button_icon/market.svg';
 import skillsIcon from '../assets/mobile_button_icon/skills.svg';
 import poolRankIcon from '../assets/mobile_button_icon/pool_rank.svg';
 import propsIcon from '../assets/mobile_button_icon/props.svg';
+import MoonListIcon from '../assets/special_time/moon_light.svg';
 import {FailedToast, SuccessToast} from "../style/ShowToast";
 import FishHeaderMobile from "./FishHeaderMobile";
 import FishBaseInfoMobile from "./FishBaseInfoMobile";
@@ -58,8 +59,8 @@ import MailButtonMobile from "./MailButtonMobile";
 import FishActionButtons from "./FishActionButtons";
 import MarketButton from "./MarketButton";
 import PoolRankButton from "./PoolRankButton";
-import UserSkillsButton from "./UserSkillsButton";
 import UserSkillsButtonMobile from "./UserSkillsButtonMobile";
+import {CheckInSpecial} from "../pkg/UserUtils";
 
 let socket = null;
 
@@ -77,6 +78,7 @@ function PlaygroundMobile() {
     const [coldDownTrigger, setColdDownTrigger] = useState(false)
     const [userInfo, setUserInfo] = useState(null);
     const [godheadList, setGodheadList] = useState(null);
+    const [inMoonLight, setInMoonLight] = useState(false);
 
     const defaultFailedCallback = (message) => {
         FailedToast(message, toast);
@@ -353,6 +355,10 @@ function PlaygroundMobile() {
             FetchUserAsset(setAsset, defaultFailedCallback).then();
             FetchUserBaseInfo(setBaseInfo, defaultFailedCallback).then();
             FetchGodheadList(defaultFailedCallback, setGodheadList).then();
+            const timeName = CheckInSpecial();
+            if (timeName === '月光普照') {
+                setInMoonLight(true);
+            }
         });
         const handleAccessTokenChange = (event) => {
             console.log(event);
@@ -376,7 +382,7 @@ function PlaygroundMobile() {
             scrollBehavior='inside'>
             <ModalOverlay/>
             <ModalContent>
-                <ModalHeader maxH={50}>
+                <ModalHeader maxH='90px'>
                     <Grid zIndex={200} templateColumns='repeat(60, 1fr)'>
                         <GridItem colSpan={6}>
                             <MailButtonMobile/>
@@ -389,6 +395,11 @@ function PlaygroundMobile() {
                                 window.location.reload();
                             }}/>
                         </GridItem>
+                        {inMoonLight && (
+                            <GridItem colSpan={6}>
+                                <Image maxH='40px' src={MoonListIcon}/>
+                            </GridItem>
+                        )}
                     </Grid>
                 </ModalHeader>
                 <ModalBody>
