@@ -131,12 +131,26 @@ function PlaygroundMobile() {
     }, [asset, baseInfo, godheadList]);
     const refreshFishList = (fishes) => {
         if (fishes != null) {
+            let showFishExist = false;
             fishes.forEach(item => {
                 if (item.fish.status === null || item.fish.status === undefined) {
                     item.fish.status = 0;
                 }
+                if (showFish.fish.id === item.fish.id) {
+                    setShowFish(item);
+                    showFishExist = true;
+                }
             })
+            if (!showFishExist) {
+                if (fishes.length >0) {
+                    setShowFish(fishes[0]);
+                } else {
+                    setShowFish(null);
+                }
+            }
             setFishList(fishes);
+        } else {
+            setShowFish(null);
         }
     }
     const handleLogout = () => {
@@ -397,7 +411,7 @@ function PlaygroundMobile() {
                         </GridItem>
                         {inMoonLight && (
                             <GridItem colSpan={6}>
-                                <Image maxH='40px' src={MoonListIcon}/>
+                                <Image className='moon-light' maxH='40px' src={MoonListIcon}/>
                             </GridItem>
                         )}
                     </Grid>

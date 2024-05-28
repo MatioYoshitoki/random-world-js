@@ -319,7 +319,7 @@ function Playground() {
                 <Box ml={10} mt={3}>
                     {userInfo && (<UserBaseInfo maxW={300} info={userInfo} onlyShow={false}/>)}
                     {inMoonLight && (
-                        <Image maxH='40px' src={MoonListIcon}/>
+                        <Image className='moon-light' maxH='40px' src={MoonListIcon}/>
                     )}
                 </Box>
                 <Grid templateRows='repeat(2, 1fr)'
