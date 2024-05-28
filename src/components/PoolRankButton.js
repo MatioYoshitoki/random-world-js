@@ -11,8 +11,10 @@ import {
 import React from "react";
 import UserLevelRank from "./UserLevelRank";
 import PoolRank from "./PoolRank";
+import UserLevelRankMobile from "./UserLevelRankMobile";
+import PoolRankMobile from "./PoolRankMobile";
 
-function PoolRankButton({buttonFunc}) {
+function PoolRankButton({buttonFunc, isMobile}) {
     const {isOpen, onOpen, onClose} = useDisclosure()
     return (
         <>
@@ -32,13 +34,16 @@ function PoolRankButton({buttonFunc}) {
                             </TabList>
                             <TabPanels>
                                 <TabPanel>
-                                    <UserLevelRank/>
+                                    {isMobile && (<UserLevelRankMobile/>)}
+                                    {!isMobile && (<UserLevelRank/>)}
                                 </TabPanel>
                                 <TabPanel>
-                                    <PoolRank rankType={0}/>
+                                    {isMobile && (<PoolRankMobile rankType={0}/>)}
+                                    {!isMobile && (<PoolRank rankType={0}/>)}
                                 </TabPanel>
                                 <TabPanel>
-                                    <PoolRank rankType={1}/>
+                                    {isMobile && (<PoolRankMobile rankType={1}/>)}
+                                    {!isMobile && (<PoolRank rankType={1}/>)}
                                 </TabPanel>
                             </TabPanels>
                         </Tabs>

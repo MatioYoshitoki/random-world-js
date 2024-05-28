@@ -59,6 +59,7 @@ import FishActionButtons from "./FishActionButtons";
 import MarketButton from "./MarketButton";
 import PoolRankButton from "./PoolRankButton";
 import UserSkillsButton from "./UserSkillsButton";
+import UserSkillsButtonMobile from "./UserSkillsButtonMobile";
 
 let socket = null;
 
@@ -478,10 +479,10 @@ function PlaygroundMobile() {
                 <ModalFooter>
                     <HStack gap={4} align='center'>
                         <IconButton aria-label='创建' onClick={handleCreateClick} icon={<Image src={createIcon}/>}/>
-                        <PoolRankButton buttonFunc={(onOpen) => (<IconButton aria-label='排行' onClick={onOpen} icon={<Image src={poolRankIcon}/>}/>)}/>
+                        <PoolRankButton isMobile={true} buttonFunc={(onOpen) => (<IconButton aria-label='排行' onClick={onOpen} icon={<Image src={poolRankIcon}/>}/>)}/>
                         <PropListButton columns={4} pageSize={12} incrExp={incrExp} buttonFunc={(onOpen) => (<IconButton aria-label='背包' onClick={onOpen} icon={<Image src={propsIcon}/>}/>)} />
-                        <MarketButton buttonFunc={(onOpen) => (<IconButton aria-label='交易' onClick={onOpen} icon={<Image src={marketIcon}/>}/>)}/>
-                        <UserSkillsButton fishList={fishList} asset={asset} setAsset={setAsset} buttonFunc={(onOpen) => (<IconButton aria-label='技能' onClick={onOpen} icon={<Image src={skillsIcon}/>}/>)}/>
+                        <MarketButton isMobile={true} buttonFunc={(onOpen) => (<IconButton aria-label='交易' onClick={onOpen} icon={<Image src={marketIcon}/>}/>)}/>
+                        <UserSkillsButtonMobile fishList={fishList} asset={asset} setAsset={setAsset} buttonFunc={(onOpen) => (<IconButton aria-label='技能' onClick={onOpen} icon={<Image src={skillsIcon}/>}/>)}/>
                         <IconButton aria-label='建筑' icon={<Image src={buildingIcon}/>}/>
                     </HStack>
                 </ModalFooter>

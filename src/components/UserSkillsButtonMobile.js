@@ -5,10 +5,9 @@ import {
     useDisclosure
 } from "@chakra-ui/react";
 import React from "react";
-import Market from "./Market";
-import MarketMobileList from "./MarketMobile";
+import UserSkillsMobile from "./UserSkillsMobile";
 
-function MarketButton({isMobile, buttonFunc}) {
+function UserSkillsButtonMobile({buttonFunc, asset, setAsset, fishList}) {
     const {isOpen, onOpen, onClose} = useDisclosure()
     return (
         <>
@@ -17,11 +16,16 @@ function MarketButton({isMobile, buttonFunc}) {
                 <ModalOverlay/>
                 <ModalContent>
                     <ModalHeader>
-                        交易
+                        技能
                     </ModalHeader>
                     <ModalBody>
-                        {isMobile && <MarketMobileList/>}
-                        {!isMobile && <Market/>}
+                        <UserSkillsMobile userLevel={asset.level} fishList={fishList} expendGold={(cost) => {
+                            const newAsset = {
+                                ...asset
+                            };
+                            newAsset.gold = asset.gold - cost
+                            setAsset(newAsset);
+                        }}/>
                     </ModalBody>
                 </ModalContent>
             </Modal>
@@ -29,4 +33,4 @@ function MarketButton({isMobile, buttonFunc}) {
     )
 }
 
-export default MarketButton;
+export default UserSkillsButtonMobile;
