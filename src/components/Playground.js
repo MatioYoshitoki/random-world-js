@@ -11,7 +11,7 @@ import {
     CardHeader,
     Grid,
     GridItem,
-    Heading,
+    Heading, Image,
     Stack,
     Text,
     useToast,
@@ -38,6 +38,8 @@ import PoolRankButton from "./PoolRankButton";
 import MarketButton from "./MarketButton";
 import UserSkillsButton from "./UserSkillsButton";
 import FishActionButtons from "./FishActionButtons";
+import {CheckInSpecial} from "../pkg/UserUtils";
+import MoonListIcon from "../assets/special_time/moon_light.svg";
 
 let socket = null;
 
@@ -53,6 +55,7 @@ function Playground() {
     const [parkingEffect, setParkingEffect] = useState({});
     const [userInfo, setUserInfo] = useState(null);
     const [godheadList, setGodheadList] = useState(null);
+    const [inMoonLight, setInMoonLight] = useState(false);
 
     const [coldDownTriger, setColdDownTriger] = useState(false)
     const defaultFailedCallback = (message) => {
@@ -292,6 +295,10 @@ function Playground() {
             FetchUserAsset(setAsset, defaultFailedCallback).then();
             FetchUserBaseInfo(setBaseInfo, defaultFailedCallback).then();
             FetchGodheadList(defaultFailedCallback, setGodheadList).then();
+            const timeName = CheckInSpecial();
+            if (timeName === '月光普照') {
+                setInMoonLight(true);
+            }
         });
         const handleAccessTokenChange = (event) => {
             console.log(event);
@@ -311,6 +318,9 @@ function Playground() {
             <GridItem colSpan={23}>
                 <Box ml={10} mt={3}>
                     {userInfo && (<UserBaseInfo maxW={300} info={userInfo} onlyShow={false}/>)}
+                    {inMoonLight && (
+                        <Image maxH='40px' src={MoonListIcon}/>
+                    )}
                 </Box>
                 <Grid templateRows='repeat(2, 1fr)'
                       templateColumns='repeat(3, 1fr)'
