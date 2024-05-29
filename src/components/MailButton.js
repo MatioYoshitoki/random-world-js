@@ -45,7 +45,7 @@ function MailButton() {
         }
     }, [])
     const receive = (mailId) => {
-        MailReceive(mailId, () => {
+        MailReceive(mailId, (data) => {
             const newMailList = mailList.map(item => {
                 const newItem = {...item}
                 if (item.mail_id === mailId) {
@@ -54,6 +54,9 @@ function MailButton() {
                 return newItem;
             })
             setMailList(newMailList);
+            if (data.revitalization_fish_id) {
+                localStorage.removeItem()
+            }
             window.location.reload();
             SuccessToast('领取成功', toast);
         }, defaultFailedCallback).then();

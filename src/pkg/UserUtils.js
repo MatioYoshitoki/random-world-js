@@ -19,11 +19,27 @@ export function CheckInSpecial() {
 }
 
 export function CheckTimeInRange(nowMs, startHourMinutes, endHourMinutes) {
-    // 假设fish对象有一个属性bs.Game.MoonLightTime，它是一个数组，包含开始和结束时间字符串
-    const today = new Date(nowMs).toLocaleDateString().split(',')[0]; // 获取当前日期（例如："2023-07-19"）
-    const startDateStr = `${today}T${startHourMinutes}:00`; // 转换为ISO 8601格式的日期字符串（例如："2023-07-19T18:30:00"）
-    const endDateStr = `${today}T${endHourMinutes}:00`;
-    const startDate = new Date(startDateStr).getTime(); // 转换为毫秒时间戳
-    const endDate = new Date(endDateStr).getTime();
-    return startDate <= nowMs && endDate >= nowMs;
+    const now = new Date(nowMs);
+    const nowHour = now.getHours();
+    const nowMinute = now.getMinutes();
+
+    // 拆分字符串为小时和分钟
+    const startParts = startHourMinutes.split(":");
+    const endParts = endHourMinutes.split(":");
+
+    // 转换为整数
+    const startHour = parseInt(startParts[0], 10);
+    const startMinute = parseInt(startParts[1], 10);
+    const endHour = parseInt(endParts[0], 10);
+    const endMinute = parseInt(endParts[1], 10);
+
+    // 检查当前时间是否在月光时间范围内
+    if (nowHour > startHour && nowHour < endHour) {
+        return true;
+    } else if (nowHour === startHour) {
+        return nowMinute >= startMinute;
+    } else if (nowHour === endHour) {
+        return nowMinute <= endMinute;
+    }
+    return false;
 }

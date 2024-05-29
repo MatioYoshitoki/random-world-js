@@ -22,13 +22,14 @@ import FishSkills from "./FishSkills";
 import GrowthDetails from "./GrowthDetails";
 import React from "react";
 import {Position} from "../pkg/FishUtils";
+import FishLevelInfo from "./FishLevelInfo";
 
 function FishBaseInfo({fish}) {
     const {isOpen, onOpen, onClose} = useDisclosure();
     return (<Grid templateColumns='repeat(10, 1fr)'>
         <GridItem colSpan={5}>
             <VStack alignItems='start'>
-                <Text>境界：{getFishLevelNameByLevel(fish.level)}</Text>
+                <FishLevelInfo level={fish.level}/>
                 <Flex>
                     <Text>性格</Text>
                     <BehaviorDetails behavior={fish.behavior}/>

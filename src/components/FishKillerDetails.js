@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import '../Login.css'
 import {
     Box, Button,
-    Link,
     Modal,
     ModalContent,
     ModalOverlay,

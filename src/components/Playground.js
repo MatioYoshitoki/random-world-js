@@ -112,6 +112,10 @@ function Playground() {
                 if (item.fish && (item.fish.status === null || item.fish.status === undefined)) {
                     item.fish.status = 0;
                 }
+                const recalled = localStorage.getItem('recall_show:'+item.fish.name);
+                if (recalled != null && item.fish.status !== 3) {
+                    localStorage.removeItem('recall_show:'+item.fish.name)
+                }
             })
             setFishList(fishes);
         }

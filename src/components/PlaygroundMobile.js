@@ -130,17 +130,21 @@ function PlaygroundMobile() {
         }
     }, [asset, baseInfo, godheadList]);
     const refreshFishList = (fishes) => {
-        if (fishes != null) {
+        if (fishes != null && fishes.length > 0) {
             let showFishExist = false;
-            fishes.forEach(item => {
+            for (let item of fishes) {
                 if (item.fish.status === null || item.fish.status === undefined) {
                     item.fish.status = 0;
                 }
-                if (showFish.fish.id === item.fish.id) {
+                const recalled = localStorage.getItem('recall_show:'+item.fish.name);
+                if (recalled != null && item.fish.status !== 3) {
+                    localStorage.removeItem('recall_show:'+item.fish.name)
+                }
+                if (showFish !=null && showFish.fish.id === item.fish.id) {
                     setShowFish(item);
                     showFishExist = true;
                 }
-            })
+            }
             if (!showFishExist) {
                 if (fishes.length >0) {
                     setShowFish(fishes[0]);
@@ -229,7 +233,6 @@ function PlaygroundMobile() {
     useEffect(() => {
         const newFishMap = {}
         const newParkingEffects = {}
-        // console.log('refresh fish map: ' + fishList);
         fishList.forEach(item => {
             newFishMap[item.parking] = item;
             if (item.fish && Array.isArray(item.fish.effects)) {
@@ -253,7 +256,6 @@ function PlaygroundMobile() {
 
     useEffect(() => {
         if (needDestroyFish != null) {
-            console.log(needDestroyFish);
             const destroyFish = (deadFish) => {
                 const newFishList = [...fishList];
                 const index = newFishList.findIndex(fish => fish.fish.id === deadFish.id);
@@ -272,7 +274,7 @@ function PlaygroundMobile() {
             }
             destroyFish(needDestroyFish)
         }
-    }, [needDestroyFish, fishList]);
+    }, [needDestroyFish, fishList, showFish]);
 
     useEffect(() => {
         // 获取本地缓存中的 access_token 和 uid
